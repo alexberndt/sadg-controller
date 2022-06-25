@@ -1,0 +1,28 @@
+repos:
+    -   repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v3.1.0
+        hooks:
+        -   id: trailing-whitespace
+        -   id: end-of-file-fixer
+        -   id: check-yaml
+        -   id: check-added-large-files
+            args: ['--maxkb=10000']
+        -   id: name-tests-test
+        -   id: check-ast
+        -   id: check-docstring-first
+        -   id: check-json
+        -   id: check-toml
+    -   repo: https://github.com/psf/black
+        rev: 22.3.0
+        hooks:
+        -   id: black
+            args: ['--line-length', '88',]
+    -   repo: https://github.com/pycqa/isort
+        rev: 5.6.4
+        hooks:
+        -   id: isort
+            args: ["--profile", "black", "--filter-files"]
+    -   repo: https://github.com/gvanderest/pylama-pre-commit
+        rev: 0.1.2
+        hooks:
+        - id: pylama
