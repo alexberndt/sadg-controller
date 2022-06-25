@@ -8,7 +8,7 @@ Implementation of the receding horizon controller
 Receding Horizon Feedback Control Scheme |
 :-------------------------:| 
 ![](.github/diagrams/feedback_diagram.svg)
-_As AGVs progress, and are inevitably delayed, their status is tracked, and an optimization iteration is performed to re-order the AGVs based on a Finite Horizon SADG Subset calculated by Algorithm 3. The solution of the MILP is used to update the SE-ADG used for plan execution in a feedback loop._ |
+_Our approach significantly reduces the cumulative route completion of AGVs subjected to large delays by optimizing the ordering of AGVs based on their progress in a receding horizon fashion, while maintaining collision- and deadlock-free plan execution guarantees._ |
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
@@ -35,8 +35,7 @@ Install build dependencies
 
 ```bash
 sudo apt-get install g++ cmake libboost-program-options-dev \ 
-libyaml-cpp-dev clang-tidy \ 
-clang-format doxygen
+libyaml-cpp-dev clang-tidy  clang-format doxygen
 ```
 
 Compile from source
