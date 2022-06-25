@@ -11,3 +11,9 @@ class MAPFProblem:
     def __init__(self, roadmap: Roadmap, agvs: List[AGV]) -> None:
         self.roadmap = Roadmap
         self.agvs = agvs
+        self.logger = logger
+
+
+    def solve(self):
+
+        self.logger.info("Solving MAPF problem ...")
