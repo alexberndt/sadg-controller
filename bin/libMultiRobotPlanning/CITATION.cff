@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Berndt
+    given-names: Alex
+  - family-names: van Duijkeren
+    given-names: Niels
+  - family-names: Palmieri
+    given-names: Luigi
+title: "Receding Horizon Re-ordering of Multi-Agent Execution Schedules"
+version: 0.1.0
+doi: todo
+date-released: 2022-06-05
