@@ -15,3 +15,22 @@ git clone git@github.com:alexberndt/mobile-robot-sadg-controller.git
 cd mobile-robot-sadg-controller
 poetry install
 ```
+
+#### Install libMultiRobotPlanning
+
+Install dependencies
+
+```bash
+sudo apt-get install g++ cmake libboost-program-options-dev libyaml-cpp-dev \
+clang-tidy clang-format doxygen
+```
+
+Compile from source
+
+```bash
+cd bin/libMultiRobotPlanning/
+mkdir build
+cd build 
+cmake ..
+make
+```
