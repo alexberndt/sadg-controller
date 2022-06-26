@@ -1,4 +1,5 @@
-from sadg_controller.core.agv import AGV
+from sadg_controller.core.controller import SADGController
+from sadg_controller.core.locations import Locations
 from sadg_controller.core.mapf import MAPFProblem
 from sadg_controller.core.roadmap import Roadmap
 
@@ -6,12 +7,18 @@ from sadg_controller.core.roadmap import Roadmap
 def main():
 
     roadmap = Roadmap("data/roadmaps/warehouse.csv")
-    agv1 = AGV("1")
-    agv2 = AGV("2")
 
-    problem = MAPFProblem(roadmap, [agv1, agv2])
+    starts = roadmap.random_locations(20)
+    goals = roadmap.random_locations(20)
 
-    problem.solve()
+    problem = MAPFProblem(roadmap, starts, goals)
+    plan = problem.solve()
+
+    controller = SADGController(plan)
+
+    
+
+
 
 
 if __name__ == "__main__":
