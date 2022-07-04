@@ -24,7 +24,7 @@ Dependencies:
 - [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
 ```bash
-git clone git@github.com:alexberndt/mobile-robot-sadg-controller.git
+git clone --recurse-submodules git@github.com:alexberndt/mobile-robot-sadg-controller.git
 cd mobile-robot-sadg-controller
 poetry install
 ```
@@ -40,7 +40,7 @@ libyaml-cpp-dev clang-tidy  clang-format doxygen
 
 Compile from source
 ```bash
-cd bin/libMultiRobotPlanning/
+cd third_party/libMultiRobotPlanning/
 mkdir build
 cd build
 cmake ..
