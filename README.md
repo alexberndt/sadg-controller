@@ -24,8 +24,8 @@ Dependencies:
 - [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
 ```bash
-git clone --recurse-submodules git@github.com:alexberndt/mobile-robot-sadg-controller.git
-cd mobile-robot-sadg-controller
+git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
+cd sadg-controller
 poetry install
 ```
 
