@@ -1,7 +1,7 @@
 # SADG Controller
 
-Implementation of the 
-  Switchable Action Dependency Graph (SADG) 
+Implementation of the
+  Switchable Action Dependency Graph (SADG)
   receding horizon controller (RHC) feedback scheme
   presented in
 
@@ -16,9 +16,7 @@ Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
 
-
-
-## Get Started
+## Installation Instructions
 
 First, make sure you have installed:
 
@@ -50,3 +48,14 @@ cd build
 cmake ..
 make
 ```
+
+
+## Contribute
+
+To contribute to this repository, set up your development environment as follows
+
+1. Follow the [installation instructions](#installation-instruction)
+2. Set up pre-commit hooks:
+    ```bash
+    poetry run pre-commit install
+    ```

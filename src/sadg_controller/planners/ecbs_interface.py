@@ -1,14 +1,15 @@
-import yaml
 import csv
 import random
 from typing import Dict, List
 
-yaml.Dumper.ignore_aliases = lambda *args : True
+import yaml
+
+yaml.Dumper.ignore_aliases = lambda *args: True
 
 
 def convert_roadmap_and_agv(roadmap_file: str, agv_count: int, output_file: str) -> str:
     """Convert the roadmap and AGV definition to single file for ECBS algorithm.
-    
+
     Args:
         roadmap_file: CSV file containing roadmap.
         agv_file: Yaml file containing AGV start, goal locations.
@@ -21,13 +22,9 @@ def convert_roadmap_and_agv(roadmap_file: str, agv_count: int, output_file: str)
 
 
 def create_single_file(
-    roadmap_array: List[List[str]], 
-    agv_count: int,
-    output_file: str
+    roadmap_array: List[List[str]], agv_count: int, output_file: str
 ) -> str:
-    """Create file for ECBS input.
-    
-    """
+    """Create file for ECBS input."""
 
     # agents:
     # -   goal: [29, 2]
@@ -42,14 +39,14 @@ def create_single_file(
     # map:
     #     dimensions: [32, 32]
     #     obstacles:
-        # - [29, 1]
-        # - [10, 9]
-        # - [6, 28]
-        # - [25, 25]
-        # - [22, 31]
+    # - [29, 1]
+    # - [10, 9]
+    # - [6, 28]
+    # - [25, 25]
+    # - [22, 31]
 
     final_input = {}
-    
+
     # Add map obstacles from roadmap array
     map_data = get_map_data(roadmap_array)
     final_input["map"] = map_data
@@ -62,7 +59,10 @@ def create_single_file(
 
     return output_file
 
-def randomize_agv_start_goals(valid_agv_starts: List[List[int]], agv_count: int) -> Dict[str, any]:
+
+def randomize_agv_start_goals(
+    valid_agv_starts: List[List[int]], agv_count: int
+) -> Dict[str, any]:
 
     random_starts = random.sample(valid_agv_starts, agv_count)
     random_goals = random.sample(valid_agv_starts, agv_count)
@@ -70,20 +70,20 @@ def randomize_agv_start_goals(valid_agv_starts: List[List[int]], agv_count: int)
     agv_data = []
 
     for idx, (start, goal) in enumerate(zip(random_starts, random_goals)):
-        
-        agv_data.append({
-            "name": f"agent{idx}",
-            "start": start,
-            "goal": goal,
-        })
+
+        agv_data.append(
+            {
+                "name": f"agent{idx}",
+                "start": start,
+                "goal": goal,
+            }
+        )
 
     return agv_data
 
 
 def get_map_data(roadmap_array: List[List[str]]) -> Dict[str, List[List[int]]]:
-    """Convert roadmap array into yaml input for ECBS algorithm
-    
-    """
+    """Convert roadmap array into yaml input for ECBS algorithm"""
     dimensions = [len(roadmap_array), len(roadmap_array[0])]
     obstacles = []
 
@@ -110,8 +110,6 @@ def get_valid_agv_starts(roadmap_array: List[List[str]]) -> List[List[int]]:
                 valid_agv_starts.append([int(cell_idx), int(row_idx)])
 
     return valid_agv_starts
-
-
 
 
 def read_roadmap_csv(file: str) -> List[List[str]]:

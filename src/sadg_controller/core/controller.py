@@ -1,5 +1,3 @@
-
-
 from sadg_controller.core.plan import Plan
 
 

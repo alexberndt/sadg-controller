@@ -1,5 +1,6 @@
 from sadg_controller.core.controller import SADGController
-from sadg_controller.core.locations import Locations
+
+# from sadg_controller.core.locations import Locations
 from sadg_controller.core.mapf import MAPFProblem
 from sadg_controller.core.roadmap import Roadmap
 
@@ -16,9 +17,7 @@ def main():
 
     controller = SADGController(plan)
 
-    
-
-
+    del controller
 
 
 if __name__ == "__main__":
