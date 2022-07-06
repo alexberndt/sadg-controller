@@ -6,7 +6,7 @@ SADG-controller is a Python-library
   receding horizon controller (RHC) feedback scheme
   presented in
 
-> A. Berndt, N. van Duijkeren, L. Palmieri, A. Kleiner, T. Keviczky, "Receding Horizon Re-ordering of Multi-Agent Execution Schedules", in _Transactions of Robotics_.
+> A. Berndt, N. van Duijkeren, L. Palmieri, A. Kleiner, T. Keviczky, "Receding Horizon Re-ordering of Multi-Agent Execution Schedules", currently under review for publication in _Transactions of Robotics_.
 
 SADG Receding Horizon Feedback Control Scheme | Typical MAPF Execution Schemes |
 :-------------------------:|:-------------------------:|
