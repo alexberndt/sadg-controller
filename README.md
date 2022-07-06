@@ -1,6 +1,8 @@
-# Mobile Robot SADG Controller
+# SADG Controller
 
-Implementation of the receding horizon controller
+Implementation of the 
+  Switchable Action Dependency Graph (SADG) 
+  receding horizon controller (RHC) feedback scheme
   presented in
 
 > A. Berndt, N. van Duijkeren, L. Palmieri, A. Kleiner, T. Keviczky, "Receding Horizon Re-ordering of Multi-Agent Execution Schedules", in _Transactions of Robotics_.
