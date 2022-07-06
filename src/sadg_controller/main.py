@@ -13,7 +13,7 @@ def main(roadmap_file: str, agv_count: int):
     goals = roadmap.random_locations(agv_count)
 
     problem = MAPFProblem(roadmap, starts, goals)
-    plan = problem.solve()
+    plan = problem.solve(suboptimality_factor=1.1)
 
     controller = SADGController(plan)
 
@@ -23,6 +23,6 @@ def main(roadmap_file: str, agv_count: int):
 if __name__ == "__main__":
 
     roadmap_file = "data/roadmaps/test/roadmap.csv"
-    agv_count = 4
+    agv_count = 8
 
     main(roadmap_file, agv_count)

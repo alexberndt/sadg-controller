@@ -25,7 +25,7 @@ class MAPFProblem:
         self.tmp_dir = f"tmp/{next(RANDOM_SEQUENCE_GENERATOR)}"
         os.makedirs(self.tmp_dir)
 
-    def solve(self) -> Plan:
+    def solve(self, suboptimality_factor: float = 1.5) -> Plan:
         """Solve the MAPF problem using ECBS algorithm."""
 
         self.logger.info("Solving MAPF problem ...")
@@ -52,6 +52,8 @@ class MAPFProblem:
             input_file,
             "-o",
             solution_file,
+            "-w",
+            str(suboptimality_factor),
         ]
 
         result = subprocess.run(
