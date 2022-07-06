@@ -16,6 +16,11 @@ Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
 
+## List of Functionalities
+
+1. Python-based interface for interacting with MAPF planners from [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning)
+2. SADG Receding Horizon feedback control scheme implementation
+
 ## Installation Instructions
 
 First, make sure you have installed:
