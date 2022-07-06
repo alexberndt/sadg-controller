@@ -1,6 +1,8 @@
-# Mobile Robot SADG Controller
+# SADG Controller
 
-Implementation of the receding horizon controller
+Implementation of the 
+  Switchable Action Dependency Graph (SADG) 
+  receding horizon controller (RHC) feedback scheme
   presented in
 
 > A. Berndt, N. van Duijkeren, L. Palmieri, A. Kleiner, T. Keviczky, "Receding Horizon Re-ordering of Multi-Agent Execution Schedules", in _Transactions of Robotics_.
@@ -24,8 +26,8 @@ Dependencies:
 - [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
 ```bash
-git clone git@github.com:alexberndt/mobile-robot-sadg-controller.git
-cd mobile-robot-sadg-controller
+git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
+cd sadg-controller
 poetry install
 ```
 
@@ -40,7 +42,7 @@ libyaml-cpp-dev clang-tidy  clang-format doxygen
 
 Compile from source
 ```bash
-cd bin/libMultiRobotPlanning/
+cd third_party/libMultiRobotPlanning/
 mkdir build
 cd build
 cmake ..

@@ -6,4 +6,3 @@ __pycache__
 .ipynb
 .ipynb_checkpoints
 tmp
-bin/libMultiRobotPlanning/build
