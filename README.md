@@ -20,10 +20,10 @@ Full Maze             |  Half Maze |  Warehouse |  Islands
 
 ## Get Started
 
-Dependencies:
+First, make sure you have installed:
 
-- [Poetry](https://python-poetry.org/docs/)
-- [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu)
+- [Poetry](https://python-poetry.org/docs/) for consistent python dependency management
+- [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) for asynchronous inter-agent communication
 
 ```bash
 git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
@@ -31,7 +31,9 @@ cd sadg-controller
 poetry install
 ```
 
-#### Install libMultiRobotPlanning
+### Install libMultiRobotPlanning
+
+> The [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning) contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme, and is therefore a `third-party` dependency for this repository.
 
 Install build dependencies
 
