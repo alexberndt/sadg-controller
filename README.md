@@ -8,10 +8,13 @@ SADG-controller is a Python-library
 
 > A. Berndt, N. van Duijkeren, L. Palmieri, A. Kleiner, T. Keviczky, "Receding Horizon Re-ordering of Multi-Agent Execution Schedules", in _Transactions of Robotics_.
 
-Receding Horizon Feedback Control Scheme |
-:-------------------------:|
-![](.github/diagrams/feedback_diagram.svg)
-_Our approach significantly reduces the cumulative route completion of AGVs subjected to large delays by optimizing the ordering of AGVs based on their progress in a receding horizon fashion, while maintaining collision- and deadlock-free plan execution guarantees._ |
+SADG Receding Horizon Feedback Control Scheme | Typical MAPF Execution Schemes |
+:-------------------------:|:-------------------------:|
+![](.github/diagrams/feedback_diagram.svg)| ![](.github/diagrams/typical_mapf_scheme.svg) |
+
+<em align="center" style>
+Our approach significantly reduces the cumulative route completion of AGVs subjected to large delays by optimizing the ordering of AGVs based on their progress in a receding horizon fashion, while maintaining collision- and deadlock-free plan execution guarantees.
+</em>
 
 ## List of Functionalities
 
