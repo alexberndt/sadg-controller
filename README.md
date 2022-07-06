@@ -1,6 +1,7 @@
 # SADG Controller
 
-Implementation of the
+SADG-controller is a Python-library
+  containing an implementation of the
   Switchable Action Dependency Graph (SADG)
   receding horizon controller (RHC) feedback scheme
   presented in
@@ -11,10 +12,6 @@ Receding Horizon Feedback Control Scheme |
 :-------------------------:|
 ![](.github/diagrams/feedback_diagram.svg)
 _Our approach significantly reduces the cumulative route completion of AGVs subjected to large delays by optimizing the ordering of AGVs based on their progress in a receding horizon fashion, while maintaining collision- and deadlock-free plan execution guarantees._ |
-
-Full Maze             |  Half Maze |  Warehouse |  Islands
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
 
 ## List of Functionalities
 
@@ -53,6 +50,12 @@ cd build
 cmake ..
 make
 ```
+
+## Examples
+
+Full Maze             |  Half Maze |  Warehouse |  Islands
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
 
 
 ## Contribute
