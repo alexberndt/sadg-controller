@@ -1,15 +1,87 @@
+import csv
+import random
 from logging import Logger
+from typing import Dict, List
 
-from sadg_controller.core.locations import Locations
+from sadg_controller.core.location import Location
 
 logger = Logger(__name__)
 
 
 class Roadmap:
-    def __init__(self, map_file: str) -> None:
+    def __init__(self, map_csv_file: str) -> None:
         self.logger = logger
-        self.map_file = map_file
+        self.array = self._read_roadmap_csv(map_csv_file)
+        self.map_data = self._get_map_data()
 
-    def random_locations(self, agv_count: int) -> Locations:
+    def random_locations(self, agv_count: int) -> List[Location]:
 
-        return Locations()
+        valid_start_locations = self._get_valid_agv_starts()
+
+        if len(valid_start_locations) < agv_count:
+            raise Exception(
+                "AGV count is higher than number of valid start/goal locations"
+            )
+
+        return random.sample(valid_start_locations, agv_count)
+
+    def get_map_data(self) -> Dict[str, List[List[int]]]:
+        """Generates map data for ECBS algorithm yaml"""
+
+        dimensions = [len(self.array), len(self.array[0])]
+        obstacles = []
+
+        for row_idx, row in enumerate(self.array):
+            for cell_idx, cell in enumerate(row):
+                if int(cell) == 9:
+                    obstacles.append([int(cell_idx), int(row_idx)])
+
+        map_data = {
+            "dimensions": dimensions,
+            "obstacles": obstacles,
+        }
+
+        return map_data
+
+    def _get_valid_agv_starts(self) -> List[Location]:
+
+        valid_locations = []
+
+        for row_idx, row in enumerate(self.array):
+            for cell_idx, cell in enumerate(row):
+                if int(cell) == 1:
+                    loc = Location(row=int(row_idx), col=int(cell_idx))
+                    valid_locations.append(loc)
+
+        return valid_locations
+
+    def _get_map_data(self) -> Dict[str, List[List[int]]]:
+        """Convert roadmap array into yaml input for ECBS algorithm"""
+
+        self.logger.debug("Constructing map data ...")
+
+        dimensions = [len(self.array), len(self.array[0])]
+        obstacles = []
+
+        for row_idx, row in enumerate(self.array):
+            for cell_idx, cell in enumerate(row):
+                if int(cell) == 9:
+                    obstacles.append([int(cell_idx), int(row_idx)])
+
+        map_data = {
+            "dimensions": dimensions,
+            "obstacles": obstacles,
+        }
+
+        return map_data
+
+    def _read_roadmap_csv(self, csv_file: str) -> List[List[str]]:
+        """Read roadmap csv file."""
+
+        self.logger.debug(f"Reading roadmap csv file: {csv_file} ...")
+        with open(csv_file, "r") as stream:
+            data_reader = csv.reader(stream)
+            array = []
+            for row in data_reader:
+                array.append(row)
+            return array

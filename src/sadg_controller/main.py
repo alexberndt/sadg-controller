@@ -5,12 +5,12 @@ from sadg_controller.core.mapf import MAPFProblem
 from sadg_controller.core.roadmap import Roadmap
 
 
-def main():
+def main(roadmap_file: str, agv_count: int):
 
-    roadmap = Roadmap("data/roadmaps/warehouse.csv")
+    roadmap = Roadmap(roadmap_file)
 
-    starts = roadmap.random_locations(20)
-    goals = roadmap.random_locations(20)
+    starts = roadmap.random_locations(agv_count)
+    goals = roadmap.random_locations(agv_count)
 
     problem = MAPFProblem(roadmap, starts, goals)
     plan = problem.solve()
@@ -21,4 +21,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    roadmap_file = "data/roadmaps/test/roadmap.csv"
+    agv_count = 4
+
+    main(roadmap_file, agv_count)
