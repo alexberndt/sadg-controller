@@ -21,10 +21,13 @@ _Our approach significantly reduces the cumulative route completion of agents su
 
 ## Installation Instructions
 
-First, make sure you have installed:
+First, ensure you have:
 
 - [Poetry](https://python-poetry.org/docs/) for consistent python dependency management
 - [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) for asynchronous inter-agent communication
+- Linux `apt-get` packages: `g++`, `cmake`, `libboost-program-options-dev`, `libyaml-cpp-dev`, `clang-tidy`, `clang-format`, `doxygen`.
+
+Clone and install this repository
 
 ```bash
 git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
@@ -32,20 +35,13 @@ cd sadg-controller
 make
 ```
 
-> If `make` returns an error, make sure the following dependencies are installed:
-```bash
-sudo apt-get install g++ cmake libboost-program-options-dev \
-libyaml-cpp-dev clang-tidy  clang-format doxygen
-```
-
-> This repo contains [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning), a library which contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme. libMultiRobotPlanning is compiled from source when running `make`.
+> This repository contains [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning) in [third_party/](third_party/libMultiRobotPlanning/), a library which contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme. libMultiRobotPlanning is compiled from source when running `make`.
 
 ## Examples
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
-
 
 ## Contribute
 
