@@ -29,28 +29,16 @@ First, make sure you have installed:
 ```bash
 git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
 cd sadg-controller
-poetry install
+make
 ```
 
-### Install libMultiRobotPlanning
-
-> The [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning) contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme, and is therefore a `third-party` dependency for this repository.
-
-Install build dependencies
-
+> If `make` returns an error, make sure the following dependencies are installed:
 ```bash
 sudo apt-get install g++ cmake libboost-program-options-dev \
 libyaml-cpp-dev clang-tidy  clang-format doxygen
 ```
 
-Compile from source
-```bash
-cd third_party/libMultiRobotPlanning/
-mkdir build
-cd build
-cmake ..
-make
-```
+> This repo contains [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning), a library which contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme. libMultiRobotPlanning is compiled from source when running `make`.
 
 ## Examples
 
