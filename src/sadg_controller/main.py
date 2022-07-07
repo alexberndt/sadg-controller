@@ -1,4 +1,4 @@
-from sadg_controller.core.controller import SADGController
+from sadg_controller.core.sadg_compiler import sadg_compiler
 
 from sadg_controller.core.mapf import MAPFProblem
 from sadg_controller.core.roadmap import Roadmap
@@ -12,11 +12,11 @@ def main(roadmap_file: str, agv_count: int):
     goals = roadmap.random_locations(agv_count)
 
     problem = MAPFProblem(roadmap, starts, goals)
-    plans = problem.solve(suboptimality_factor=1.1)
+    plan = problem.solve(suboptimality_factor=1.1)
 
-    controller = SADGController(plans)
+    sadg = sadg_compiler(plan)
 
-    del controller
+    del sadg
 
 
 if __name__ == "__main__":
