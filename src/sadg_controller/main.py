@@ -1,6 +1,5 @@
 from sadg_controller.core.controller import SADGController
 
-# from sadg_controller.core.locations import Locations
 from sadg_controller.core.mapf import MAPFProblem
 from sadg_controller.core.roadmap import Roadmap
 
@@ -13,9 +12,9 @@ def main(roadmap_file: str, agv_count: int):
     goals = roadmap.random_locations(agv_count)
 
     problem = MAPFProblem(roadmap, starts, goals)
-    plan = problem.solve(suboptimality_factor=1.1)
+    plans = problem.solve(suboptimality_factor=1.1)
 
-    controller = SADGController(plan)
+    controller = SADGController(plans)
 
     del controller
 

@@ -9,6 +9,7 @@ all: dev
 
 dev:
 	poetry install
+	poetry run pre-commit install
 	mkdir third_party/libMultiRobotPlanning/build
 	cd third_party/libMultiRobotPlanning/build
 	cmake ..
