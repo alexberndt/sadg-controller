@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from sadg_controller.core.plan_tuple import PlanTuple
+from sadg_controller.mapf.plan_tuple import PlanTuple
 from sadg_controller.sadg.location import Location
 from sadg_controller.sadg.status import Status
 

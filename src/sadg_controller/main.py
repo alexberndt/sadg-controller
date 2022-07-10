@@ -1,6 +1,7 @@
-from sadg_controller.core.mapf import MAPFProblem
-from sadg_controller.core.roadmap import Roadmap
-from sadg_controller.sadg.functions import sadg_compiler
+from sadg_controller.core.sadg_compiler import sadg_compiler
+from sadg_controller.core.se_adg_compiler import se_adg_compiler
+from sadg_controller.mapf.problem import MAPFProblem
+from sadg_controller.mapf.roadmap import Roadmap
 
 
 def main(roadmap_file: str, dimensions_file: str, agv_count: int):
@@ -14,8 +15,10 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     plan = problem.solve(suboptimality_factor=1.1)
 
     sadg = sadg_compiler(plan)
+    se_adg = se_adg_compiler(plan)
 
     del sadg
+    del se_adg
 
 
 if __name__ == "__main__":

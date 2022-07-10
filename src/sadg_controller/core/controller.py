@@ -1,4 +1,4 @@
-from sadg_controller.core.plan import Plan
+from sadg_controller.mapf.plan import Plan
 
 
 class SADGController:

@@ -5,9 +5,9 @@ from typing import Dict, List
 
 import yaml
 
-from sadg_controller.core.plan import Plan
-from sadg_controller.core.roadmap import Roadmap
-from sadg_controller.core.roadmap_location import RoadmapLocation
+from sadg_controller.mapf.plan import Plan
+from sadg_controller.mapf.roadmap import Roadmap
+from sadg_controller.mapf.roadmap_location import RoadmapLocation
 from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 
 yaml.Dumper.ignore_aliases = lambda *args: True

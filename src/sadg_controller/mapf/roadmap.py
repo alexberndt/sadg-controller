@@ -5,7 +5,7 @@ from typing import Dict, List
 
 import yaml
 
-from sadg_controller.core.roadmap_location import RoadmapLocation
+from sadg_controller.mapf.roadmap_location import RoadmapLocation
 
 logger = Logger(__name__)
 random.seed(10)

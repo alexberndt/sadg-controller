@@ -1,9 +1,9 @@
 from logging import Logger
 
-from sadg_controller.core.plan import Plan
+from sadg_controller.core.geometry import intersects
+from sadg_controller.mapf.plan import Plan
 from sadg_controller.sadg.dependency import Dependency
 from sadg_controller.sadg.dependency_switch import DependencySwitch
-from sadg_controller.sadg.location import Location
 from sadg_controller.sadg.sadg import SADG
 from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex, loc
@@ -95,7 +95,3 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             E_sadg[agent_i]["regular"].append(fwd)
 
     return SADG(V_sadg, E_sadg)
-
-
-def intersects(loc_1: Location, loc_2: Location) -> bool:
-    return loc_1 == loc_2

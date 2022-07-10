@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import Dict
 
-from sadg_controller.core.plan_tuple import PlanTuple
+from sadg_controller.mapf.plan_tuple import PlanTuple
 
 logger = Logger(__name__)
 
