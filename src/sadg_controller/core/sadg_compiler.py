@@ -1,4 +1,4 @@
-from logging import Logger
+from logging import getLogger
 
 from sadg_controller.core.geometry import intersects
 from sadg_controller.mapf.plan import Plan
@@ -8,7 +8,7 @@ from sadg_controller.sadg.sadg import SADG
 from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex, loc
 
-logger = Logger(__name__)
+logger = getLogger(__name__)
 
 
 def sadg_compiler(P: Plan) -> SADG:  # noqa: C901

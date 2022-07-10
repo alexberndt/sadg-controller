@@ -34,3 +34,6 @@ class SADG:
             active_dependencies[agent_id].append(active_dep)
 
         return SE_ADG(self.vertices, active_dependencies)
+
+    def plot(self):
+        """Plots the SADG."""

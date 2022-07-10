@@ -17,8 +17,14 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
 
+    sadg.plot()
+
     del sadg
     del se_adg
+
+    for t in range(1, 1000):
+
+        print(f"t = {t}")
 
 
 if __name__ == "__main__":

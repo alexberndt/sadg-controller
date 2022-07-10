@@ -1,6 +1,6 @@
 import os
 import subprocess
-from logging import Logger
+from logging import getLogger
 from typing import Dict, List
 
 import yaml
@@ -11,7 +11,7 @@ from sadg_controller.mapf.roadmap_location import RoadmapLocation
 from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 
 yaml.Dumper.ignore_aliases = lambda *args: True
-logger = Logger(__name__)
+logger = getLogger(__name__)
 
 
 class MAPFProblem:

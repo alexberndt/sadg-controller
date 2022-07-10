@@ -1,6 +1,6 @@
-from logging import Logger
+from logging import getLogger
 
-logger = Logger(__name__)
+logger = getLogger(__name__)
 
 
 class Agent:

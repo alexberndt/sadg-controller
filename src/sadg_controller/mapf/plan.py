@@ -1,9 +1,9 @@
-from logging import Logger
+from logging import getLogger
 from typing import Dict
 
 from sadg_controller.mapf.plan_tuple import PlanTuple
 
-logger = Logger(__name__)
+logger = getLogger(__name__)
 
 
 class Plan:
