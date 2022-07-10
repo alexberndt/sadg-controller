@@ -3,18 +3,25 @@ import random
 from logging import Logger
 from typing import Dict, List
 
-from sadg_controller.core.location import Location
+import yaml
+
+from sadg_controller.core.roadmap_location import RoadmapLocation
 
 logger = Logger(__name__)
+random.seed(10)
 
 
 class Roadmap:
-    def __init__(self, map_csv_file: str) -> None:
+    def __init__(self, map_csv_file: str, dimensions_yaml_file: str) -> None:
         self.logger = logger
         self.array = self._read_roadmap_csv(map_csv_file)
+        self.dimensions = self._read_dimensions(dimensions_yaml_file)
         self.map_data = self._get_map_data()
 
-    def random_locations(self, agv_count: int) -> List[Location]:
+    def random_locations(self, agv_count: int) -> List[RoadmapLocation]:
+        """Return random locations on roadmap.
+
+        Samples `agv_count` random locations from the roadmap."""
 
         valid_start_locations = self._get_valid_agv_starts()
 
@@ -26,7 +33,7 @@ class Roadmap:
         return random.sample(valid_start_locations, agv_count)
 
     def get_map_data(self) -> Dict[str, List[List[int]]]:
-        """Generates map data for ECBS algorithm yaml"""
+        """Generates map data for ECBS algorithm yaml."""
 
         dimensions = [len(self.array), len(self.array[0])]
         obstacles = []
@@ -43,14 +50,17 @@ class Roadmap:
 
         return map_data
 
-    def _get_valid_agv_starts(self) -> List[Location]:
+    def get_dimensions(self) -> Dict:
+        return self.dimensions
+
+    def _get_valid_agv_starts(self) -> List[RoadmapLocation]:
 
         valid_locations = []
 
         for row_idx, row in enumerate(self.array):
             for cell_idx, cell in enumerate(row):
                 if int(cell) == 1:
-                    loc = Location(row=int(row_idx), col=int(cell_idx))
+                    loc = RoadmapLocation(row=int(row_idx), col=int(cell_idx))
                     valid_locations.append(loc)
 
         return valid_locations
@@ -85,3 +95,13 @@ class Roadmap:
             for row in data_reader:
                 array.append(row)
             return array
+
+    def _read_dimensions(self, yaml_file: str) -> Dict:
+        """Read roadmap dimensions file."""
+
+        self.logger.debug(f"Reading dimensions yaml file: {yaml_file} ...")
+        with open(yaml_file, "r") as stream:
+            try:
+                return yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)

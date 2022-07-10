@@ -1,21 +1,32 @@
 from logging import Logger
-from re import S
 from typing import Dict
 
-from sadg_controller.core.agent import Agent
-from sadg_controller.core.location import Location
-from sadg_controller.core.tuple import Tuple
+from sadg_controller.core.plan_tuple import PlanTuple
 
 logger = Logger(__name__)
 
 
 class Plan:
-    def __init__(self, solution: Dict) -> None:
-        self.plans = _parse_solution(solution)
+    def __init__(self, solution: Dict, dimensions: Dict) -> None:
+        self.plans = _parse_solution(solution, dimensions)
         self.logger = logger
 
 
-def _parse_solution(solution: Dict) -> None:
+def _parse_solution(solution: Dict, dimensions: Dict) -> None:
+    """Parse a ECBS-derived MAPF solution.
+
+    Converts the raw solution output of the ECBS planner into
+
+    Args:
+        solution:
+        dimensions:
+    """
+
+    # read dimensions
+    dims = dimensions["dimensions"]
+    x_offset = dims["x_offset"]
+    y_offset = dims["y_offset"]
+    resolution = dims["resolution"]
 
     # statistics = solution["statistics"]
     schedule = solution["schedule"]
@@ -26,17 +37,14 @@ def _parse_solution(solution: Dict) -> None:
 
         plan = []
 
-        for start, goal in zip(agent_schedule, agent_schedule[1:]):
+        for schedule_item in agent_schedule:
 
-            loc_s = Location(start["x"], start["y"])
-            loc_g = Location(goal["x"], goal["y"])
-            t_s = start["t"]
-            t_g = goal["t"]
+            x = schedule_item["x"] * resolution + x_offset
+            y = schedule_item["y"] * resolution + y_offset
+            t = schedule_item["t"]
 
-            plan.append(Tuple(loc_s,loc_g,t_s,t_g))
+            plan.append(PlanTuple(x, y, t))
 
         plans[id] = plan
 
     return plans
-
-

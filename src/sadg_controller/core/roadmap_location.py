@@ -1,7 +1,7 @@
 from typing import List
 
 
-class Location:
+class RoadmapLocation:
     def __init__(self, row: int, col: int) -> None:
         self.row = row
         self.col = col

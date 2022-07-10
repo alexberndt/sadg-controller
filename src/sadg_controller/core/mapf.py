@@ -5,9 +5,9 @@ from typing import Dict, List
 
 import yaml
 
-from sadg_controller.core.location import Location
 from sadg_controller.core.plan import Plan
 from sadg_controller.core.roadmap import Roadmap
+from sadg_controller.core.roadmap_location import RoadmapLocation
 from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 
 yaml.Dumper.ignore_aliases = lambda *args: True
@@ -16,7 +16,10 @@ logger = Logger(__name__)
 
 class MAPFProblem:
     def __init__(
-        self, roadmap: Roadmap, starts: List[Location], goals: List[Location]
+        self,
+        roadmap: Roadmap,
+        starts: List[RoadmapLocation],
+        goals: List[RoadmapLocation],
     ) -> None:
         self.roadmap = roadmap
         self.starts = starts
@@ -68,7 +71,10 @@ class MAPFProblem:
         # read solution
         solution = read_yaml(solution_file)
 
-        return Plan(solution)
+        # get map dimensions
+        dimensions = self.roadmap.get_dimensions()
+
+        return Plan(solution, dimensions)
 
     def _get_agv_data(self) -> Dict:
 
