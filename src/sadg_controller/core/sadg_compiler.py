@@ -30,7 +30,8 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
     # N = len(P.plans.keys())
 
     # Initialize
-    E_sadg = {}
+    E_regular = {}
+    E_switchable = {}
     V_sadg = {}
 
     # Add sequence of vents for each AGV (Alg. 2, lines 1 - 13)
@@ -40,7 +41,8 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
         # N_i = len(P_i)
         P_i = iter(P_i)
         V_sadg[agent_id] = []
-        E_sadg[agent_id] = {"regular": [], "switch": []}
+        E_regular[agent_id] = []
+        E_switchable[agent_id] = []
 
         p = next(P_i)
         v = Vertex(agent_id, p, Status.STAGED)
@@ -56,7 +58,7 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                 V_sadg[agent_id].append(v)
 
                 if v_prev is not None:
-                    E_sadg[agent_id]["regular"].append(Dependency(v_prev, v))
+                    E_regular[agent_id].append(Dependency(v_prev, v))
 
                 # reset
                 v_prev = v
@@ -85,13 +87,13 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             v_j_l_plus_1 = vertices_j[l + 1]
                             rev = Dependency(v_j_l_plus_1, v_i_k_minus_1)
                             switch = DependencySwitch(fwd, rev, False)
-                            E_sadg[agent_i]["switch"].append(switch)
+                            E_switchable[agent_i].append(switch)
 
                         except IndexError:
                             logger.debug(
                                 f"k-1={k - 1}, l+1={l + 1} are not valid indexes."
                                 "Cannot construct dependency switch."
                             )
-                            E_sadg[agent_i]["regular"].append(fwd)
+                            E_regular[agent_i].append(fwd)
 
-    return SADG(V_sadg, E_sadg)
+    return SADG(V_sadg, E_regular, E_switchable)

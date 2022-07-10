@@ -13,7 +13,6 @@ random.seed(10)
 
 class Roadmap:
     def __init__(self, map_csv_file: str, dimensions_yaml_file: str) -> None:
-        self.logger = logger
         self.array = self._read_roadmap_csv(map_csv_file)
         self.dimensions = self._read_dimensions(dimensions_yaml_file)
         self.map_data = self._get_map_data()
@@ -68,7 +67,7 @@ class Roadmap:
     def _get_map_data(self) -> Dict[str, List[List[int]]]:
         """Convert roadmap array into yaml input for ECBS algorithm"""
 
-        self.logger.debug("Constructing map data ...")
+        logger.debug("Constructing map data ...")
 
         dimensions = [len(self.array), len(self.array[0])]
         obstacles = []
@@ -88,7 +87,7 @@ class Roadmap:
     def _read_roadmap_csv(self, csv_file: str) -> List[List[str]]:
         """Read roadmap csv file."""
 
-        self.logger.debug(f"Reading roadmap csv file: {csv_file} ...")
+        logger.debug(f"Reading roadmap csv file: {csv_file} ...")
         with open(csv_file, "r") as stream:
             data_reader = csv.reader(stream)
             array = []
@@ -99,7 +98,7 @@ class Roadmap:
     def _read_dimensions(self, yaml_file: str) -> Dict:
         """Read roadmap dimensions file."""
 
-        self.logger.debug(f"Reading dimensions yaml file: {yaml_file} ...")
+        logger.debug(f"Reading dimensions yaml file: {yaml_file} ...")
         with open(yaml_file, "r") as stream:
             try:
                 return yaml.safe_load(stream)
