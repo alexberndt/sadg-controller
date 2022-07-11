@@ -32,22 +32,7 @@ class Roadmap:
         return random.sample(valid_start_locations, agv_count)
 
     def get_map_data(self) -> Dict[str, List[List[int]]]:
-        """Generates map data for ECBS algorithm yaml."""
-
-        dimensions = [len(self.array), len(self.array[0])]
-        obstacles = []
-
-        for row_idx, row in enumerate(self.array):
-            for cell_idx, cell in enumerate(row):
-                if int(cell) == 9:
-                    obstacles.append([int(cell_idx), int(row_idx)])
-
-        map_data = {
-            "dimensions": dimensions,
-            "obstacles": obstacles,
-        }
-
-        return map_data
+        return self.map_data
 
     def get_dimensions(self) -> Dict:
         return self.dimensions
@@ -55,11 +40,10 @@ class Roadmap:
     def _get_valid_agv_starts(self) -> List[RoadmapLocation]:
 
         valid_locations = []
-
         for row_idx, row in enumerate(self.array):
-            for cell_idx, cell in enumerate(row):
+            for col_idx, cell in enumerate(row):
                 if int(cell) == 1:
-                    loc = RoadmapLocation(row=int(row_idx), col=int(cell_idx))
+                    loc = RoadmapLocation(row=int(row_idx), col=int(col_idx))
                     valid_locations.append(loc)
 
         return valid_locations
@@ -69,13 +53,17 @@ class Roadmap:
 
         logger.debug("Constructing map data ...")
 
-        dimensions = [len(self.array), len(self.array[0])]
-        obstacles = []
+        # Parse dimensions
+        row_count = len(self.array)
+        col_count = len(self.array[0])
+        dimensions = [row_count, col_count]
 
+        # Parse obstacles
+        obstacles = []
         for row_idx, row in enumerate(self.array):
-            for cell_idx, cell in enumerate(row):
+            for col_idx, cell in enumerate(row):
                 if int(cell) == 9:
-                    obstacles.append([int(cell_idx), int(row_idx)])
+                    obstacles.append([int(row_idx), int(col_idx)])
 
         map_data = {
             "dimensions": dimensions,

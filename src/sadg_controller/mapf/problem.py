@@ -66,7 +66,8 @@ class MAPFProblem:
             text=True,
         )
 
-        del result
+        if result.stdout == "Planning NOT successful!\n":
+            logger.error("Planning not successful! Cannot proceed.")
 
         # read solution
         solution = read_yaml(solution_file)
