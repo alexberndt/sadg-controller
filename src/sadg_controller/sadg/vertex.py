@@ -32,6 +32,9 @@ class Vertex:
     def get_goal_time(self) -> float:
         return time(self.plan_tuples[-1])
 
+    def get_statu(self) -> Status:
+        return self.status
+
     def __repr__(self):
         # return f"Vertex(agent_id={self.agent_id}, plan_tuples={self.plan_tuples}, status={self.status})"
         return f"Vertex({self.agent_id}, [{self.plan_tuples[0]},..., {self.plan_tuples[-1]}], {self.status})"

@@ -17,7 +17,7 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
 
-    sadg.plot()
+    sadg.plot(title="Startin SADG")
 
     del sadg
     del se_adg

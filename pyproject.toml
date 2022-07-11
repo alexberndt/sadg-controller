@@ -10,6 +10,8 @@ python = "^3.9"
 mip = "^1.14.0"
 PyYAML = "^6.0"
 pandas = "^1.4.3"
+networkx = "^2.8.4"
+matplotlib = "^3.5.2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
