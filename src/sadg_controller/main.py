@@ -20,17 +20,17 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     del sadg
     del se_adg
 
-    for t in range(1, 1000):
+    for t in range(1, 1):
 
         print(f"t = {t}")
 
 
 if __name__ == "__main__":
 
-    roadmap_name = "warehouse"
+    roadmap_name = "test"
     roadmap_file = f"data/roadmaps/{roadmap_name}/roadmap.csv"
     dimensions_file = f"data/roadmaps/{roadmap_name}/dimensions.yaml"
 
-    agv_count = 60
+    agv_count = 5
 
     main(roadmap_file, dimensions_file, agv_count)

@@ -17,30 +17,39 @@ class Vertex:
         self.plan_tuples = plan_tuples if type(plan_tuples) == list else [plan_tuples]
         self.status = status
 
+        self.start_loc = loc(self.plan_tuples[0])
+        self.start_time = time(self.plan_tuples[0])
+        self._update()
+
     def append_plan_tuple(self, location: PlanTuple):
         self.plan_tuples.append(location)
+        self._update()
 
     def get_start_loc(self) -> Location:
-        return loc(self.plan_tuples[0])
+        return self.start_loc
 
     def get_goal_loc(self) -> Location:
-        return loc(self.plan_tuples[-1])
+        return self.goal_loc
 
     def get_start_time(self) -> float:
-        return time(self.plan_tuples[0])
+        return self.start_time
 
     def get_goal_time(self) -> float:
-        return time(self.plan_tuples[-1])
+        return self.goal_time
 
-    def get_statu(self) -> Status:
+    def get_status(self) -> Status:
         return self.status
+
+    def _update(self) -> None:
+        self.goal_loc = loc(self.plan_tuples[-1])
+        self.goal_time = time(self.plan_tuples[-1])
 
     def __repr__(self):
         # return f"Vertex(agent_id={self.agent_id}, plan_tuples={self.plan_tuples}, status={self.status})"
-        return f"Vertex({self.agent_id}, [{self.plan_tuples[0]},..., {self.plan_tuples[-1]}], {self.status})"
+        return f"Vertex({self.agent_id}, [{self.start_loc},..., {self.goal_loc}], {self.status})"
 
     def __str__(self):
-        return f"Vertex({self.agent_id}, [{self.plan_tuples[0]},..., {self.plan_tuples[-1]}], {self.status})"
+        return f"Vertex({self.agent_id}, [{self.start_loc},..., {self.goal_loc}], {self.status})"
 
 
 def loc(p: PlanTuple) -> Location:

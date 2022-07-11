@@ -66,6 +66,7 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                 v = Vertex(agent_id, p, Status.STAGED)
 
     # Add switchable dependency pairs (Alg. 2, lines 14 - 24)
+    cnt = 1
     for agent_i, vertices_i in V_sadg.items():
         for agent_j, vertices_j in V_sadg.items():
 
@@ -88,6 +89,8 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             rev = Dependency(v_j_l_plus_1, v_i_k_minus_1)
                             switch = DependencySwitch(fwd, rev, False)
                             E_switchable[agent_i].append(switch)
+                            print(f"{cnt} - created switchable dependency")
+                            cnt += 1
 
                         except IndexError:
                             logger.debug(
