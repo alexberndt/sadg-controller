@@ -1,12 +1,12 @@
 from typing import Dict, List
 
-import matplotlib.pyplot as plt
-import networkx as nx
-
 from sadg_controller.sadg.dependency import Dependency
 from sadg_controller.sadg.dependency_switch import DependencySwitch
 from sadg_controller.sadg.vertex import Vertex
 from sadg_controller.se_adg.se_adg import SE_ADG
+
+# import matplotlib.pyplot as plt
+# import networkx as nx
 
 
 class SADG:
@@ -38,31 +38,31 @@ class SADG:
 
         return SE_ADG(self.vertices, active_dependencies)
 
-    def plot(self, title: str) -> None:
-        """Plots the SADG."""
+    # def plot(self, title: str) -> None:
+    #     """Plots the SADG."""
 
-        G = nx.DiGraph()
+    #     G = nx.DiGraph()
 
-        # Add vertices
-        nodes = []
-        for agent_id, vertices in self.vertices.items():
+    #     # Add vertices
+    #     nodes = []
+    #     for agent_id, vertices in self.vertices.items():
 
-            for idx, v in enumerate(vertices):
-                v_name = f"v_{agent_id.split('_')[-1]}_{idx}"
-                v_data = {"color": "red"}  # v.get_status()
-                nodes.append((v_name, v_data))
+    #         for idx, v in enumerate(vertices):
+    #             v_name = f"v_{agent_id.split('_')[-1]}_{idx}"
+    #             v_data = {"color": "red"}  # v.get_status()
+    #             nodes.append((v_name, v_data))
 
-        G.add_nodes_from(nodes)
+    #     G.add_nodes_from(nodes)
 
-        # Add dependencies
-        edges = []
-        for agent_id, dependencies in self.regular_deps.items():
-            for idx, e in enumerate(dependencies):
+    #     # Add dependencies
+    #     edges = []
+    #     for agent_id, dependencies in self.regular_deps.items():
+    #         for idx, e in enumerate(dependencies):
 
-                e_name = str(e)
-                edges.append(e_name)
+    #             e_name = str(e)
+    #             edges.append(e_name)
 
-        nx.draw(G)
-        plt.show()
+    #     nx.draw(G)
+    #     plt.show()
 
-        print("test")
+    #     print("test")

@@ -12,12 +12,10 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     goals = roadmap.random_locations(agv_count)
 
     problem = MAPFProblem(roadmap, starts, goals)
-    plan = problem.solve(suboptimality_factor=2.5)
+    plan = problem.solve(suboptimality_factor=1.8)
 
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
-
-    sadg.plot(title="Startin SADG")
 
     del sadg
     del se_adg
@@ -29,10 +27,10 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
 
 if __name__ == "__main__":
 
-    roadmap_name = "test"
+    roadmap_name = "warehouse"
     roadmap_file = f"data/roadmaps/{roadmap_name}/roadmap.csv"
     dimensions_file = f"data/roadmaps/{roadmap_name}/dimensions.yaml"
 
-    agv_count = 16
+    agv_count = 60
 
     main(roadmap_file, dimensions_file, agv_count)

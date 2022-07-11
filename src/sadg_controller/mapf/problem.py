@@ -67,7 +67,8 @@ class MAPFProblem:
         )
 
         if result.stdout == "Planning NOT successful!\n":
-            logger.error("Planning not successful! Cannot proceed.")
+            logger.error("Planning not successful!")
+            raise RuntimeError("MAPF Planning not successful!")
 
         # read solution
         solution = read_yaml(solution_file)
