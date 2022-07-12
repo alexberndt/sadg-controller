@@ -27,10 +27,10 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
 
 if __name__ == "__main__":
 
-    roadmap_name = "test"
+    roadmap_name = "warehouse"
     roadmap_file = f"data/roadmaps/{roadmap_name}/roadmap.csv"
     dimensions_file = f"data/roadmaps/{roadmap_name}/dimensions.yaml"
 
-    agv_count = 19
+    agv_count = 70
 
     main(roadmap_file, dimensions_file, agv_count)
