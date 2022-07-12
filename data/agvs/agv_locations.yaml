@@ -1,0 +1,13 @@
+agents:
+-   goal: [29, 2]
+    name: agent0
+    start: [3, 1]
+-   goal: [5, 24]
+    name: agent1
+    start: [3, 31]
+-   goal: [14, 6]
+    name: agent2
+    start: [25, 29]
+-   goal: [24, 14]
+    name: agent3
+    start: [4, 21]
