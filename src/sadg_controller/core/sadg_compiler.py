@@ -3,6 +3,7 @@ from logging import getLogger
 from sadg_controller.core.geometry import intersects
 from sadg_controller.mapf.plan import Plan
 from sadg_controller.sadg.dependency import Dependency
+from sadg_controller.sadg.dependency_group import DependencyGroup
 from sadg_controller.sadg.dependency_switch import DependencySwitch
 from sadg_controller.sadg.sadg import SADG
 from sadg_controller.sadg.status import Status
@@ -43,9 +44,10 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
         V_sadg[agent_id] = []
         E_regular[agent_id] = []
         E_switchable[agent_id] = []
+        i = 0
 
         p = next(P_i)
-        v = Vertex(agent_id, p, Status.STAGED)
+        v = Vertex(agent_id, p, i, Status.STAGED)
         v_prev = None
 
         for p_k in P_i:
@@ -63,10 +65,10 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                 # reset
                 v_prev = v
                 p = p_k
-                v = Vertex(agent_id, p, Status.STAGED)
+                i += 1
+                v = Vertex(agent_id, p, i, Status.STAGED)
 
     # Add switchable dependency pairs (Alg. 2, lines 14 - 24)
-    cnt = 1
     for agent_i, vertices_i in V_sadg.items():
         for agent_j, vertices_j in V_sadg.items():
 
@@ -89,8 +91,6 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             rev = Dependency(v_j_l_plus_1, v_i_k_minus_1)
                             switch = DependencySwitch(fwd, rev, False)
                             E_switchable[agent_i].append(switch)
-                            print(f"{cnt} - created switchable dependency")
-                            cnt += 1
 
                         except IndexError:
                             logger.debug(
@@ -99,4 +99,20 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             )
                             E_regular[agent_i].append(fwd)
 
-    return SADG(V_sadg, E_regular, E_switchable)
+    # Group dependencies for switching
+    E_groups = {}
+    for agent_i, switches in E_switchable.items():
+        print(f"Agent: {agent_i}")
+        E_groups[agent_i] = []
+        for switch in switches:
+            print(
+                f"{switch.fwd.tail.get_agent_id()} {switch.fwd.tail.get_vertex_idx()} -> {switch.fwd.head.get_agent_id()} {switch.fwd.head.get_vertex_idx()}"
+            )
+
+            if len(E_groups[agent_i]) == 0:
+                E_groups[agent_i].append(DependencyGroup(switch))
+            else:
+                if not E_groups[agent_i][-1].append_switch(switch):
+                    E_groups[agent_i].append(DependencyGroup(switch))
+
+    return SADG(V_sadg, E_regular, E_groups)
