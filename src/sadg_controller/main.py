@@ -31,6 +31,6 @@ if __name__ == "__main__":
     roadmap_file = f"data/roadmaps/{roadmap_name}/roadmap.csv"
     dimensions_file = f"data/roadmaps/{roadmap_name}/dimensions.yaml"
 
-    agv_count = 10
+    agv_count = 19
 
     main(roadmap_file, dimensions_file, agv_count)

@@ -115,4 +115,18 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                 if not E_groups[agent_i][-1].append_switch(switch):
                     E_groups[agent_i].append(DependencyGroup(switch))
 
+    # Create summary
+    switch_cnt = 0
+    for agent_i, switches in E_switchable.items():
+        for switch in switches:
+            switch_cnt += 1
+
+    group_cnt = 0
+    for agent_i, groups in E_groups.items():
+        for group in groups:
+            group_cnt += 1
+
+    print(f"Switches: {switch_cnt}")
+    print(f"Groups:   {group_cnt}")
+
     return SADG(V_sadg, E_regular, E_groups)
