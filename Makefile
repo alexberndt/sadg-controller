@@ -14,3 +14,6 @@ dev:
 	cd third_party/libMultiRobotPlanning/build
 	cmake ..
 	make
+
+docker:
+	docker build -t sadg-controller:dev .
