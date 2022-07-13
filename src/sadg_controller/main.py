@@ -1,10 +1,14 @@
+import rospy
+
 from sadg_controller.core.sadg_compiler import sadg_compiler
 from sadg_controller.core.se_adg_compiler import se_adg_compiler
 from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
 
 
-def main(roadmap_file: str, dimensions_file: str, agv_count: int):
+def simulation(roadmap_file: str, dimensions_file: str, agv_count: int):
+
+    rospy.init_node("simulation")
 
     roadmap = Roadmap(roadmap_file, dimensions_file)
 
@@ -20,8 +24,12 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     del sadg
     del se_adg
 
-    for t in range(1, 2):
-        print(f"t = {t}")
+    rate = rospy.Rate(10)
+    while not rospy.is_shutdown():
+
+        rospy.loginfo("Hello from the simulation ...")
+
+        rate.sleep()
 
 
 if __name__ == "__main__":
@@ -32,4 +40,8 @@ if __name__ == "__main__":
 
     agv_count = 70
 
-    main(roadmap_file, dimensions_file, agv_count)
+    try:
+        simulation(roadmap_file, dimensions_file, agv_count)
+    except rospy.ROSInterrupException:
+        rospy.logwarn("simulation terminated")
+        pass
