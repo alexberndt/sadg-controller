@@ -10,16 +10,29 @@ class Vertex:
         self,
         agent_id: str,
         plan_tuples: Union[List[PlanTuple], PlanTuple],
+        vertex_idx: int,
         status: Status = Status.STAGED,
     ) -> None:
 
         self.agent_id = agent_id
+        self.vertex_idx = vertex_idx
+        self.shorthand = f"v_{self.agent_id}_{self.vertex_idx}"
+
         self.plan_tuples = plan_tuples if type(plan_tuples) == list else [plan_tuples]
         self.status = status
 
         self.start_loc = loc(self.plan_tuples[0])
         self.start_time = time(self.plan_tuples[0])
         self._update()
+
+    def get_shorthand(self) -> str:
+        return self.shorthand
+
+    def get_vertex_idx(self) -> int:
+        return self.vertex_idx
+
+    def get_agent_id(self) -> int:
+        return self.agent_id
 
     def append_plan_tuple(self, location: PlanTuple):
         self.plan_tuples.append(location)
