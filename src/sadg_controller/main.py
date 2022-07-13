@@ -20,8 +20,7 @@ def main(roadmap_file: str, dimensions_file: str, agv_count: int):
     del sadg
     del se_adg
 
-    for t in range(1, 1):
-
+    for t in range(1, 2):
         print(f"t = {t}")
 
 
