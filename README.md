@@ -39,6 +39,18 @@ make
 
 ## Examples
 
+To start a simulation, run the following
+
+#### Terminal 1
+```bash
+roscore
+```
+
+#### Terminal 2
+```bash
+python3 src/sadg_controller/main.py
+```
+
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)

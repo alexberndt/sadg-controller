@@ -1,5 +1,7 @@
 from logging import getLogger
 
+import rospy
+
 from sadg_controller.core.geometry import intersects
 from sadg_controller.mapf.plan import Plan
 from sadg_controller.sadg.dependency import Dependency
@@ -93,7 +95,7 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             E_switchable[agent_i].append(switch)
 
                         except IndexError:
-                            logger.debug(
+                            rospy.logdebug(
                                 f"k-1={k - 1}, l+1={l + 1} are not valid indexes."
                                 "Cannot construct dependency switch."
                             )
@@ -102,10 +104,10 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
     # Group dependencies for switching
     E_groups = {}
     for agent_i, switches in E_switchable.items():
-        print(f"Agent: {agent_i}")
+        rospy.loginfo(f"Agent: {agent_i}")
         E_groups[agent_i] = []
         for switch in switches:
-            print(
+            rospy.logdebug(
                 f"{switch.fwd.tail.get_agent_id()} {switch.fwd.tail.get_vertex_idx()} -> {switch.fwd.head.get_agent_id()} {switch.fwd.head.get_vertex_idx()}"
             )
 
@@ -126,7 +128,7 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
         for _ in groups:
             group_cnt += 1
 
-    print(f"Switches: {switch_cnt}")
-    print(f"Groups:   {group_cnt}")
+    rospy.loginfo(f"Switches: {switch_cnt}")
+    rospy.loginfo(f"Groups:   {group_cnt}")
 
     return SADG(V_sadg, E_regular, E_groups)
