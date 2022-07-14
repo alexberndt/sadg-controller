@@ -14,4 +14,6 @@ COPY poetry.lock .
 
 RUN pip install .
 
+RUN source /opt/ros/noetic/setup.bash
+
 # RUN python3 src/sadg_controller/main.py

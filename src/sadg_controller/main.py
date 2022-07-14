@@ -40,8 +40,8 @@ if __name__ == "__main__":
 
     agv_count = 70
 
-    try:
-        simulation(roadmap_file, dimensions_file, agv_count)
-    except rospy.ROSInterrupException:
-        rospy.logwarn("simulation terminated")
-        pass
+    # try:
+    simulation(roadmap_file, dimensions_file, agv_count)
+    # except Exception:
+    #     rospy.logwarn("simulation terminated")
+    #     pass
