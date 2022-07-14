@@ -256,6 +256,17 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "poetry-lock-package"
+version = "0.4.4"
+description = "Poetry lock package generator"
+category = "dev"
+optional = false
+python-versions = ">=3.6.2,<4.0.0"
+
+[package.dependencies]
+toml = ">=0.10.1,<0.11.0"
+
+[[package]]
 name = "pre-commit"
 version = "2.20.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -471,7 +482,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "98fe1675d1fd87ceb462c542d7ed66f30014ac5835e3243afcc84be7c6c495b7"
+content-hash = "a73a613bed282aa7cd830f58c977e4fee76aa1a39a16dbed7e88fa30308cbaab"
 
 [metadata.files]
 atomicwrites = []
@@ -497,6 +508,7 @@ pandas = []
 pathspec = []
 platformdirs = []
 pluggy = []
+poetry-lock-package = []
 pre-commit = []
 py = []
 pycodestyle = []
