@@ -19,5 +19,5 @@ setup:
 dev: setup
 	poetry run pre-commit install
 
-docker: setup
+docker:
 	docker build -t sadg-controller:dev .

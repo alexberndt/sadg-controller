@@ -24,7 +24,7 @@ def simulation(roadmap_file: str, dimensions_file: str, agv_count: int):
     del sadg
     del se_adg
 
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(1)
     while not rospy.is_shutdown():
 
         rospy.loginfo("Hello from the simulation ...")
