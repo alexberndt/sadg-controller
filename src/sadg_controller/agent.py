@@ -7,10 +7,10 @@ logger = getLogger(__name__)
 
 
 class Agent:
-    def __init__(self, uuid: str) -> None:
+    def __init__(self) -> None:
         rospy.init_node("agent")
         self.ns = rospy.get_param("~agent_ns")
-        self.uuid = uuid
+        self.uuid = rospy.get_param("~uuid")
 
 
     def start(self, rate: int = 10):
@@ -23,4 +23,4 @@ class Agent:
         
 
 if __name__ == "__main__":
-    Agent("cn3478xk").start(15)
+    Agent().start(15)
