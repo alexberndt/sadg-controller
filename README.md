@@ -41,6 +41,12 @@ make
 
 To start a simulation, run the following
 
+#### Build the ROS Packge
+
+```bash
+catkin_make
+```
+
 #### Terminal 1
 ```bash
 roscore

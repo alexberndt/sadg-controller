@@ -1,0 +1,10 @@
+<launch>
+
+    <node name="agent_1" pkg="sadg_controller" type="agent.py" output="screen">
+        <param name="agent_ns" value="agent_1"/>
+    </node>
+    <!-- <node name="agent_2" pkg="sadg_controller" type="agent/agent.py" output="screen">
+        <param name="agent_ns" value="agent_2"/>
+    </node> -->
+
+</launch>
