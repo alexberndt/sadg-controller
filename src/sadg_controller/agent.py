@@ -13,14 +13,16 @@ class Agent:
         self.uuid = rospy.get_param("~uuid")
 
 
-    def start(self, rate: int = 10):
+    def start(self, rate: int = 30):
 
         rate = rospy.Rate(rate)
         while not rospy.is_shutdown():
 
-            rospy.loginfo(f"Agent agent_{self.uuid} running ...")
+            
+
+            rospy.loginfo(f"Agent {self.uuid} running ...")
             rate.sleep()
         
 
 if __name__ == "__main__":
-    Agent().start(15)
+    Agent().start(30)
