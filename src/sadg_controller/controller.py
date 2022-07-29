@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 
 import rospy
+from geometry_msgs.msg import Pose, Point, Quaternion
+
 from sadg_controller.comms import Comms
 from sadg_controller.core.sadg_compiler import sadg_compiler
 from sadg_controller.core.se_adg_compiler import se_adg_compiler
 from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
+from sadg_controller.sadg.vertex import Vertex
 
 
 def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
 
     rospy.init_node("controller")
+    rospy.loginfo("Hello from the controller ...")
 
     roadmap = Roadmap(roadmap_file, dimensions_file)
 
@@ -23,20 +27,22 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
 
-    comms_list = [Comms("agent_1")]
+    agents = ["agent1", "agent2"]
 
-    del sadg
+    comms_list = [Comms(agent_id) for agent_id in agents]
+
     del se_adg
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
 
-        rospy.loginfo("Hello from the controller ...")
-
-        for comms in comms_list:
-
-            comms.publish(1,2,3)
-
+        for agent_id, comms in zip(agents, comms_list):
+            
+            vertex: Vertex = sadg.get_agent_vertex(agent_id)
+            
+            rospy.loginfo(f"{agent_id}: {vertex.get_start_loc()} -> {vertex.get_goal_loc()}")
+            
+            comms.publish(Pose(Point(1,2,0), Quaternion(0,0,0,1)))
 
         rate.sleep()
 
