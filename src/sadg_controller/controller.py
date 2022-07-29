@@ -27,7 +27,7 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
 
-    agents = ["agent1", "agent2"]
+    agents = ["agent0", "agent1"]
 
     comms_list = [Comms(agent_id) for agent_id in agents]
 
@@ -41,8 +41,9 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
             vertex: Vertex = sadg.get_agent_vertex(agent_id)
             
             rospy.loginfo(f"{agent_id}: {vertex.get_start_loc()} -> {vertex.get_goal_loc()}")
-            
-            comms.publish(Pose(Point(1,2,0), Quaternion(0,0,0,1)))
+
+            l = vertex.get_goal_loc()
+            comms.publish(Pose(Point(l.x,l.y,0), Quaternion(0,0,0,1)))
 
         rate.sleep()
 
