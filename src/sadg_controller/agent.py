@@ -20,18 +20,23 @@ class Agent:
         self.pub_link = f"/{self.ns}/current"
         self.publisher = rospy.Publisher(self.pub_link, Pose, queue_size=1000)
 
+        self.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
+
 
     def start(self, rate: int = 30):
         rate = rospy.Rate(rate)
         while not rospy.is_shutdown():
 
-            rospy.loginfo(f"Agent {self.uuid} running ...")
+            # rospy.loginfo(f"Agent {self.uuid} running ...")
             rate.sleep()
 
     
     def callback(self, pose: Pose) -> None:
         """Callback for subscriber. """
         rospy.loginfo(f"{self.sub_link}: Callback: {parse_pose(pose)}")
+        rospy.loginfo(f"Updating pose {parse_pose(pose)}")
+        self.pose = pose
+        self.publish(pose)
 
 
     def publish(self, pose: Pose) -> None:

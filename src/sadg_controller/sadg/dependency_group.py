@@ -76,5 +76,7 @@ class DependencyGroup:
             print("single")
             return False
 
-    def get_active(self) -> List[Dependency]:
-        return None
+
+    def switch(self) -> None:
+        for dependency in self.dependencies:
+            dependency.switch()

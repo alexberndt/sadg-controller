@@ -23,6 +23,10 @@ class Vertex:
 
         self.start_loc = loc(self.plan_tuples[0])
         self.start_time = time(self.plan_tuples[0])
+
+        # List of dependencies pointing TO this vertex
+        self.dependencies = [] 
+        self.next_vertex = None
         self._update()
 
     def get_shorthand(self) -> str:
@@ -52,6 +56,29 @@ class Vertex:
 
     def get_status(self) -> Status:
         return self.status
+
+    def set_next(self, vertex) -> None:
+        self.next_vertex = vertex
+
+    def get_next(self):
+        return self.next_vertex
+
+    def add_dependency(self, dependency) -> None:
+        self.dependencies.append(dependency)
+
+
+    def can_execute(self) -> bool:
+        """Checks if vertex can be executed or not.
+        
+        Checks if _all_ tail vertices of _active_ dependencies pointing to this vertex are completed.
+        If so, this vertex can be executed, otherwise not.
+        """
+        for dependency in self.dependencies:
+            if dependency.is_active():
+                if dependency.get_tail_status() is not Status.COMPLETED:
+                    return False
+        return True
+
 
     def _update(self) -> None:
         self.goal_loc = loc(self.plan_tuples[-1])

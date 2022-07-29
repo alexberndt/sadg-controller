@@ -18,5 +18,10 @@ class DependencySwitch:
     def get_active(self) -> Dependency:
         return self.fwd if not self.b else self.rev
 
+    def switch(self) -> None:
+        """Switch fwd/rev dependencies to (in)active."""
+        self.fwd.switch()
+        self.rev.switch()
+
     def __repr__(self) -> str:
         return f"DependencySwitch(fwd={self.fwd}, rev={self.rev})"

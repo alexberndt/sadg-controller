@@ -8,7 +8,6 @@ from sadg_controller.core.sadg_compiler import sadg_compiler
 from sadg_controller.core.se_adg_compiler import se_adg_compiler
 from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
-from sadg_controller.sadg.vertex import Vertex
 
 
 def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
@@ -27,23 +26,33 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
 
-    agents = ["agent0", "agent1"]
+    agents_comms = [
+        Comms("agent0", sadg.get_agent_vertex("agent0")),
+        Comms("agent1", sadg.get_agent_vertex("agent1")),
+    ]
 
-    comms_list = [Comms(agent_id) for agent_id in agents]
-
+    
     del se_adg
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
+        
+        # Loop through each agent and communications
+        for agent_comms in agents_comms:
 
-        for agent_id, comms in zip(agents, comms_list):
-            
-            vertex: Vertex = sadg.get_agent_vertex(agent_id)
-            
-            rospy.loginfo(f"{agent_id}: {vertex.get_start_loc()} -> {vertex.get_goal_loc()}")
+            v = agent_comms.get_curr_vertex()
+        
+            rospy.loginfo(f"{agent_comms.get_agent_id()} : {v.get_start_loc()} -> {v.get_goal_loc()}")
+            goal = v.get_goal_loc()
 
-            l = vertex.get_goal_loc()
-            comms.publish(Pose(Point(l.x,l.y,0), Quaternion(0,0,0,1)))
+            rospy.loginfo(f"Vertex status: {v.status}") 
+            rospy.loginfo(f"Vertex next: {v.get_next()}")  
+            rospy.loginfo(f"Can execute?: {v.can_execute()}") 
+
+            if v.can_execute():
+                agent_comms.publish(Pose(Point(goal.x,goal.y,0), Quaternion(0,0,0,1)))
+            else:
+                rospy.logwarn(f"{v} Cannot execute!")
 
         rate.sleep()
 
