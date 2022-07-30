@@ -32,7 +32,7 @@ def simulation():
     agent_ids = [f"agent{id}" for id in range(agent_count)]
     _ = [Agent(id, ax, color) for id, color in zip(agent_ids, colors)]
 
-    rate = rospy.Rate(1)
+    rate = rospy.Rate(5)
     while not rospy.is_shutdown():
 
         fig.canvas.draw()
