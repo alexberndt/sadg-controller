@@ -27,7 +27,7 @@ class Comms:
 
     def callback(self, pose: Pose) -> None:
         """Callback for subscriber. """
-        rospy.loginfo(f"{self.sub_link}: Callback: {parse_pose(pose)}")
+        rospy.logdebug(f"{self.sub_link}: Callback: {parse_pose(pose)}")
 
         goal_x = self.current_vertex.get_goal_loc().x
         goal_y = self.current_vertex.get_goal_loc().y
@@ -42,12 +42,12 @@ class Comms:
             if self.current_vertex.has_next():
                 self.current_vertex = self.current_vertex.get_next()
             else:
-                rospy.logwarn(f"{self.ns}: Last vertex reached ...")
+                rospy.logwarn(f"{self.ns} : Last vertex reached ...")
     
 
     def publish(self, pose: Pose) -> None:
         """Publish Pose. """
-        rospy.loginfo(f"{self.pub_link}: Publishing: {parse_pose(pose)}")
+        rospy.logdebug(f"{self.pub_link}: Publishing: {parse_pose(pose)}")
         self.publisher.publish(pose)
 
 

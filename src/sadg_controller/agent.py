@@ -33,15 +33,15 @@ class Agent:
     
     def callback(self, pose: Pose) -> None:
         """Callback for subscriber. """
-        rospy.loginfo(f"{self.sub_link}: Callback: {parse_pose(pose)}")
-        rospy.loginfo(f"Updating pose {parse_pose(pose)}")
+        rospy.logdebug(f"{self.sub_link}: Callback: {parse_pose(pose)}")
+        rospy.loginfo(f"{self.ns} : {parse_pose(pose)}")
         self.pose = pose
         self.publish(pose)
 
 
     def publish(self, pose: Pose) -> None:
-        """Publish Pose"""
-        rospy.loginfo(f"{self.pub_link}: Publishing: {parse_pose(pose)}")
+        """Publish Pose. """
+        rospy.logdebug(f"{self.pub_link}: Publishing: {parse_pose(pose)}")
         self.publisher.publish(pose)
 
 

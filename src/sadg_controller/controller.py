@@ -29,8 +29,9 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
     agents_comms = [
         Comms("agent0", sadg.get_agent_vertex("agent0")),
         Comms("agent1", sadg.get_agent_vertex("agent1")),
+        Comms("agent2", sadg.get_agent_vertex("agent2")),
+        Comms("agent3", sadg.get_agent_vertex("agent3")),
     ]
-
     
     del se_adg
 
@@ -42,18 +43,21 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
 
             v = agent_comms.get_curr_vertex()
         
-            rospy.loginfo(f"{agent_comms.get_agent_id()} : {v.get_start_loc()} -> {v.get_goal_loc()}")
+            msg = f"{agent_comms.get_agent_id()} : {v.get_goal_loc()}"
             goal = v.get_goal_loc()
 
-            rospy.loginfo(f"Vertex status: {v.status}") 
-            rospy.loginfo(f"Vertex next: {v.get_next()}")  
-            rospy.loginfo(f"Can execute?: {v.can_execute()}") 
+            # rospy.logdebug(f"Vertex status: {v.status}") 
+            # rospy.logdebug(f"Vertex next: {v.get_next()}")  
+            # rospy.logdebug(f"Can execute?: {v.can_execute()}") 
 
             if v.can_execute():
                 agent_comms.publish(Pose(Point(goal.x,goal.y,0), Quaternion(0,0,0,1)))
             else:
-                rospy.logwarn(f"{v} Cannot execute!")
+                msg = f"{agent_comms.get_agent_id()} : Cannot execute!"
+            rospy.loginfo(msg)
 
+
+        rospy.loginfo("--------------------------------------------------")
         rate.sleep()
 
 
@@ -63,6 +67,6 @@ if __name__ == "__main__":
     roadmap_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/roadmap.csv"
     dimensions_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/dimensions.yaml"
 
-    agv_count = 2
+    agv_count = 4
 
     controller(roadmap_file, dimensions_file, agv_count)
