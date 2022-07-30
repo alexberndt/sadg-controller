@@ -47,14 +47,16 @@ To start a simulation, run the following
 catkin_make
 ```
 
-#### Terminal 1
+#### Terminal 1: Run the Controller
 ```bash
-roscore
+source devel/setup.zsh
+roslaunch launch/8/controller.launch
 ```
 
-#### Terminal 2
+#### Terminal 2: Run the Agent Communications
 ```bash
-python3 src/sadg_controller/main.py
+source devel/setup.zsh
+roslaunch launch/8/agents.launch
 ```
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
