@@ -54,7 +54,7 @@ class MAPFProblem:
         # solve MAPF using the generated yaml file
         solution_file = f"{self.tmp_dir}/solution.yaml"
         cmd = [
-            "third_party/libMultiRobotPlanning/build/ecbs",
+            "/home/alex/github_repos/sadg-controller/third_party/libMultiRobotPlanning/build/ecbs",
             "-i",
             input_file,
             "-o",

@@ -38,6 +38,9 @@ class SADG:
 
         return SE_ADG(self.vertices, active_dependencies)
 
+    def get_agent_vertex(self, agent_id: str) -> Vertex:
+        return self.vertices[agent_id][0]
+
     # def plot(self, title: str) -> None:
     #     """Plots the SADG."""
 

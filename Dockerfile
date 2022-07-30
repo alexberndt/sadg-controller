@@ -11,13 +11,9 @@ WORKDIR /home
 SHELL ["/bin/bash", "-c"]
 
 COPY third_party third_party
-# RUN mkdir third_party/libMultiRobotPlanning/build
-# RUN cd third_party/libMultiRobotPlanning/build
-# RUN cmake ..
-# RUN make
-
 COPY src src
 COPY data data
+COPY launch launch
 COPY dist/*.whl dist/
 COPY pyproject.toml .
 COPY poetry.lock .
@@ -25,7 +21,8 @@ COPY poetry.lock .
 RUN pip install --no-cache-dir dist/*.whl \
     && rm -rf dist/*.whl
 
-RUN source /opt/ros/noetic/setup.bash
+RUN source /opt/ros/noetic/setup.bash && catkin_make
+
 
 # CMD ["python3", "-c", "import sadg_controller; print('Hello', sadg_controller)"]
 

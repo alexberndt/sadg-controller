@@ -8,3 +8,5 @@ __pycache__
 tmp
 .python-version
 dist
+build
+devel
