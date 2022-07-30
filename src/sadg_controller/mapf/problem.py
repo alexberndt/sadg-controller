@@ -15,7 +15,7 @@ from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 yaml.Dumper.ignore_aliases = lambda *args: True
 logger = getLogger(__name__)
 
-project_root = pathlib.Path(__file__).parents[2].resolve()
+project_root = pathlib.Path(__file__).parents[3].resolve()
 
 
 class MAPFProblem:
@@ -54,7 +54,7 @@ class MAPFProblem:
         # solve MAPF using the generated yaml file
         solution_file = f"{self.tmp_dir}/solution.yaml"
         cmd = [
-            "/home/alex/github_repos/sadg-controller/third_party/libMultiRobotPlanning/build/ecbs",
+            f"{project_root}/third_party/libMultiRobotPlanning/build/ecbs",
             "-i",
             input_file,
             "-o",
