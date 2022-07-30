@@ -1,6 +1,7 @@
 import csv
 import random
 from logging import getLogger
+from pathlib import Path
 from typing import Dict, List
 
 import yaml
@@ -8,13 +9,18 @@ import yaml
 from sadg_controller.mapf.roadmap_location import RoadmapLocation
 
 logger = getLogger(__name__)
+dir_path = Path(__file__).parents[3].resolve()
 random.seed(10)
 
 
 class Roadmap:
-    def __init__(self, map_csv_file: str, dimensions_yaml_file: str) -> None:
-        self.array = self._read_roadmap_csv(map_csv_file)
-        self.dimensions = self._read_dimensions(dimensions_yaml_file)
+    def __init__(self, roadmap_name: str) -> None:
+
+        roadmap_file = f"/{dir_path}/data/roadmaps/{roadmap_name}/roadmap.csv"
+        dimensions_file = f"/{dir_path}/data/roadmaps/{roadmap_name}/dimensions.yaml"
+
+        self.array = self._read_roadmap_csv(roadmap_file)
+        self.dimensions = self._read_dimensions(dimensions_file)
         self.map_data = self._get_map_data()
 
     def random_locations(self, agv_count: int) -> List[RoadmapLocation]:

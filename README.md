@@ -25,7 +25,7 @@ _Our approach significantly reduces the cumulative route completion of agents su
 
 First, ensure you have:
 
-- [Poetry](https://python-poetry.org/docs/) for consistent python dependency management.
+- [Poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer) for consistent python dependency management.
 - [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) for asynchronous inter-agent communication.
 - Linux `apt-get` packages: `g++`, `cmake`, `libboost-program-options-dev`, `libyaml-cpp-dev`, `clang-tidy`, `clang-format`, `doxygen`.
 
