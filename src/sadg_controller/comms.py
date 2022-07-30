@@ -1,4 +1,5 @@
 import rospy
+from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose, Point, Quaternion
@@ -27,10 +28,21 @@ class Comms:
     def callback(self, pose: Pose) -> None:
         """Callback for subscriber. """
         rospy.loginfo(f"{self.sub_link}: Callback: {parse_pose(pose)}")
-        x = self.current_vertex.get_goal_loc().x
-        y = self.current_vertex.get_goal_loc().y
-        if pose.position.x == x and pose.position.y == y:
-            self.current_vertex = self.current_vertex.get_next()
+
+        goal_x = self.current_vertex.get_goal_loc().x
+        goal_y = self.current_vertex.get_goal_loc().y
+        
+        # Check if location is equal to goal position of current vertex
+        if pose.position.x == goal_x and pose.position.y == goal_y:
+
+            # Update status of vertex
+            self.current_vertex.status = Status.COMPLETED
+            
+            # Update next vertex if next vertex exists
+            if self.current_vertex.has_next():
+                self.current_vertex = self.current_vertex.get_next()
+            else:
+                rospy.logwarn(f"{self.ns}: Last vertex reached ...")
     
 
     def publish(self, pose: Pose) -> None:

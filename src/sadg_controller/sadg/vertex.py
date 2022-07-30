@@ -63,6 +63,9 @@ class Vertex:
     def get_next(self):
         return self.next_vertex
 
+    def has_next(self) -> bool:
+        return not self.next_vertex is None
+
     def add_dependency(self, dependency) -> None:
         self.dependencies.append(dependency)
 
