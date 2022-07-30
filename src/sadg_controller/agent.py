@@ -24,24 +24,28 @@ class Agent:
 
         self.pose = Pose(Point(0, 0, 0), Quaternion(0, 0, 0, 1))
 
-    def start(self, rate: int = 30):
+    def start(self, rate: int = 10):
         """Start."""
         rate = rospy.Rate(rate)
         while not rospy.is_shutdown():
+
+            self.publish_current_pose()
             rate.sleep()
 
     def callback(self, pose: Pose) -> None:
-        """Callback for subscriber."""
-        rospy.logdebug(f"{self.sub_link}: Callback: {parse_pose(pose)}")
+        """Callback for subscriber to goal position.
+
+        Args:
+            pose: Goal pose passed in the message.
+        """
         rospy.loginfo(f"{self.ns} : {parse_pose(pose)}")
         self.pose = pose
-        self.publish(pose)
 
-    def publish(self, pose: Pose) -> None:
-        """Publish Pose."""
-        rospy.logdebug(f"{self.pub_link}: Publishing: {parse_pose(pose)}")
-        self.publisher.publish(pose)
+    def publish_current_pose(self) -> None:
+        """Publish current pose."""
+        rospy.logdebug(f"{self.pub_link}: Publishing: {parse_pose(self.pose)}")
+        self.publisher.publish(self.pose)
 
 
 if __name__ == "__main__":
-    Agent().start(30)
+    Agent().start(10)
