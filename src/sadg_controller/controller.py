@@ -10,10 +10,32 @@ from sadg_controller.mapf.roadmap import Roadmap
 from sadg_controller.sadg.status import Status
 
 
-def controller(roadmap_name: str = None, agent_count: int = None, ecbs_w: float = 1.8):
+def controller():
+    """SADG Controller.
+
+    ROS node which initializes a SADG controller based on a roadmap and
+    randomized agent goal/start locations. Once initialized, communication
+    is started with each agent and goal locations sent to each agent based
+    on the SADG dependency graph.
+
+    Initialization:
+        1. Initialize a roadmap given a `roadmap_name`
+        2. Assign randomized start/goal locations for `agent_count` agents
+        3. Define and solve the MAPF problem
+        4. Compile the SADG from the MAPF solution
+        5. Initialize Comms to the `agent_count` agents
+
+    Continuous feedback loop:
+        For each agent, if agent:
+            1. Can execute current vertex, send new goal
+            2. Has no next vertex, agent has reached goal
+            3. Current vertex is blocked by dependencies,
+                no new goal is sent, and agent waits at
+                current location.
+    """
 
     rospy.init_node("controller")
-    rospy.loginfo("Hello from the controller ...")
+    rospy.loginfo("Starting up the controller ...")
 
     roadmap_name = rospy.get_param("~roadmap_name")
     agent_count = rospy.get_param("~agent_count")
@@ -30,43 +52,39 @@ def controller(roadmap_name: str = None, agent_count: int = None, ecbs_w: float 
     sadg = sadg_compiler(plan)
 
     agent_ids = [f"agent{id}" for id in range(agent_count)]
-    agents_comms = [Comms(id, sadg.get_agent_vertex(id)) for id in agent_ids]
+    comms = [Comms(id, sadg.get_agent_vertex(id)) for id in agent_ids]
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
 
         # Loop through each agent and communications
-        for agent_comms in agents_comms:
+        for comm in comms:
 
-            v = agent_comms.get_curr_vertex()
+            # Get vertex which agent is currently busy with
+            curr_vertex = comm.get_curr_vertex()
 
-            # rospy.logdebug(f"Vertex status: {v.status}")
-            # rospy.logdebug(f"Vertex next: {v.get_next()}")
-            # rospy.logdebug(f"Can execute?: {v.can_execute()}")
+            # Check if agent can start executing tasks in vertex.
+            # If so, publish new goal location to agent.
+            if curr_vertex.can_execute() and curr_vertex.status == Status.STAGED:
 
-            msg = f"{agent_comms.get_agent_id()} : "
+                goal = curr_vertex.get_goal_loc()
+                comm.publish(Pose(Point(goal.x, goal.y, 0), Quaternion(0, 0, 0, 1)))
+                msg = f"Goal = {curr_vertex.get_goal_loc()}"
 
-            if v.can_execute() and v.status == Status.STAGED:
-                goal = v.get_goal_loc()
-                agent_comms.publish(
-                    Pose(Point(goal.x, goal.y, 0), Quaternion(0, 0, 0, 1))
-                )
-                msg += f"Goal = {v.get_goal_loc()}"
-            elif not v.has_next():
-                msg += "Last vertex reached"
+            # If there is no next vertex, agent has reached end goal
+            elif not curr_vertex.has_next():
+                msg = "Reached final goal"
+
+            # If there are next vertices, agent is blocked by dependencies
+            # and must wait before proceeding
             else:
-                blocking_vertices = v.get_blocking_vertices()
-                msg += f"Blocked by dependency: {blocking_vertices}"
+                msg = "Blocked by dependencies"
 
-            rospy.logwarn(msg)
+            rospy.logwarn(f"{comm.get_agent_id()} : {msg}")
 
         rospy.loginfo("--------------------------------------------------")
         rate.sleep()
 
 
 if __name__ == "__main__":
-
-    roadmap_name = "warehouse"
-    agent_count = 40
-
-    controller(roadmap_name, agent_count)
+    controller()

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-import rospy
-from geometry_msgs.msg import Pose, Point, Quaternion
 from logging import getLogger
+
+import rospy
+from geometry_msgs.msg import Point, Pose, Quaternion
+
 from sadg_controller.comms import parse_pose
 
 logger = getLogger(__name__)
@@ -20,27 +22,23 @@ class Agent:
         self.pub_link = f"/{self.ns}/current"
         self.publisher = rospy.Publisher(self.pub_link, Pose, queue_size=1000)
 
-        self.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
-
+        self.pose = Pose(Point(0, 0, 0), Quaternion(0, 0, 0, 1))
 
     def start(self, rate: int = 30):
+        """Start."""
         rate = rospy.Rate(rate)
         while not rospy.is_shutdown():
-
-            # rospy.loginfo(f"Agent {self.uuid} running ...")
             rate.sleep()
 
-    
     def callback(self, pose: Pose) -> None:
-        """Callback for subscriber. """
+        """Callback for subscriber."""
         rospy.logdebug(f"{self.sub_link}: Callback: {parse_pose(pose)}")
         rospy.loginfo(f"{self.ns} : {parse_pose(pose)}")
         self.pose = pose
         self.publish(pose)
 
-
     def publish(self, pose: Pose) -> None:
-        """Publish Pose. """
+        """Publish Pose."""
         rospy.logdebug(f"{self.pub_link}: Publishing: {parse_pose(pose)}")
         self.publisher.publish(pose)
 
