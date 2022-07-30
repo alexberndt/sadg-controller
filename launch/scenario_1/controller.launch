@@ -1,5 +1,0 @@
-<launch>
-
-    <node name="controller" pkg="sadg_controller" type="controller.py" output="screen"/>
-
-</launch>

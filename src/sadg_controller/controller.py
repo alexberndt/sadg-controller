@@ -11,15 +11,21 @@ from sadg_controller.mapf.roadmap import Roadmap
 from sadg_controller.sadg.status import Status
 
 
-def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
+def controller(roadmap_name: str = None, agent_count: int = None):
 
     rospy.init_node("controller")
     rospy.loginfo("Hello from the controller ...")
 
+    roadmap_name = rospy.get_param("~roadmap_name")
+    agent_count = rospy.get_param("~agent_count")
+
+    roadmap_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/roadmap.csv"
+    dimensions_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/dimensions.yaml"
+
     roadmap = Roadmap(roadmap_file, dimensions_file)
 
-    starts = roadmap.random_locations(agv_count)
-    goals = roadmap.random_locations(agv_count)
+    starts = roadmap.random_locations(agent_count)
+    goals = roadmap.random_locations(agent_count)
 
     problem = MAPFProblem(roadmap, starts, goals)
     plan = problem.solve(suboptimality_factor=1.8)
@@ -27,16 +33,8 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
     sadg = sadg_compiler(plan)
     se_adg = se_adg_compiler(plan)
 
-    agents_comms = [
-        Comms("agent0", sadg.get_agent_vertex("agent0")),
-        Comms("agent1", sadg.get_agent_vertex("agent1")),
-        Comms("agent2", sadg.get_agent_vertex("agent2")),
-        Comms("agent3", sadg.get_agent_vertex("agent3")),
-        Comms("agent4", sadg.get_agent_vertex("agent4")),
-        Comms("agent5", sadg.get_agent_vertex("agent5")),
-        Comms("agent6", sadg.get_agent_vertex("agent6")),
-        Comms("agent7", sadg.get_agent_vertex("agent7")),
-    ]
+    agent_ids = [f"agent{id}" for id in range(agent_count)]
+    agents_comms = [Comms(id, sadg.get_agent_vertex(id)) for id in agent_ids]
     
     del se_adg
 
@@ -73,10 +71,7 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
 
 if __name__ == "__main__":
 
-    roadmap_name = "test"
-    roadmap_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/roadmap.csv"
-    dimensions_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/dimensions.yaml"
+    roadmap_name = "warehouse"
+    agent_count = 40
 
-    agv_count = 8
-
-    controller(roadmap_file, dimensions_file, agv_count)
+    controller(roadmap_name, agent_count)

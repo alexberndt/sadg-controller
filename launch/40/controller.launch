@@ -1,0 +1,8 @@
+<launch>
+
+    <node name="controller" pkg="sadg_controller" type="controller.py" output="screen">
+        <param name="roadmap_name" value="warehouse"/>
+        <param name="agent_count" value="40"/>
+    </node>
+
+</launch>

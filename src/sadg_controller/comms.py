@@ -1,8 +1,7 @@
 import rospy
 from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex
-from std_msgs.msg import String
-from geometry_msgs.msg import Pose, Point, Quaternion
+from geometry_msgs.msg import Pose
 
 class Comms:
     def __init__(self, agent_ns: str, vertex: Vertex):
