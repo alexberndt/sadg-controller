@@ -2,6 +2,7 @@
 
 import rospy
 from geometry_msgs.msg import Pose, Point, Quaternion
+from pathlib import Path
 
 from sadg_controller.comms import Comms
 from sadg_controller.core.sadg_compiler import sadg_compiler
@@ -10,6 +11,7 @@ from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
 from sadg_controller.sadg.status import Status
 
+dir_path = Path(__file__).parents[2].resolve()
 
 def controller(roadmap_name: str = None, agent_count: int = None):
 
@@ -19,8 +21,8 @@ def controller(roadmap_name: str = None, agent_count: int = None):
     roadmap_name = rospy.get_param("~roadmap_name")
     agent_count = rospy.get_param("~agent_count")
 
-    roadmap_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/roadmap.csv"
-    dimensions_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/dimensions.yaml"
+    roadmap_file = f"/{dir_path}/data/roadmaps/{roadmap_name}/roadmap.csv"
+    dimensions_file = f"/{dir_path}/data/roadmaps/{roadmap_name}/dimensions.yaml"
 
     roadmap = Roadmap(roadmap_file, dimensions_file)
 

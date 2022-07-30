@@ -21,13 +21,15 @@ _Our approach significantly reduces the cumulative route completion of agents su
 
 ## Installation Instructions
 
+### Install Dependencies
+
 First, ensure you have:
 
-- [Poetry](https://python-poetry.org/docs/) for consistent python dependency management
-- [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) for asynchronous inter-agent communication
+- [Poetry](https://python-poetry.org/docs/) for consistent python dependency management.
+- [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) for asynchronous inter-agent communication.
 - Linux `apt-get` packages: `g++`, `cmake`, `libboost-program-options-dev`, `libyaml-cpp-dev`, `clang-tidy`, `clang-format`, `doxygen`.
 
-Clone and install this repository
+### Clone Repository
 
 ```bash
 git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
@@ -37,15 +39,17 @@ make
 
 > This repository contains [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning) in [third_party/](third_party/libMultiRobotPlanning/), a library which contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme. libMultiRobotPlanning is compiled from source when running `make`.
 
-## Examples
-
-To start a simulation, run the following
-
-#### Build the ROS Packge
+### Build the ROS Packge
 
 ```bash
 catkin_make
 ```
+
+## Examples
+
+To start a simulation, run the following
+
+
 
 #### Terminal 1: Run the Controller
 ```bash
