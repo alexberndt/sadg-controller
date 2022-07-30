@@ -41,8 +41,6 @@ class Comms:
             # Update next vertex if next vertex exists
             if self.current_vertex.has_next():
                 self.current_vertex = self.current_vertex.get_next()
-            else:
-                rospy.logwarn(f"{self.ns} : Last vertex reached ...")
     
 
     def publish(self, pose: Pose) -> None:

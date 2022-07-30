@@ -31,6 +31,10 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
         Comms("agent1", sadg.get_agent_vertex("agent1")),
         Comms("agent2", sadg.get_agent_vertex("agent2")),
         Comms("agent3", sadg.get_agent_vertex("agent3")),
+        Comms("agent4", sadg.get_agent_vertex("agent4")),
+        Comms("agent5", sadg.get_agent_vertex("agent5")),
+        Comms("agent6", sadg.get_agent_vertex("agent6")),
+        Comms("agent7", sadg.get_agent_vertex("agent7")),
     ]
     
     del se_adg
@@ -42,20 +46,24 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
         for agent_comms in agents_comms:
 
             v = agent_comms.get_curr_vertex()
-        
-            msg = f"{agent_comms.get_agent_id()} : {v.get_goal_loc()}"
-            goal = v.get_goal_loc()
+            
 
             # rospy.logdebug(f"Vertex status: {v.status}") 
             # rospy.logdebug(f"Vertex next: {v.get_next()}")  
-            # rospy.logdebug(f"Can execute?: {v.can_execute()}") 
+            # rospy.logdebug(f"Can execute?: {v.can_execute()}")
 
-            if v.can_execute():
+            msg = f"{agent_comms.get_agent_id()} : " 
+
+            if not v.has_next():
+                msg += f"Last vertex reached"
+            elif v.can_execute():
+                goal = v.get_goal_loc()
                 agent_comms.publish(Pose(Point(goal.x,goal.y,0), Quaternion(0,0,0,1)))
+                msg += f"Goal = {v.get_goal_loc()}"
             else:
-                msg = f"{agent_comms.get_agent_id()} : Cannot execute!"
-            rospy.loginfo(msg)
+                msg += "Blocked by dependency"
 
+            rospy.logwarn(msg)
 
         rospy.loginfo("--------------------------------------------------")
         rate.sleep()
@@ -63,10 +71,10 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
 
 if __name__ == "__main__":
 
-    roadmap_name = "warehouse"
+    roadmap_name = "test"
     roadmap_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/roadmap.csv"
     dimensions_file = f"/home/alex/github_repos/sadg-controller/data/roadmaps/{roadmap_name}/dimensions.yaml"
 
-    agv_count = 4
+    agv_count = 8
 
     controller(roadmap_file, dimensions_file, agv_count)
