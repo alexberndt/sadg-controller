@@ -62,7 +62,7 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                 V_sadg[agent_id].append(v)
 
                 if v_prev is not None:
-                    E_regular[agent_id].append(Dependency(v_prev, v))
+                    E_regular[agent_id].append(Dependency(v_prev, v, active=True))
                     v_prev.set_next(v)
 
                 # reset
@@ -96,7 +96,7 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                             rev = Dependency(v_j_l_plus_1, v_i_k_minus_1, active=False)
                             v_i_k_minus_1.add_dependency(rev)
 
-                            switch = DependencySwitch(fwd, rev, False)
+                            switch = DependencySwitch(fwd, rev)
                             E_switchable[agent_i].append(switch)
 
                         except IndexError:

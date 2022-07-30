@@ -83,13 +83,25 @@ class Vertex:
         return True
 
 
+    def get_blocking_vertices(self) -> List:
+        """Get list of vertices blocking this vertex. """
+        blocking_vertices = []
+        for dependency in self.dependencies:
+            if dependency.is_active():
+                if dependency.get_tail_status() is not Status.COMPLETED:
+                    blocking_vertices.append(dependency.get_tail())
+        return blocking_vertices
+
+
     def _update(self) -> None:
         self.goal_loc = loc(self.plan_tuples[-1])
         self.goal_time = time(self.plan_tuples[-1])
 
+
     def __repr__(self):
         # return f"Vertex(agent_id={self.agent_id}, plan_tuples={self.plan_tuples}, status={self.status})"
         return f"Vertex({self.agent_id}, [{self.start_loc},..., {self.goal_loc}], {self.status})"
+
 
     def __str__(self):
         return f"Vertex({self.agent_id}, [{self.start_loc},..., {self.goal_loc}], {self.status})"

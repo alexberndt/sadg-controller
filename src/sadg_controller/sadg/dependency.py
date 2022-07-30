@@ -18,5 +18,8 @@ class Dependency:
     def get_tail_status(self) -> Status:
         return self.tail.status
 
+    def get_tail(self) -> Vertex:
+        return self.tail
+
     def __repr__(self) -> str:
         return f"Dependency(tail={self.tail}, head={self.head})"

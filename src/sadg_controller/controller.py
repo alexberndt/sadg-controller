@@ -8,6 +8,7 @@ from sadg_controller.core.sadg_compiler import sadg_compiler
 from sadg_controller.core.se_adg_compiler import se_adg_compiler
 from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
+from sadg_controller.sadg.status import Status
 
 
 def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
@@ -54,14 +55,15 @@ def controller(roadmap_file: str, dimensions_file: str, agv_count: int):
 
             msg = f"{agent_comms.get_agent_id()} : " 
 
-            if not v.has_next():
-                msg += f"Last vertex reached"
-            elif v.can_execute():
+            if v.can_execute() and v.status == Status.STAGED:
                 goal = v.get_goal_loc()
                 agent_comms.publish(Pose(Point(goal.x,goal.y,0), Quaternion(0,0,0,1)))
                 msg += f"Goal = {v.get_goal_loc()}"
+            elif not v.has_next():
+                msg += f"Last vertex reached"
             else:
-                msg += "Blocked by dependency"
+                blocking_vertices = v.get_blocking_vertices()
+                msg += f"Blocked by dependency: {blocking_vertices}"
 
             rospy.logwarn(msg)
 
