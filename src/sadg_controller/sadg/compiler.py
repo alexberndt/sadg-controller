@@ -14,7 +14,7 @@ from sadg_controller.sadg.vertex import Vertex, loc
 logger = getLogger(__name__)
 
 
-def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
+def compile_sadg(P: Plan) -> SADG:  # noqa: C901
     """Algorithm 2: SADG Compiler.
 
     Compiles a switchable action dependency graph (SADG) from

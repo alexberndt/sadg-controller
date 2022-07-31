@@ -62,7 +62,7 @@ class Comms:
         if pose_current.position.x == goal_x and pose_current.position.y == goal_y:
 
             # Update status of vertex
-            self.current_vertex.status = Status.COMPLETED
+            self.current_vertex.set_status(Status.COMPLETED)
 
             # Update next vertex if next vertex exists
             if self.current_vertex.has_next():

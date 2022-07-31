@@ -4,6 +4,7 @@
         <param name="roadmap_name" value="test"/>
         <param name="agent_count" value="2"/>
         <param name="ecbs_sub_factor" value="1.8"/>
+        <param name="visualize_sadg" value="True"/>
     </node>
 
 </launch>
