@@ -9,7 +9,6 @@ from sadg_controller.sadg.sadg import SADG
 logger = getLogger(__name__)
 
 OPTIONS = {
-    "edge_color": "grey",
     "node_size": 200,
     "alpha": 0.4,
     "width": 1,
@@ -25,15 +24,11 @@ class Visualizer:
         self.G = nx.DiGraph()
 
         nodes = []
-        colors = []
 
         # Add nodes to graph
         for agent_id, vertices in self.sadg.vertices.items():
 
             for idx, vertex in enumerate(vertices):
-
-                colors.append(vertex.color)
-
                 v_agent_id = int(agent_id.replace("agent", ""))
                 v_name = vertex.get_shorthand()
                 v_data = {"pos": [idx, v_agent_id], "color": vertex.color}
@@ -42,6 +37,7 @@ class Visualizer:
 
         # Add edges to graph
         edges = []
+        edge_colors = []
         for agent_id, vertices in self.sadg.vertices.items():
 
             for idx, vertex in enumerate(vertices):
@@ -50,18 +46,18 @@ class Visualizer:
                 if vertex.has_next():
                     v_tail = vertex.get_shorthand()
                     v_head = vertex.get_next().get_shorthand()
-                    edges.append((v_tail, v_head))
+                    edges.append((v_tail, v_head, {"color": "#222"}))
 
                 v_head = vertex.get_shorthand()
                 # Add active amd inactive dependencies
                 for dependency in vertex.dependencies:
                     if dependency.is_active():
                         v_tail = dependency.get_tail().get_shorthand()
-                        edges.append((v_tail, v_head))
+                        edges.append((v_tail, v_head, {"color": "#222"}))
 
                     if not dependency.is_active():
                         v_tail = dependency.get_tail().get_shorthand()
-                        edges.append((v_tail, v_head))
+                        edges.append((v_tail, v_head, {"color": "#ddd"}))
 
         self.G.add_edges_from(edges)
         self.pos = nx.get_node_attributes(self.G, "pos")
@@ -69,7 +65,15 @@ class Visualizer:
         plt.ion()
         self.fig, self.ax = plt.subplots()
 
-        nx.draw_networkx(self.G, pos=self.pos, ax=self.ax, node_color=colors, **OPTIONS)
+        node_colors = list(nx.get_node_attributes(self.G, "color").values())
+        edge_colors = list(nx.get_edge_attributes(self.G, "color").values())
+        nx.draw_networkx(
+            self.G,
+            pos=self.pos,
+            node_color=node_colors,
+            edge_color=edge_colors,
+            **OPTIONS
+        )
         plt.title(TITLE)
 
     def refresh(self) -> None:
@@ -80,34 +84,36 @@ class Visualizer:
         """
 
         # Update color of each vertex based on status
-        nodes = update_status(self.G.nodes(data=True), self.sadg)
+        nodes = self.update_node_status()
 
         # Update colors
-        colors = list(nx.get_node_attributes(self.G, "color").values())
+        node_colors = list(nx.get_node_attributes(self.G, "color").values())
+        edge_colors = list(nx.get_edge_attributes(self.G, "color").values())
         edges = self.G.edges(data=True)
         self.G.update(edges, nodes)
 
         # Redraw the figure
         plt.clf()
-        nx.draw_networkx(self.G, pos=self.pos, node_color=colors, **OPTIONS)
+        nx.draw_networkx(
+            self.G,
+            pos=self.pos,
+            node_color=node_colors,
+            edge_color=edge_colors,
+            **OPTIONS
+        )
         plt.title(TITLE)
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 
+    def update_node_status(self) -> List:
+        """Update node colors based on vertex statuses.
 
-def update_status(nodes: List, sadg: SADG) -> List:
-    """Update node colors based on vertex statuses.
-
-    Args:
-        nodes: List of networkx nodes with data
-        sadg: SADG object containing vertices with status
-            information.
-
-    Returns:
-        Updated list of notes with colors based on vertex
-            statuses.
-    """
-    for _, vertices in sadg.vertices.items():
-        for vertex in vertices:
-            nodes[vertex.get_shorthand()]["color"] = vertex.color
-    return nodes
+        Returns:
+            Updated list of notes with colors based on vertex
+                statuses.
+        """
+        nodes = self.G.nodes(data=True)
+        for _, vertices in self.sadg.vertices.items():
+            for vertex in vertices:
+                nodes[vertex.get_shorthand()]["color"] = vertex.color
+        return nodes
