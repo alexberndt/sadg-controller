@@ -83,7 +83,7 @@ class Agent:
     ) -> Pose:
         """Simulates intermediate movement towards a goal pose from start pose.
 
-        Note: the increment steps are a function of the ROS rate.
+        If no goal is specified, the current pose is simply returned.
 
         Args:
             speed_x: Speed in x-direction in m/s. Default to 0.8 m/s.
