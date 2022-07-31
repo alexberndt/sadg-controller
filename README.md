@@ -11,6 +11,8 @@ SADG-controller is a Python-library
 SADG Receding Horizon Feedback Control Scheme | Typical MAPF Execution Schemes |
 :-------------------------:|:-------------------------:|
 ![](.github/diagrams/feedback_diagram.svg)| ![](.github/diagrams/typical_mapf_scheme.svg) |
+  |  |
+![](.github/animations/cover.gif)| ![](.github/animations/cover.gif) |
 
 _Our approach significantly reduces the cumulative route completion of agents subjected to large delays by optimizing the ordering of agents based on their progress in a receding horizon fashion, while maintaining collision- and deadlock-free plan execution guarantees._
 
@@ -75,7 +77,7 @@ roslaunch launch/8/sadg.launch
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
+![Full Maze](.github/animations/full_maze.gif)  |  ![Half Maze](.github/animations/half_maze.gif) | ![Half Maze](.github/animations/warehouse.gif) | ![Half Maze](.github/animations/islands.gif)
 
 ## Contribute
 
