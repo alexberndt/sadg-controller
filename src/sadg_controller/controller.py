@@ -8,10 +8,7 @@ from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
 from sadg_controller.sadg.compiler import compile_sadg
 from sadg_controller.sadg.status import Status
-from sadg_controller.sadg.visualizer import (
-    init_sadg_visualization,
-    update_sadg_visualization,
-)
+from sadg_controller.sadg.visualizer import Visualizer
 
 
 def controller():
@@ -55,7 +52,7 @@ def controller():
     plan = problem.solve(suboptimality_factor=ecbs_w)
 
     sadg = compile_sadg(plan)
-    fig, G = init_sadg_visualization(sadg) if visualize_sadg else None
+    sadg_visualizer = Visualizer(sadg) if visualize_sadg else None
 
     agent_ids = [f"agent{id}" for id in range(agent_count)]
     comms = [Comms(id, sadg.get_agent_vertex(id)) for id in agent_ids]
@@ -97,7 +94,7 @@ def controller():
         rospy.loginfo("--------------------------------------------------")
 
         if visualize_sadg:
-            update_sadg_visualization(G, sadg, fig)
+            sadg_visualizer.refresh()
 
         rate.sleep()
 

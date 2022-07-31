@@ -3,98 +3,97 @@ from typing import List
 
 import matplotlib.pyplot as plt
 import networkx as nx
-from matplotlib.figure import Figure
 
 from sadg_controller.sadg.sadg import SADG
 
 logger = getLogger(__name__)
 
 
-def init_sadg_visualization(sadg: SADG) -> None:
-    """Visualize the SADG."""
+class Visualizer:
+    def __init__(self, sadg: SADG) -> None:
 
-    G = nx.DiGraph()
+        self.sadg = sadg
+        self.G = nx.DiGraph()
 
-    nodes = []
-    colors = []
+        nodes = []
+        colors = []
 
-    # Add nodes to graph
-    for agent_id, vertices in sadg.vertices.items():
+        # Add nodes to graph
+        for agent_id, vertices in self.sadg.vertices.items():
 
-        for idx, vertex in enumerate(vertices):
+            for idx, vertex in enumerate(vertices):
 
-            colors.append(vertex.color)
+                colors.append(vertex.color)
 
-            v_agent_id = int(agent_id.replace("agent", ""))
-            v_name = vertex.get_shorthand()
-            v_data = {"pos": [idx, v_agent_id], "color": vertex.color}
-            nodes.append((v_name, v_data))
-    G.add_nodes_from(nodes)
+                v_agent_id = int(agent_id.replace("agent", ""))
+                v_name = vertex.get_shorthand()
+                v_data = {"pos": [idx, v_agent_id], "color": vertex.color}
+                nodes.append((v_name, v_data))
+        self.G.add_nodes_from(nodes)
 
-    # Add edges to graph
-    edges = []
-    for agent_id, vertices in sadg.vertices.items():
+        # Add edges to graph
+        edges = []
+        for agent_id, vertices in self.sadg.vertices.items():
 
-        for idx, vertex in enumerate(vertices):
+            for idx, vertex in enumerate(vertices):
 
-            # Add regular dependencies
-            if vertex.has_next():
-                v_tail = vertex.get_shorthand()
-                v_head = vertex.get_next().get_shorthand()
-                edges.append((v_tail, v_head))
-
-            v_head = vertex.get_shorthand()
-            # Add active amd inactive dependencies
-            for dependency in vertex.dependencies:
-                if dependency.is_active():
-                    v_tail = dependency.get_tail().get_shorthand()
+                # Add regular dependencies
+                if vertex.has_next():
+                    v_tail = vertex.get_shorthand()
+                    v_head = vertex.get_next().get_shorthand()
                     edges.append((v_tail, v_head))
 
-                if not dependency.is_active():
-                    v_tail = dependency.get_tail().get_shorthand()
-                    edges.append((v_tail, v_head))
+                v_head = vertex.get_shorthand()
+                # Add active amd inactive dependencies
+                for dependency in vertex.dependencies:
+                    if dependency.is_active():
+                        v_tail = dependency.get_tail().get_shorthand()
+                        edges.append((v_tail, v_head))
 
-    G.add_edges_from(edges)
+                    if not dependency.is_active():
+                        v_tail = dependency.get_tail().get_shorthand()
+                        edges.append((v_tail, v_head))
 
-    pos = nx.get_node_attributes(G, "pos")
+        self.G.add_edges_from(edges)
 
-    options = {
-        "edge_color": "grey",
-        "node_size": 200,
-        "alpha": 0.4,
-        "width": 1,
-        "with_labels": True,
-    }
+        pos = nx.get_node_attributes(self.G, "pos")
 
-    plt.ion()
-    fig, ax = plt.subplots()
+        options = {
+            "edge_color": "grey",
+            "node_size": 200,
+            "alpha": 0.4,
+            "width": 1,
+            "with_labels": True,
+        }
 
-    nx.draw_networkx(G, pos=pos, ax=ax, node_color=colors, **options)
+        plt.ion()
+        fig, ax = plt.subplots()
 
-    plt.title("Switchable Action Dependency Graph")
+        self.fig = fig
 
-    return fig, G
+        nx.draw_networkx(self.G, pos=pos, ax=ax, node_color=colors, **options)
 
+        plt.title("Switchable Action Dependency Graph")
 
-def update_sadg_visualization(G: nx.DiGraph, sadg: SADG, fig: Figure):
+    def refresh(self) -> None:
 
-    options = {
-        "edge_color": "grey",
-        "node_size": 200,
-        "alpha": 0.4,
-        "width": 1,
-        "with_labels": True,
-    }
+        options = {
+            "edge_color": "grey",
+            "node_size": 200,
+            "alpha": 0.4,
+            "width": 1,
+            "with_labels": True,
+        }
 
-    nodes = update_status(G.nodes(data=True), sadg)
-    pos = nx.get_node_attributes(G, "pos")
-    colors = list(nx.get_node_attributes(G, "color").values())
-    edges = G.edges(data=True)
-    G.update(edges, nodes)
-    plt.clf()
-    nx.draw_networkx(G, pos=pos, node_color=colors, **options)
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+        nodes = update_status(self.G.nodes(data=True), self.sadg)
+        pos = nx.get_node_attributes(self.G, "pos")
+        colors = list(nx.get_node_attributes(self.G, "color").values())
+        edges = self.G.edges(data=True)
+        self.G.update(edges, nodes)
+        plt.clf()
+        nx.draw_networkx(self.G, pos=pos, node_color=colors, **options)
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
 
 
 def update_status(nodes: List, sadg: SADG) -> List:
