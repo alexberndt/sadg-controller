@@ -8,6 +8,15 @@ from sadg_controller.sadg.sadg import SADG
 
 logger = getLogger(__name__)
 
+OPTIONS = {
+    "edge_color": "grey",
+    "node_size": 200,
+    "alpha": 0.4,
+    "width": 1,
+    "with_labels": True,
+}
+TITLE = "Switchable Action Dependency Graph"
+
 
 class Visualizer:
     def __init__(self, sadg: SADG) -> None:
@@ -55,48 +64,49 @@ class Visualizer:
                         edges.append((v_tail, v_head))
 
         self.G.add_edges_from(edges)
-
-        pos = nx.get_node_attributes(self.G, "pos")
-
-        options = {
-            "edge_color": "grey",
-            "node_size": 200,
-            "alpha": 0.4,
-            "width": 1,
-            "with_labels": True,
-        }
+        self.pos = nx.get_node_attributes(self.G, "pos")
 
         plt.ion()
-        fig, ax = plt.subplots()
+        self.fig, self.ax = plt.subplots()
 
-        self.fig = fig
-
-        nx.draw_networkx(self.G, pos=pos, ax=ax, node_color=colors, **options)
-
-        plt.title("Switchable Action Dependency Graph")
+        nx.draw_networkx(self.G, pos=self.pos, ax=self.ax, node_color=colors, **OPTIONS)
+        plt.title(TITLE)
 
     def refresh(self) -> None:
+        """Refresh the SADG visualization.
 
-        options = {
-            "edge_color": "grey",
-            "node_size": 200,
-            "alpha": 0.4,
-            "width": 1,
-            "with_labels": True,
-        }
+        Updates the node colors for each vertex based on
+        the vertex status.
+        """
 
+        # Update color of each vertex based on status
         nodes = update_status(self.G.nodes(data=True), self.sadg)
-        pos = nx.get_node_attributes(self.G, "pos")
+
+        # Update colors
         colors = list(nx.get_node_attributes(self.G, "color").values())
         edges = self.G.edges(data=True)
         self.G.update(edges, nodes)
+
+        # Redraw the figure
         plt.clf()
-        nx.draw_networkx(self.G, pos=pos, node_color=colors, **options)
+        nx.draw_networkx(self.G, pos=self.pos, node_color=colors, **OPTIONS)
+        plt.title(TITLE)
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 
 
 def update_status(nodes: List, sadg: SADG) -> List:
+    """Update node colors based on vertex statuses.
+
+    Args:
+        nodes: List of networkx nodes with data
+        sadg: SADG object containing vertices with status
+            information.
+
+    Returns:
+        Updated list of notes with colors based on vertex
+            statuses.
+    """
     for _, vertices in sadg.vertices.items():
         for vertex in vertices:
             nodes[vertex.get_shorthand()]["color"] = vertex.color
