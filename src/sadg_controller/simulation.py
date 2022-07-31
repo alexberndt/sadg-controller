@@ -19,7 +19,6 @@ def simulation():
 
     # roadmap = Roadmap(roadmap_name)
 
-    # Plot
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -32,7 +31,7 @@ def simulation():
     agent_ids = [f"agent{id}" for id in range(agent_count)]
     _ = [Agent(id, ax, color) for id, color in zip(agent_ids, colors)]
 
-    rate = rospy.Rate(5)
+    rate = rospy.Rate(30)
     while not rospy.is_shutdown():
 
         fig.canvas.draw()

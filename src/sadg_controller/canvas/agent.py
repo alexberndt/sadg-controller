@@ -32,7 +32,7 @@ class Agent:
         rospy.loginfo(f"Initialized Agent subscriber: {self.sub_link}")
 
     def callback(self, pose: Pose) -> None:
-        rospy.loginfo("Callback pose")
+        rospy.logdebug("Callback pose")
         self.pose = pose
         self.update_plot()
 
