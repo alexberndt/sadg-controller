@@ -3,6 +3,7 @@
 import math
 from logging import getLogger
 
+import numpy as np
 import rospy
 from geometry_msgs.msg import Point, Pose, Quaternion
 
@@ -91,8 +92,10 @@ class Agent:
         if self.pose_goal is None:
             return self.pose
 
-        step_x = speed_x / self.ros_rate
-        step_y = speed_y / self.ros_rate
+        noise = np.random.normal(1.0, 0.3)  # mean = 1.0, std dev = 0.1
+
+        step_x = noise * speed_x / self.ros_rate
+        step_y = noise * speed_y / self.ros_rate
 
         delta_x = self.pose_goal.position.x - self.pose.position.x
         delta_y = self.pose_goal.position.y - self.pose.position.y
