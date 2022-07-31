@@ -37,7 +37,6 @@ class Visualizer:
 
         # Add edges to graph
         edges = []
-        edge_colors = []
         for agent_id, vertices in self.sadg.vertices.items():
 
             for idx, vertex in enumerate(vertices):
@@ -64,17 +63,7 @@ class Visualizer:
 
         plt.ion()
         self.fig, self.ax = plt.subplots()
-
-        node_colors = list(nx.get_node_attributes(self.G, "color").values())
-        edge_colors = list(nx.get_edge_attributes(self.G, "color").values())
-        nx.draw_networkx(
-            self.G,
-            pos=self.pos,
-            node_color=node_colors,
-            edge_color=edge_colors,
-            **OPTIONS
-        )
-        plt.title(TITLE)
+        self.plot_graph()
 
     def refresh(self) -> None:
         """Refresh the SADG visualization.
@@ -83,6 +72,11 @@ class Visualizer:
         the vertex status.
         """
 
+        self.plot_graph()
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
+
+    def plot_graph(self) -> None:
         # Update color of each vertex based on status
         nodes = self.update_node_status()
 
@@ -102,8 +96,6 @@ class Visualizer:
             **OPTIONS
         )
         plt.title(TITLE)
-        self.fig.canvas.draw()
-        self.fig.canvas.flush_events()
 
     def update_node_status(self) -> List:
         """Update node colors based on vertex statuses.
