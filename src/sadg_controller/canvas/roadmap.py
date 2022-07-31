@@ -4,7 +4,7 @@ import networkx as nx
 from sadg_controller.mapf.roadmap import Roadmap
 
 
-def create_roadmap_graph(roadmap: Roadmap) -> nx.Graph:
+def plot_roadmap_graph(roadmap: Roadmap, ax: plt.Axes) -> None:
     """Converts a roadmap to a networkx graph."""
 
     roadmap_array = roadmap.array
@@ -24,7 +24,7 @@ def create_roadmap_graph(roadmap: Roadmap) -> nx.Graph:
             if int(cell) in [0, 1]:
                 print(f"{row_idx},{col_idx}")
                 x = col_idx * resolution + x_offset
-                y = row_idx * resolution + y_offset
+                y = -row_idx * resolution + y_offset
 
                 node_id = f"{row_idx},{col_idx}"
                 nodes.append((node_id, {"pos": [x, y]}))
@@ -42,14 +42,6 @@ def create_roadmap_graph(roadmap: Roadmap) -> nx.Graph:
     graph.add_nodes_from(nodes)
     graph.add_edges_from(edges)
 
-    return graph
-
-
-if __name__ == "__main__":
-
-    roadmap = Roadmap("test")
-    graph = create_roadmap_graph(roadmap)
-
     pos = nx.get_node_attributes(graph, "pos")
 
     options = {
@@ -58,9 +50,16 @@ if __name__ == "__main__":
         "width": 2,
     }
 
-    fig, ax = plt.subplots()
     nx.draw_networkx(graph, pos=pos, with_labels=False, ax=ax, **options)
     ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
+
+
+if __name__ == "__main__":
+
+    roadmap = Roadmap("test")
+    fig, ax = plt.subplots()
+    plot_roadmap_graph(roadmap, ax)
+
     plt.xlabel("x [m]")
     plt.ylabel("y [m]")
     plt.grid()

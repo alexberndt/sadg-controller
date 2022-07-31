@@ -75,7 +75,7 @@ roslaunch launch/8/sadg.launch
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![Full Maze](.github/diagrams/full_maze.svg)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
+![Full Maze](.github/animations/test.gif)  |  ![Half Maze](.github/diagrams/half_maze.svg) | ![Half Maze](.github/diagrams/warehouse.svg) | ![Half Maze](.github/diagrams/islands.svg)
 
 ## Contribute
 

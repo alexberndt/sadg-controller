@@ -40,7 +40,7 @@ def _parse_solution(solution: Dict, dimensions: Dict) -> None:
         for schedule_item in agent_schedule:
 
             x = schedule_item["y"] * resolution + x_offset
-            y = schedule_item["x"] * resolution + y_offset
+            y = -schedule_item["x"] * resolution + y_offset
             t = schedule_item["t"]
 
             plan.append(PlanTuple(x, y, t))

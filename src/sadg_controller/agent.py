@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 
 
 class Agent:
-    def __init__(self, ros_rate: int = 30) -> None:
+    def __init__(self, ros_rate: int = 15) -> None:
         """Agent simulation.
 
         Args:
