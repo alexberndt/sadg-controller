@@ -24,20 +24,26 @@ class Agent:
         self.uuid = rospy.get_param("~uuid")
         self.ros_rate = ros_rate
 
-        self.sub_link = f"/{self.ns}/goal"
-        self.subscriber = rospy.Subscriber(self.sub_link, Pose, self.callback)
+        self.sub_link_goal = f"/{self.ns}/goal"
+        self.subscriber = rospy.Subscriber(self.sub_link_goal, Pose, self.callback)
 
         self.pub_link = f"/{self.ns}/current"
-        self.publisher = rospy.Publisher(self.pub_link, Pose, queue_size=1000)
+        self.publisher = rospy.Publisher(
+            self.pub_link, Pose, queue_size=1000, latch=True
+        )
+
+        self.sub_link_initial = f"/{self.ns}/initial"
+        self.subscriber_initial = rospy.Subscriber(
+            self.sub_link_initial, Pose, self.callback_initial
+        )
 
         self.pose = Pose(Point(0, 0, 0), Quaternion(0, 0, 0, 1))
-        self.pose_goal = Pose(Point(0, 0, 0), Quaternion(0, 0, 0, 1))
+        self.pose_goal = None
 
     def start(self) -> None:
         """Start agent simulation."""
         rate = rospy.Rate(self.ros_rate)
         while not rospy.is_shutdown():
-
             self.pose = self.move_towards_goal_pose()
             self.publish_current_pose()
             rate.sleep()
@@ -51,8 +57,25 @@ class Agent:
         Args:
             pose_goal: Goal pose passed in the message.
         """
-        rospy.logdebug(f"{self.ns} : {parse_pose(pose_goal)}")
+        rospy.logwarn(
+            f"{self.sub_link_goal} : Received goal pose: {parse_pose(pose_goal)}"
+        )
         self.pose_goal = pose_goal
+
+    def callback_initial(self, pose_initial: Pose) -> None:
+        """Callback for subscriber to initial position.
+
+        Instantiates an agent to a new, initial pose.
+        Only used at the start of a simulation to move
+        agent to the starting position.
+
+        Args:
+            pose_initial: Initial pose passed in the message.
+        """
+        rospy.logwarn(
+            f"{self.sub_link_initial}: Received initial pose: {parse_pose(pose_initial)}"
+        )
+        self.pose = pose_initial
 
     def move_towards_goal_pose(
         self, speed_x: float = 0.8, speed_y: float = 0.8
@@ -65,6 +88,9 @@ class Agent:
             speed_x: Speed in x-direction in m/s. Default to 0.8 m/s.
             speed_y: Speed in y-direction in m/s. Default to 0.8 m/s.
         """
+        if self.pose_goal is None:
+            return self.pose
+
         step_x = speed_x / self.ros_rate
         step_y = speed_y / self.ros_rate
 

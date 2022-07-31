@@ -68,8 +68,14 @@ def controller():
             if curr_vertex.can_execute() and curr_vertex.status == Status.STAGED:
 
                 goal = curr_vertex.get_goal_loc()
-                comm.publish(Pose(Point(goal.x, goal.y, 0), Quaternion(0, 0, 0, 1)))
+                goal_pose = Pose(Point(goal.x, goal.y, 0), Quaternion(0, 0, 0, 1))
+                comm.publish_pose_goal(goal_pose)
+                curr_vertex.status = Status.IN_PROGRESS
                 msg = f"Goal = {curr_vertex.get_goal_loc()}"
+
+            # If vertex is being executed still
+            elif curr_vertex.status == Status.IN_PROGRESS:
+                msg = "In progress"
 
             # If there is no next vertex, agent has reached end goal
             elif not curr_vertex.has_next():

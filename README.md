@@ -49,19 +49,29 @@ catkin_make
 
 To start a simulation, run the following
 
+#### Terminal 1: Initialize the Agents
+```bash
+source devel/setup.zsh
+roslaunch launch/8/agents.launch
+```
 
-
-#### Terminal 1: Run the Controller
+#### Terminal 2: Start the Controller
 ```bash
 source devel/setup.zsh
 roslaunch launch/8/controller.launch
 ```
 
-#### Terminal 2: Run the Agent Communications
+#### Terminal 3: Visualize the Plan Execution
 ```bash
 source devel/setup.zsh
-roslaunch launch/8/agents.launch
+roslaunch launch/8/simulation.launch
 ```
+
+<!-- #### Terminal 4: Visualize the SADG
+```bash
+source devel/setup.zsh
+roslaunch launch/8/sadg.launch
+``` -->
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
