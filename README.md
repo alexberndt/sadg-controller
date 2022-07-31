@@ -14,9 +14,9 @@ SADG Receding Horizon Feedback Control Scheme | Typical MAPF Execution Schemes |
 
 _Our approach significantly reduces the cumulative route completion of agents subjected to large delays by optimizing the ordering of agents based on their progress in a receding horizon fashion, while maintaining collision- and deadlock-free plan execution guarantees._
 
-Switchable Action Dependency Graph | Roadmap |
+ Switchable Action Dependency Graph | Roadmap |
 :-------------------------:|:-------------------------:|
-![](.github/animations/sadg.gif)| ![](.github/animations/roadmap.gif) |
+![](.github/animations/sadg.gif) | ![](.github/animations/roadmap.gif) |
 
 ## List of Functionalities
 
