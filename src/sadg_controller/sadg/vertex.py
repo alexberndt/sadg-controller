@@ -14,18 +14,19 @@ class Vertex:
         status: Status = Status.STAGED,
     ) -> None:
 
-        self.agent_id = agent_id
+        self.agent_id = agent_id.replace("agent", "")
         self.vertex_idx = vertex_idx
         self.shorthand = f"v_{self.agent_id}_{self.vertex_idx}"
 
         self.plan_tuples = plan_tuples if type(plan_tuples) == list else [plan_tuples]
         self.status = status
+        self.color = status.color()
 
         self.start_loc = loc(self.plan_tuples[0])
         self.start_time = time(self.plan_tuples[0])
 
         # List of dependencies pointing TO this vertex
-        self.dependencies = [] 
+        self.dependencies = []
         self.next_vertex = None
         self._update()
 
@@ -60,19 +61,22 @@ class Vertex:
     def set_next(self, vertex) -> None:
         self.next_vertex = vertex
 
+    def set_status(self, status: Status) -> None:
+        self.status = status
+        self.color = status.color()
+
     def get_next(self):
         return self.next_vertex
 
     def has_next(self) -> bool:
-        return not self.next_vertex is None
+        return self.next_vertex is not None
 
     def add_dependency(self, dependency) -> None:
         self.dependencies.append(dependency)
 
-
     def can_execute(self) -> bool:
         """Checks if vertex can be executed or not.
-        
+
         Checks if _all_ tail vertices of _active_ dependencies pointing to this vertex are completed.
         If so, this vertex can be executed, otherwise not.
         """
@@ -82,9 +86,8 @@ class Vertex:
                     return False
         return True
 
-
     def get_blocking_vertices(self) -> List:
-        """Get list of vertices blocking this vertex. """
+        """Get list of vertices blocking this vertex."""
         blocking_vertices = []
         for dependency in self.dependencies:
             if dependency.is_active():
@@ -92,16 +95,13 @@ class Vertex:
                     blocking_vertices.append(dependency.get_tail())
         return blocking_vertices
 
-
     def _update(self) -> None:
         self.goal_loc = loc(self.plan_tuples[-1])
         self.goal_time = time(self.plan_tuples[-1])
 
-
     def __repr__(self):
         # return f"Vertex(agent_id={self.agent_id}, plan_tuples={self.plan_tuples}, status={self.status})"
         return f"Vertex({self.agent_id}, [{self.start_loc},..., {self.goal_loc}], {self.status})"
-
 
     def __str__(self):
         return f"Vertex({self.agent_id}, [{self.start_loc},..., {self.goal_loc}], {self.status})"

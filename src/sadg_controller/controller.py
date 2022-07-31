@@ -4,7 +4,11 @@ import rospy
 from geometry_msgs.msg import Point, Pose, Quaternion
 
 from sadg_controller.comms import Comms
-from sadg_controller.core.sadg_compiler import sadg_compiler
+from sadg_controller.core.sadg_compiler import (
+    compile_sadg,
+    init_sadg_visualization,
+    visualize_sadg,
+)
 from sadg_controller.mapf.problem import MAPFProblem
 from sadg_controller.mapf.roadmap import Roadmap
 from sadg_controller.sadg.status import Status
@@ -39,6 +43,7 @@ def controller():
 
     roadmap_name = rospy.get_param("~roadmap_name")
     agent_count = rospy.get_param("~agent_count")
+    should_visualize_sadg = rospy.get_param("~should_visualize_sadg", False)
     ecbs_w = rospy.get_param("~ecbs_sub_factor", 1.8)
 
     roadmap = Roadmap(roadmap_name)
@@ -49,12 +54,13 @@ def controller():
     problem = MAPFProblem(roadmap, starts, goals)
     plan = problem.solve(suboptimality_factor=ecbs_w)
 
-    sadg = sadg_compiler(plan)
+    sadg = compile_sadg(plan)
+    fig, G = init_sadg_visualization(sadg) if should_visualize_sadg else None
 
     agent_ids = [f"agent{id}" for id in range(agent_count)]
     comms = [Comms(id, sadg.get_agent_vertex(id)) for id in agent_ids]
 
-    rate = rospy.Rate(4)
+    rate = rospy.Rate(5)
     while not rospy.is_shutdown():
 
         # Loop through each agent and communications
@@ -70,7 +76,7 @@ def controller():
                 goal = curr_vertex.get_goal_loc()
                 goal_pose = Pose(Point(goal.x, goal.y, 0), Quaternion(0, 0, 0, 1))
                 comm.publish_pose_goal(goal_pose)
-                curr_vertex.status = Status.IN_PROGRESS
+                curr_vertex.set_status(Status.IN_PROGRESS)
                 msg = f"Goal = {curr_vertex.get_goal_loc()}"
 
             # If vertex is being executed still
@@ -89,6 +95,10 @@ def controller():
             rospy.logwarn(f"{comm.get_agent_id()} : {msg}")
 
         rospy.loginfo("--------------------------------------------------")
+
+        if should_visualize_sadg:
+            visualize_sadg(G, sadg, fig)
+
         rate.sleep()
 
 

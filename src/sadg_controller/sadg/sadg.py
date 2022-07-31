@@ -40,32 +40,3 @@ class SADG:
 
     def get_agent_vertex(self, agent_id: str) -> Vertex:
         return self.vertices[agent_id][0]
-
-    # def plot(self, title: str) -> None:
-    #     """Plots the SADG."""
-
-    #     G = nx.DiGraph()
-
-    #     # Add vertices
-    #     nodes = []
-    #     for agent_id, vertices in self.vertices.items():
-
-    #         for idx, v in enumerate(vertices):
-    #             v_name = f"v_{agent_id.split('_')[-1]}_{idx}"
-    #             v_data = {"color": "red"}  # v.get_status()
-    #             nodes.append((v_name, v_data))
-
-    #     G.add_nodes_from(nodes)
-
-    #     # Add dependencies
-    #     edges = []
-    #     for agent_id, dependencies in self.regular_deps.items():
-    #         for idx, e in enumerate(dependencies):
-
-    #             e_name = str(e)
-    #             edges.append(e_name)
-
-    #     nx.draw(G)
-    #     plt.show()
-
-    #     print("test")
