@@ -23,8 +23,10 @@ class Comms:
         self.sub_link = f"/{self.ns}/current"
         self.subscriber = rospy.Subscriber(self.sub_link, Pose, self.callback)
 
-        self.pub_link = f"/{self.ns}/goal"
-        self.publisher = rospy.Publisher(self.pub_link, Pose, queue_size=10, latch=True)
+        self.pub_link_goal = f"/{self.ns}/goal"
+        self.publisher_goal = rospy.Publisher(
+            self.pub_link_goal, Pose, queue_size=10, latch=True
+        )
 
         self.pub_link_init = f"/{self.ns}/initial"
         self.publisher_init = rospy.Publisher(
@@ -76,8 +78,10 @@ class Comms:
             goal_pose: Goal pose which the agent should move
                 towards.
         """
-        rospy.logwarn(f"{self.pub_link}: Publishing goal pose: {parse_pose(goal_pose)}")
-        self.publisher.publish(goal_pose)
+        rospy.logdebug(
+            f"{self.pub_link_goal}: Publishing goal pose: {parse_pose(goal_pose)}"
+        )
+        self.publisher_goal.publish(goal_pose)
 
     def publish_pose_initial(self, pose_initial: Pose) -> None:
         """Publish initial pose.
@@ -88,7 +92,7 @@ class Comms:
         Args:
             pose_initial: Initial pose of the Agent.
         """
-        rospy.logwarn(
+        rospy.logdebug(
             f"{self.pub_link_init}: Publishing initial pose: {parse_pose(pose_initial)}"
         )
         self.publisher_init.publish(pose_initial)

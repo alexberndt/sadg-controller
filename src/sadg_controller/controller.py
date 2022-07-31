@@ -54,7 +54,7 @@ def controller():
     agent_ids = [f"agent{id}" for id in range(agent_count)]
     comms = [Comms(id, sadg.get_agent_vertex(id)) for id in agent_ids]
 
-    rate = rospy.Rate(1)
+    rate = rospy.Rate(4)
     while not rospy.is_shutdown():
 
         # Loop through each agent and communications
