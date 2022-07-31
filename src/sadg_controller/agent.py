@@ -79,7 +79,7 @@ class Agent:
         self.pose = pose_initial
 
     def move_towards_goal_pose(
-        self, speed_x: float = 0.8, speed_y: float = 0.8
+        self, speed_x: float = 1.8, speed_y: float = 1.8
     ) -> Pose:
         """Simulates intermediate movement towards a goal pose from start pose.
 
