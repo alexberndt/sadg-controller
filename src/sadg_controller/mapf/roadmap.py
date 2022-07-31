@@ -10,7 +10,7 @@ from sadg_controller.mapf.roadmap_location import RoadmapLocation
 
 logger = getLogger(__name__)
 dir_path = Path(__file__).parents[3].resolve()
-random.seed(10)
+random.seed(1)
 
 
 class Roadmap:
