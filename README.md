@@ -55,25 +55,25 @@ To start a simulation, run the following
 
 #### Terminal 1: Initialize the Agents
 ```bash
-source devel/setup.zsh
+source devel/setup.sh
 roslaunch launch/8/agents.launch
 ```
 
 #### Terminal 2: Start the Controller
 ```bash
-source devel/setup.zsh
+source devel/setup.sh
 roslaunch launch/8/controller.launch
 ```
 
 #### Terminal 3: Visualize the Plan Execution
 ```bash
-source devel/setup.zsh
+source devel/setup.sh
 roslaunch launch/8/simulation.launch
 ```
 
 <!-- #### Terminal 4: Visualize the SADG
 ```bash
-source devel/setup.zsh
+source devel/setup.sh
 roslaunch launch/8/sadg.launch
 ``` -->
 
