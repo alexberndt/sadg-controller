@@ -3,7 +3,7 @@ name = "sadg-controller"
 version = "0.1.0"
 description = "Switchable Action Dependency Graph (SADG) control scheme for MAPF plan re-ordering"
 authors = ["Alex Berndt <berndtae@gmail.com>"]
-license = "MIT"
+license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
