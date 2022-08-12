@@ -1,5 +1,7 @@
 from logging import getLogger
 
+import rospy
+
 from sadg_controller.core.geometry import intersects
 from sadg_controller.mapf.plan import Plan
 from sadg_controller.sadg.dependency import Dependency
@@ -12,7 +14,7 @@ from sadg_controller.sadg.vertex import Vertex, loc
 logger = getLogger(__name__)
 
 
-def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
+def compile_sadg(P: Plan) -> SADG:  # noqa: C901
     """Algorithm 2: SADG Compiler.
 
     Compiles a switchable action dependency graph (SADG) from
@@ -60,7 +62,8 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                 V_sadg[agent_id].append(v)
 
                 if v_prev is not None:
-                    E_regular[agent_id].append(Dependency(v_prev, v))
+                    E_regular[agent_id].append(Dependency(v_prev, v, active=True))
+                    v_prev.set_next(v)
 
                 # reset
                 v_prev = v
@@ -83,17 +86,21 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
                         and v_i_k.get_goal_time() <= v_j_l.get_goal_time()
                     ):
 
-                        fwd = Dependency(v_i_k, v_j_l)
+                        fwd = Dependency(v_i_k, v_j_l, active=True)
+                        v_j_l.add_dependency(fwd)
 
                         try:
                             v_i_k_minus_1 = vertices_i[k - 1]
                             v_j_l_plus_1 = vertices_j[l + 1]
-                            rev = Dependency(v_j_l_plus_1, v_i_k_minus_1)
-                            switch = DependencySwitch(fwd, rev, False)
+
+                            rev = Dependency(v_j_l_plus_1, v_i_k_minus_1, active=False)
+                            v_i_k_minus_1.add_dependency(rev)
+
+                            switch = DependencySwitch(fwd, rev)
                             E_switchable[agent_i].append(switch)
 
                         except IndexError:
-                            logger.debug(
+                            rospy.logdebug(
                                 f"k-1={k - 1}, l+1={l + 1} are not valid indexes."
                                 "Cannot construct dependency switch."
                             )
@@ -102,10 +109,10 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
     # Group dependencies for switching
     E_groups = {}
     for agent_i, switches in E_switchable.items():
-        print(f"Agent: {agent_i}")
+        rospy.loginfo(f"Agent: {agent_i}")
         E_groups[agent_i] = []
         for switch in switches:
-            print(
+            rospy.logdebug(
                 f"{switch.fwd.tail.get_agent_id()} {switch.fwd.tail.get_vertex_idx()} -> {switch.fwd.head.get_agent_id()} {switch.fwd.head.get_vertex_idx()}"
             )
 
@@ -118,15 +125,15 @@ def sadg_compiler(P: Plan) -> SADG:  # noqa: C901
     # Create summary
     switch_cnt = 0
     for agent_i, switches in E_switchable.items():
-        for switch in switches:
+        for _ in switches:
             switch_cnt += 1
 
     group_cnt = 0
     for agent_i, groups in E_groups.items():
-        for group in groups:
+        for _ in groups:
             group_cnt += 1
 
-    print(f"Switches: {switch_cnt}")
-    print(f"Groups:   {group_cnt}")
+    rospy.loginfo(f"Switches: {switch_cnt}")
+    rospy.loginfo(f"Groups:   {group_cnt}")
 
     return SADG(V_sadg, E_regular, E_groups)

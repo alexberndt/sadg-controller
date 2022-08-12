@@ -1,8 +1,10 @@
 import os
+import pathlib
 import subprocess
 from logging import getLogger
 from typing import Dict, List
 
+import rospy
 import yaml
 
 from sadg_controller.mapf.plan import Plan
@@ -12,6 +14,8 @@ from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 
 yaml.Dumper.ignore_aliases = lambda *args: True
 logger = getLogger(__name__)
+
+project_root = pathlib.Path(__file__).parents[3].resolve()
 
 
 class MAPFProblem:
@@ -25,7 +29,7 @@ class MAPFProblem:
         self.starts = starts
         self.goals = goals
         self.logger = logger
-        self.tmp_dir = f"tmp/{next(RANDOM_SEQUENCE_GENERATOR)}"
+        self.tmp_dir = f"{project_root}/tmp/{next(RANDOM_SEQUENCE_GENERATOR)}"
         os.makedirs(self.tmp_dir)
 
     def solve(self, suboptimality_factor: float = 1.5) -> Plan:
@@ -50,7 +54,7 @@ class MAPFProblem:
         # solve MAPF using the generated yaml file
         solution_file = f"{self.tmp_dir}/solution.yaml"
         cmd = [
-            "third_party/libMultiRobotPlanning/build/ecbs",
+            f"{project_root}/third_party/libMultiRobotPlanning/build/ecbs",
             "-i",
             input_file,
             "-o",
@@ -95,11 +99,13 @@ class MAPFProblem:
 
 
 def write_yaml(file: str, payload: Dict) -> None:
+    rospy.logdebug(f"Writing yaml file: {file} ...")
     with open(file, "w") as stream:
         yaml.dump(payload, stream, default_flow_style=False)
 
 
 def read_yaml(file: str) -> Dict:
+    rospy.logdebug(f"Reading yaml file: {file} ...")
     with open(file, "r") as stream:
         try:
             return yaml.safe_load(stream)

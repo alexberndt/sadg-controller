@@ -1,0 +1,8 @@
+<launch>
+
+    <node name="simulation" pkg="sadg_controller" type="simulation.py" output="screen">
+        <param name="agent_count" value="60"/>
+        <param name="roadmap_name" value="full_maze"/>
+    </node>
+
+</launch>
