@@ -1,0 +1,2 @@
+# Copyright (c) 2022 Copyright holder of the paper Receding Horizon Re-ordering of Multi-Agent Execution Schedules submitted to The IEEE Transactions on Robotics for review.
+# All rights reserved.
