@@ -42,7 +42,7 @@ class Controller(Node):
         starts = roadmap.random_locations(agent_count)
         goals = roadmap.random_locations(agent_count)
 
-        problem = MAPFProblem(roadmap, starts, goals)
+        problem = MAPFProblem(self.get_logger(), roadmap, starts, goals)
         plan = problem.solve(suboptimality_factor=ecbs_w)
 
         sadg = compile_sadg(plan)

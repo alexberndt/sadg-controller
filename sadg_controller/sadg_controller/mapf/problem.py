@@ -13,9 +13,6 @@ from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 
 yaml.Dumper.ignore_aliases = lambda *args: True
 
-project_root = pathlib.Path(__file__).parents[3].resolve()
-
-
 class MAPFProblem:
     def __init__(
         self,
@@ -48,12 +45,12 @@ class MAPFProblem:
             "map": map_data,
             "agents": agv_data,
         }
-        write_yaml(input_file, ecbs_input)
+        write_yaml(input_file, ecbs_input, self.logger)
 
         # solve MAPF using the generated yaml file
         solution_file = f"{self.tmp_dir}/solution.yaml"
         cmd = [
-            f"{project_root}/third_party/libMultiRobotPlanning/build/ecbs",
+            f"ecbs",
             "-i",
             input_file,
             "-o",
@@ -74,7 +71,7 @@ class MAPFProblem:
             raise RuntimeError("MAPF Planning not successful!")
 
         # read solution
-        solution = read_yaml(solution_file)
+        solution = read_yaml(solution_file, self.logger)
 
         # get map dimensions
         dimensions = self.roadmap.get_dimensions()
