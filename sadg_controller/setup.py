@@ -19,8 +19,6 @@ def find_files(directory, target_base_path):
 
     return data_files
 
-
-
 package_name = 'sadg_controller'
 
 setup(

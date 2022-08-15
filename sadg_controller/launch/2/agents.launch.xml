@@ -1,10 +1,10 @@
 <launch>
 
-    <node name="agent0" pkg="sadg_controller" type="agent.py" output="screen">
+    <node name="agent0" pkg="sadg_controller" exec="agent.py" output="screen">
         <param name="agent_ns" value="agent0"/>
         <param name="uuid" value="cn234lkj2n"/>
     </node>
-    <node name="agent1" pkg="sadg_controller" type="agent.py" output="screen">
+    <node name="agent1" pkg="sadg_controller" exec="agent.py" output="screen">
         <param name="agent_ns" value="agent1"/>
         <param name="uuid" value="nk4l23lskd"/>
     </node>
