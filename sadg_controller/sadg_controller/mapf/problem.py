@@ -1,6 +1,7 @@
 import os
 import pathlib
 import subprocess
+from tempfile import mkdtemp
 from typing import Dict, List
 
 from rclpy.node import Node
@@ -25,8 +26,7 @@ class MAPFProblem:
         self.roadmap = roadmap
         self.starts = starts
         self.goals = goals
-        self.tmp_dir = f"/tmp/sadg_controller/{next(RANDOM_SEQUENCE_GENERATOR)}"
-        os.makedirs(self.tmp_dir)
+        self.tmp_dir = mkdtemp(prefix='sadg_controller')
 
     def solve(self, suboptimality_factor: float = 1.5) -> Plan:
         """Solve the MAPF problem using ECBS algorithm."""
