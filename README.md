@@ -34,6 +34,13 @@ We currently support ROS2 Galactic and ROS2 Humble, the former is advised for Ub
 - [ROS Galactic](https://docs.ros.org/en/galactic/Installation.html)
 - [ROS Humble](https://docs.ros.org/en/humble/Installation.html)
 
+Make sure to install `colcon` and `rosdep`:
+```bash
+sudo apt install python3-rosdep python3-colcon-common-extensions
+sudo rosdep init
+rosdep update
+```
+
 ### Prepare workspace
 *FOR TRo REVIEWERS: section is currently not relevant, unzip the attached workspace and navigate to it using `cd`*
 
@@ -46,7 +53,7 @@ cd ~/sadg_ws
 ```
 
 ### Install dependencies
-From `~/sadg_ws`, execute:
+Then, from `~/sadg_ws`, execute:
 ```bash
 rosdep install --from-paths src --ignore-src -r -y
 ```
