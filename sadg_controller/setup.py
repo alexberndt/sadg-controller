@@ -41,6 +41,9 @@ setup(
     tests_require=[],
     entry_points={
         'console_scripts': [
+            'agent = sadg_controller.agent:main',
+            'controller = sadg_controller.controller:main',
+            'simulation = sadg_controller.simulation:main',
         ],
     },
 )

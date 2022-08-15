@@ -21,21 +21,22 @@ class Comms:
         """
         self.ns = agent_ns
         self.current_vertex = vertex_initial
+        self.logger = node.get_logger()
 
         self.sub_link = f"/{self.ns}/current"
-        self.subscriber = node.create_subscription(Pose, self.sub_link, self.callback)
+        self.subscriber = node.create_subscription(Pose, self.sub_link, self.callback, 10)
 
         latching_qos = QoSProfile(depth=1,
-            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+            durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             history=QoSHistoryPolicy.KEEP_ALL)
 
         self.pub_link_goal = f"/{self.ns}/goal"
-        self.publisher_goal = self.create_publisher(
+        self.publisher_goal = node.create_publisher(
             Pose, self.pub_link_goal, qos_profile=latching_qos
         )
 
         self.pub_link_init = f"/{self.ns}/initial"
-        self.publisher_init = self.create_publisher(
+        self.publisher_init = node.create_publisher(
             Pose, self.pub_link_init, qos_profile=latching_qos
         )
 
@@ -59,7 +60,7 @@ class Comms:
         Args:
             pose_current: Current agent pose.
         """
-        self.get_logger().debug(f"{self.sub_link}: Callback: {parse_pose(pose_current)}")
+        self.logger.debug(f"{self.sub_link}: Callback: {parse_pose(pose_current)}")
 
         goal_x = self.current_vertex.get_goal_loc().x
         goal_y = self.current_vertex.get_goal_loc().y
@@ -84,7 +85,7 @@ class Comms:
             goal_pose: Goal pose which the agent should move
                 towards.
         """
-        self.get_logger().debug(
+        self.logger.debug(
             f"{self.pub_link_goal}: Publishing goal pose: {parse_pose(goal_pose)}"
         )
         self.publisher_goal.publish(goal_pose)
@@ -98,7 +99,7 @@ class Comms:
         Args:
             pose_initial: Initial pose of the Agent.
         """
-        self.get_logger().debug(
+        self.logger.debug(
             f"{self.pub_link_init}: Publishing initial pose: {parse_pose(pose_initial)}"
         )
         self.publisher_init.publish(pose_initial)
@@ -121,4 +122,4 @@ def get_start_pose(vertex: Vertex) -> Pose:
             to a pose.
     """
     location = vertex.get_start_loc()
-    return Pose(Point(location.x, location.y, 0), Quaternion(0, 0, 0, 1))
+    return Pose(position=Point(x=location.x, y=location.y, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))

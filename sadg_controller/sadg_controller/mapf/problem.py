@@ -25,7 +25,7 @@ class MAPFProblem:
         self.roadmap = roadmap
         self.starts = starts
         self.goals = goals
-        self.tmp_dir = f"{project_root}/tmp/{next(RANDOM_SEQUENCE_GENERATOR)}"
+        self.tmp_dir = f"/tmp/sadg_controller/{next(RANDOM_SEQUENCE_GENERATOR)}"
         os.makedirs(self.tmp_dir)
 
     def solve(self, suboptimality_factor: float = 1.5) -> Plan:

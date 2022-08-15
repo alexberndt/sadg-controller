@@ -1,45 +1,35 @@
-#!/usr/bin/env python3
-
 import math
-from logging import getLogger
-
 import numpy as np
+
+import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy
 from geometry_msgs.msg import Point, Pose, Quaternion
 
 from sadg_controller.comms import parse_pose
 
-logger = getLogger(__name__)
-
-
 class Agent(Node):
-    def __init__(self, time_step: float = 0.04) -> None:
-        """Agent simulation.
-
-        Args:
-            time_step: Rate of agent simulation in Hz. Defaults to 25 Hz.
-
-        """
+    def __init__(self) -> None:
+        """Agent simulation."""
         super().__init__("agent")
 
-        self.ns = self.declare_parameter('agent_ns').value
-        self.uuid = self.declare_parameter('uuid').value
-        self.time_step = time_step
+        self.ns = self.declare_parameter('agent_ns', 'agent0').value
+        self.uuid = self.declare_parameter('uuid', 'xxxxxxx').value
+        self.time_step = self.declare_parameter('time_step', 0.04).value
 
         self.sub_link_goal = f"/{self.ns}/goal"
-        self.subscriber = self.create_subscription(Pose, self.sub_link_goal, self.callback_goal)
+        self.subscriber = self.create_subscription(Pose, self.sub_link_goal, self.callback_goal, 10)
 
         self.pub_link = f"/{self.ns}/current"
         latching_qos = QoSProfile(depth=1,
-            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+            durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
             history=QoSHistoryPolicy.KEEP_ALL)
         self.publisher = self.create_publisher(Pose, self.pub_link, qos_profile=latching_qos)
 
         self.sub_link_initial = f"/{self.ns}/initial"
-        self.sub_link_initial = self.create_subscription(Pose, self.sub_link_initial, self.callback_initial)
+        self.sub_link_initial = self.create_subscription(Pose, self.sub_link_initial, self.callback_initial, 10)
 
-        self.pose = Pose(Point(0, 0, 0), Quaternion(0, 0, 0, 1))
+        self.pose = Pose(position=Point(x=0.0, y=0.0, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
         self.pose_goal = None
 
     def start(self) -> None:
@@ -97,8 +87,8 @@ class Agent(Node):
 
         noise = np.random.normal(1.0, 0.3)  # mean = 1.0, std dev = 0.1
 
-        step_x = noise * speed_x / self.ros_rate
-        step_y = noise * speed_y / self.ros_rate
+        step_x = noise * speed_x * self.time_step
+        step_y = noise * speed_y * self.time_step
 
         delta_x = self.pose_goal.position.x - self.pose.position.x
         delta_y = self.pose_goal.position.y - self.pose.position.y
@@ -109,7 +99,7 @@ class Agent(Node):
         new_x = self.pose.position.x + sign_x * min(step_x, abs(delta_x))
         new_y = self.pose.position.y + sign_y * min(step_y, abs(delta_y))
 
-        return Pose(Point(new_x, new_y, 0), Quaternion(0, 0, 0, 1))
+        return Pose(position=Point(x=new_x, y=new_y, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
 
     def publish_current_pose(self) -> None:
         """Publish current pose.
@@ -120,6 +110,14 @@ class Agent(Node):
 
         self.publisher.publish(self.pose)
 
+def main(args=None):
+    rclpy.init(args=args)
+    agent = Agent()
+    agent.start()
+
+    rclpy.spin(agent)
+    agent.destroy_node()
+    rclpy.shutdown()
 
 if __name__ == "__main__":
-    Agent().start()
+    main()

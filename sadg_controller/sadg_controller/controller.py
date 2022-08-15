@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Point, Pose, Quaternion
 
@@ -12,7 +13,7 @@ from sadg_controller.sadg.visualizer import Visualizer
 
 
 class Controller(Node):
-    def __init__(self, time_step: float = 0.2) -> None:
+    def __init__(self) -> None:
         """SADG Controller.
 
         ROS node which initializes a SADG controller based on a roadmap and
@@ -30,14 +31,13 @@ class Controller(Node):
         super().__init__("controller")
         self.get_logger().info("Starting up the controller ...")
 
-        self.time_step = time_step
-
-        roadmap_name = self.declare_parameter('roadmap_name').value
-        agent_count = self.declare_parameter('agent_count').value
-        visualize_sadg = self.declare_parameter('visualize_sadg', False).value
+        self.time_step = self.declare_parameter('time_step', 0.2).value
+        roadmap_path = self.declare_parameter('roadmap_path', '/tmp').value
+        agent_count = self.declare_parameter('agent_count', 1).value
+        self.visualize_sadg = self.declare_parameter('visualize_sadg', False).value
         ecbs_w = self.declare_parameter('ecbs_sub_factor', 1.8).value
 
-        roadmap = Roadmap(roadmap_name)
+        roadmap = Roadmap(roadmap_path)
 
         starts = roadmap.random_locations(agent_count)
         goals = roadmap.random_locations(agent_count)
@@ -45,8 +45,8 @@ class Controller(Node):
         problem = MAPFProblem(self.get_logger(), roadmap, starts, goals)
         plan = problem.solve(suboptimality_factor=ecbs_w)
 
-        sadg = compile_sadg(plan)
-        self.sadg_visualizer = Visualizer(sadg) if visualize_sadg else None
+        sadg = compile_sadg(plan, self.get_logger())
+        self.sadg_visualizer = Visualizer(sadg) if self.visualize_sadg else None
 
         agent_ids = [f"agent{id}" for id in range(agent_count)]
         self.comms = [Comms(self, id, sadg.get_agent_vertex(id)) for id in agent_ids]
@@ -77,7 +77,7 @@ class Controller(Node):
             if curr_vertex.can_execute() and curr_vertex.status == Status.STAGED:
 
                 goal = curr_vertex.get_goal_loc()
-                goal_pose = Pose(Point(goal.x, goal.y, 0), Quaternion(0, 0, 0, 1))
+                goal_pose = Pose(position=Point(x=goal.x, y=goal.y, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
                 comm.publish_pose_goal(goal_pose)
                 curr_vertex.set_status(Status.IN_PROGRESS)
                 msg = f"Goal = {curr_vertex.get_goal_loc()}"
@@ -102,6 +102,14 @@ class Controller(Node):
         if self.visualize_sadg:
             self.sadg_visualizer.refresh()
 
+def main(args=None):
+    rclpy.init(args=args)
+    controller = Controller()
+    controller.start()
+
+    rclpy.spin(controller)
+    controller.destroy_node()
+    rclpy.shutdown()
 
 if __name__ == "__main__":
-    Controller()
+    main()

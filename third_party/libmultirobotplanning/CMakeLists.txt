@@ -45,7 +45,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/libMultiRobotPlanning/CMakeLists
       ${PROJECT_BINARY_DIR}/install_cache/mapf_prioritized_sipp
       ${PROJECT_BINARY_DIR}/install_cache/next_best_assignment
       ${PROJECT_BINARY_DIR}/install_cache/sipp
-    DESTINATION "bin"
+    DESTINATION bin
+    PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ
   )
 
 else(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/libMultiRobotPlanning/CMakeLists.txt")

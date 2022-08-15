@@ -2,6 +2,8 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+import rclpy
 from rclpy.node import Node
 
 from sadg_controller.canvas.agent import Agent
@@ -11,13 +13,13 @@ from sadg_controller.mapf.roadmap import Roadmap
 
 class Simulation(Node):
 
-    def __init__(self, time_step: float = 0.05) -> None:
+    def __init__(self) -> None:
         super().__init__("simulation")
         self.get_logger().info("Starting up the simulation ...")
 
-        self.time_step = time_step
+        self.time_step = self.declare_parameter('time_step', 0.05).value
 
-        roadmap_name = self.declare_parameter('roadmap_name', 'test').value
+        roadmap_path = self.declare_parameter('roadmap_path', '/tmp').value
         agent_count = self.declare_parameter('agent_count', 20).value
 
         plt.ion()
@@ -28,12 +30,12 @@ class Simulation(Node):
         plt.title("Roadmap with agents")
         ax.set_aspect("equal")
 
-        roadmap = Roadmap(roadmap_name)
+        roadmap = Roadmap(roadmap_path)
         plot_roadmap_graph(roadmap, ax)
 
         colors = plt.cm.rainbow(np.arange(agent_count) / agent_count)
         agent_ids = [f"agent{id}" for id in range(agent_count)]
-        _ = [Agent(id, ax, color) for id, color in zip(agent_ids, colors)]
+        _ = [Agent(self, id, ax, color) for id, color in zip(agent_ids, colors)]
 
     def start(self) -> None:
         self.create_timer(self.time_step, self.simulation_task)
@@ -42,6 +44,14 @@ class Simulation(Node):
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 
+def main(args=None):
+    rclpy.init(args=args)
+    simulation = Simulation()
+    simulation.start()
+
+    rclpy.spin(simulation)
+    simulation.destroy_node()
+    rclpy.shutdown()
 
 if __name__ == "__main__":
-    Simulation().start()
+    main()

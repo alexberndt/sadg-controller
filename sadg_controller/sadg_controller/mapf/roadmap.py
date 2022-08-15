@@ -9,15 +9,14 @@ import yaml
 from sadg_controller.mapf.roadmap_location import RoadmapLocation
 
 logger = getLogger(__name__)
-dir_path = Path(__file__).parents[3].resolve()
 random.seed(1)
 
 
 class Roadmap:
-    def __init__(self, roadmap_name: str) -> None:
+    def __init__(self, roadmap_path: str) -> None:
 
-        roadmap_file = f"/{dir_path}/data/roadmaps/{roadmap_name}/roadmap.csv"
-        dimensions_file = f"/{dir_path}/data/roadmaps/{roadmap_name}/dimensions.yaml"
+        roadmap_file = f"/{roadmap_path}/roadmap.csv"
+        dimensions_file = f"/{roadmap_path}/dimensions.yaml"
 
         self.array = self._read_roadmap_csv(roadmap_file)
         self.dimensions = self._read_dimensions(dimensions_file)
