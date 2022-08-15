@@ -106,7 +106,7 @@ def compile_sadg(P: Plan, logger) -> SADG:  # noqa: C901
         logger.info(f"Agent: {agent_i}")
         E_groups[agent_i] = []
         for switch in switches:
-            logger.logdebug(
+            logger.debug(
                 f"{switch.fwd.tail.get_agent_id()} {switch.fwd.tail.get_vertex_idx()} -> {switch.fwd.head.get_agent_id()} {switch.fwd.head.get_vertex_idx()}"
             )
 

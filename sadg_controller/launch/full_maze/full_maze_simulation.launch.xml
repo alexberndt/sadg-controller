@@ -2,7 +2,7 @@
 
     <node name="simulation" pkg="sadg_controller"  exec="simulation" output="screen">
         <param name="agent_count" value="60"/>
-        <param name="roadmap_path" value="full_maze"/>
+        <param name="roadmap_path" value="$(find-pkg-share sadg_controller)/data/roadmaps/full_maze/"/>
     </node>
 
 </launch>
