@@ -1,4 +1,5 @@
-import rospy
+from rclpy.node import Node
+from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy
 from geometry_msgs.msg import Point, Pose, Quaternion
 
 from sadg_controller.sadg.status import Status
@@ -6,12 +7,13 @@ from sadg_controller.sadg.vertex import Vertex
 
 
 class Comms:
-    def __init__(self, agent_ns: str, vertex_initial: Vertex):
+    def __init__(self, node: Node, agent_ns: str, vertex_initial: Vertex):
         """Agent communications.
 
         Communication module for a single agent.
 
         Args:
+            node: ROS node to assign communication channels to.
             agent_ns: Namespace of the agent over the ROS network.
                 Also used as a unique identifier for this agent.
             vertex_initial: Initial SADG vertex which the agent
@@ -21,16 +23,20 @@ class Comms:
         self.current_vertex = vertex_initial
 
         self.sub_link = f"/{self.ns}/current"
-        self.subscriber = rospy.Subscriber(self.sub_link, Pose, self.callback)
+        self.subscriber = node.create_subscription(Pose, self.sub_link, self.callback)
+
+        latching_qos = QoSProfile(depth=1,
+            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+            history=QoSHistoryPolicy.KEEP_ALL)
 
         self.pub_link_goal = f"/{self.ns}/goal"
-        self.publisher_goal = rospy.Publisher(
-            self.pub_link_goal, Pose, queue_size=10, latch=True
+        self.publisher_goal = self.create_publisher(
+            Pose, self.pub_link_goal, qos_profile=latching_qos
         )
 
         self.pub_link_init = f"/{self.ns}/initial"
-        self.publisher_init = rospy.Publisher(
-            self.pub_link_init, Pose, queue_size=10, latch=True
+        self.publisher_init = self.create_publisher(
+            Pose, self.pub_link_init, qos_profile=latching_qos
         )
 
         pose_initial = get_start_pose(vertex_initial)
@@ -53,7 +59,7 @@ class Comms:
         Args:
             pose_current: Current agent pose.
         """
-        rospy.logdebug(f"{self.sub_link}: Callback: {parse_pose(pose_current)}")
+        self.get_logger().debug(f"{self.sub_link}: Callback: {parse_pose(pose_current)}")
 
         goal_x = self.current_vertex.get_goal_loc().x
         goal_y = self.current_vertex.get_goal_loc().y
@@ -78,7 +84,7 @@ class Comms:
             goal_pose: Goal pose which the agent should move
                 towards.
         """
-        rospy.logdebug(
+        self.get_logger().debug(
             f"{self.pub_link_goal}: Publishing goal pose: {parse_pose(goal_pose)}"
         )
         self.publisher_goal.publish(goal_pose)
@@ -92,7 +98,7 @@ class Comms:
         Args:
             pose_initial: Initial pose of the Agent.
         """
-        rospy.logdebug(
+        self.get_logger().debug(
             f"{self.pub_link_init}: Publishing initial pose: {parse_pose(pose_initial)}"
         )
         self.publisher_init.publish(pose_initial)

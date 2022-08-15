@@ -4,7 +4,8 @@ import math
 from logging import getLogger
 
 import numpy as np
-import rospy
+from rclpy.node import Node
+from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy
 from geometry_msgs.msg import Point, Pose, Quaternion
 
 from sadg_controller.comms import parse_pose
@@ -12,44 +13,45 @@ from sadg_controller.comms import parse_pose
 logger = getLogger(__name__)
 
 
-class Agent:
-    def __init__(self, ros_rate: int = 15) -> None:
+class Agent(Node):
+    def __init__(self, time_step: float = 0.04) -> None:
         """Agent simulation.
 
         Args:
-            ros_rate: Rate of agent simulation in Hz. Defaults to 30 Hz.
+            time_step: Rate of agent simulation in Hz. Defaults to 25 Hz.
 
         """
-        rospy.init_node("agent")
-        self.ns = rospy.get_param("~agent_ns")
-        self.uuid = rospy.get_param("~uuid")
-        self.ros_rate = ros_rate
+        super().__init__("agent")
+
+        self.ns = self.declare_parameter('agent_ns').value
+        self.uuid = self.declare_parameter('uuid').value
+        self.time_step = time_step
 
         self.sub_link_goal = f"/{self.ns}/goal"
-        self.subscriber = rospy.Subscriber(self.sub_link_goal, Pose, self.callback)
+        self.subscriber = self.create_subscription(Pose, self.sub_link_goal, self.callback_goal)
 
         self.pub_link = f"/{self.ns}/current"
-        self.publisher = rospy.Publisher(
-            self.pub_link, Pose, queue_size=1000, latch=True
-        )
+        latching_qos = QoSProfile(depth=1,
+            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+            history=QoSHistoryPolicy.KEEP_ALL)
+        self.publisher = self.create_publisher(Pose, self.pub_link, qos_profile=latching_qos)
 
         self.sub_link_initial = f"/{self.ns}/initial"
-        self.subscriber_initial = rospy.Subscriber(
-            self.sub_link_initial, Pose, self.callback_initial
-        )
+        self.sub_link_initial = self.create_subscription(Pose, self.sub_link_initial, self.callback_initial)
 
         self.pose = Pose(Point(0, 0, 0), Quaternion(0, 0, 0, 1))
         self.pose_goal = None
 
     def start(self) -> None:
         """Start agent simulation."""
-        rate = rospy.Rate(self.ros_rate)
-        while not rospy.is_shutdown():
-            self.pose = self.move_towards_goal_pose()
-            self.publish_current_pose()
-            rate.sleep()
+        self.create_timer(self.time_step, self.agent_task)
+    
+    def agent_task(self) -> None:
+        """Perform agent's task."""
+        self.pose = self.move_towards_goal_pose()
+        self.publish_current_pose()
 
-    def callback(self, pose_goal: Pose) -> None:
+    def callback_goal(self, pose_goal: Pose) -> None:
         """Callback for subscriber to goal position.
 
         Updates the agent's goal pose when a new goal pose
@@ -58,9 +60,10 @@ class Agent:
         Args:
             pose_goal: Goal pose passed in the message.
         """
-        rospy.logwarn(
+        self.get_logger().warn(
             f"{self.sub_link_goal} : Received goal pose: {parse_pose(pose_goal)}"
         )
+
         self.pose_goal = pose_goal
 
     def callback_initial(self, pose_initial: Pose) -> None:
@@ -73,7 +76,7 @@ class Agent:
         Args:
             pose_initial: Initial pose passed in the message.
         """
-        rospy.logwarn(
+        self.get_logger().warn(
             f"{self.sub_link_initial}: Received initial pose: {parse_pose(pose_initial)}"
         )
         self.pose = pose_initial
@@ -113,7 +116,8 @@ class Agent:
 
         Publishes the current pose of this agent.
         """
-        rospy.logdebug(f"{self.ns} : Current pose: {parse_pose(self.pose)}")
+        self.get_logger().debug(f"{self.ns} : Current pose: {parse_pose(self.pose)}")
+
         self.publisher.publish(self.pose)
 
 

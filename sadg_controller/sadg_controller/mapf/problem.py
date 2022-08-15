@@ -1,10 +1,9 @@
 import os
 import pathlib
 import subprocess
-from logging import getLogger
 from typing import Dict, List
 
-import rospy
+from rclpy.node import Node
 import yaml
 
 from sadg_controller.mapf.plan import Plan
@@ -13,7 +12,6 @@ from sadg_controller.mapf.roadmap_location import RoadmapLocation
 from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
 
 yaml.Dumper.ignore_aliases = lambda *args: True
-logger = getLogger(__name__)
 
 project_root = pathlib.Path(__file__).parents[3].resolve()
 
@@ -21,14 +19,15 @@ project_root = pathlib.Path(__file__).parents[3].resolve()
 class MAPFProblem:
     def __init__(
         self,
+        logger,
         roadmap: Roadmap,
         starts: List[RoadmapLocation],
         goals: List[RoadmapLocation],
     ) -> None:
+        self.logger = logger
         self.roadmap = roadmap
         self.starts = starts
         self.goals = goals
-        self.logger = logger
         self.tmp_dir = f"{project_root}/tmp/{next(RANDOM_SEQUENCE_GENERATOR)}"
         os.makedirs(self.tmp_dir)
 
@@ -71,7 +70,7 @@ class MAPFProblem:
         )
 
         if result.stdout == "Planning NOT successful!\n":
-            logger.error("Planning not successful!")
+            self.logger.error("Planning not successful!")
             raise RuntimeError("MAPF Planning not successful!")
 
         # read solution
@@ -98,14 +97,14 @@ class MAPFProblem:
         return agv_data
 
 
-def write_yaml(file: str, payload: Dict) -> None:
-    rospy.logdebug(f"Writing yaml file: {file} ...")
+def write_yaml(file: str, payload: Dict, logger) -> None:
+    logger.debug(f"Writing yaml file: {file} ...")
     with open(file, "w") as stream:
         yaml.dump(payload, stream, default_flow_style=False)
 
 
-def read_yaml(file: str) -> Dict:
-    rospy.logdebug(f"Reading yaml file: {file} ...")
+def read_yaml(file: str, logger) -> Dict:
+    logger.debug(f"Reading yaml file: {file} ...")
     with open(file, "r") as stream:
         try:
             return yaml.safe_load(stream)
