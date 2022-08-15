@@ -25,28 +25,36 @@ _Our approach significantly reduces the cumulative route completion of agents su
 
 ## Installation Instructions
 
-### Install Dependencies
+This repository supports several workflows to build and execute the software.
+We present here the typical ROS2 approach that will also prepare the dependency [`libMultiRobotPlanning`](https://github.com/whoenig/libMultiRobotPlanning) automatically.
 
-First, ensure you have:
+### Install ROS2
 
-- [Poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer) for consistent python dependency management.
-- [ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) for asynchronous inter-agent communication.
-- Linux `apt-get` packages: `g++`, `cmake`, `libboost-program-options-dev`, `libyaml-cpp-dev`, `clang-tidy`, `clang-format`, `doxygen`.
+We currently support ROS2 Galactic and ROS2 Humble, the former is advised for Ubuntu 20.04 users and the latter for For Ubuntu 22.04 users:
+- [ROS Galactic](https://docs.ros.org/en/galactic/Installation.html)
+- [ROS Humble](https://docs.ros.org/en/humble/Installation.html)
 
-### Clone Repository
+### Prepare workspace
+*FOR TRo REVIEWERS: section is currently not relevant, unzip the attached workspace and navigate to it using `cd`*
 
+Create a workspace (e.g., in your home folder) and clone `sadg-controller`.
 ```bash
-git clone --recurse-submodules git@github.com:alexberndt/sadg-controller.git
-cd sadg-controller
-make
+mkdir -p ~/sadg_ws/src
+cd ~/sadg_ws/src
+git clone --recurse-submodules git@github.com:<organization>/<repository>.git
+cd ~/sadg_ws
 ```
 
-> This repository contains [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning) in [third_party/](third_party/libMultiRobotPlanning/), a library which contains `MAPF` planners such as `CBS` and `ECBS` used by the SADG feedback scheme. libMultiRobotPlanning is compiled from source when running `make`.
-
-### Build the ROS Packge
-
+### Install dependencies
+From `~/sadg_ws`, execute:
 ```bash
-catkin_make
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+### Build workspace
+From `~/sadg_ws`, execute:
+```bash
+colcon build --symlink-install  # --symlink-install is optional
 ```
 
 ## Examples
@@ -55,20 +63,20 @@ To start a simulation, run the following
 
 #### Terminal 1: Initialize the Agents
 ```bash
-source devel/setup.zsh
-roslaunch launch/8/agents.launch
+source install/setup.bash
+ros2 launch sadg_controller n8_agents.launch.xml
 ```
 
 #### Terminal 2: Start the Controller
 ```bash
-source devel/setup.zsh
-roslaunch launch/8/controller.launch
+source install/setup.bash
+ros2 launch sadg_controller n8_controller.launch.xml
 ```
 
 #### Terminal 3: Visualize the Plan Execution
 ```bash
-source devel/setup.zsh
-roslaunch launch/8/simulation.launch
+source install/setup.bash
+ros2 launch sadg_controller n8_simulation.launch.xml
 ```
 
 <!-- #### Terminal 4: Visualize the SADG
