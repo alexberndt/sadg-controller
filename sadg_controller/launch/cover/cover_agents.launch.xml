@@ -1,0 +1,43 @@
+<launch>
+
+    <node name="agent0" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent0"/>
+        <param name="uuid" value="cn234lkj2n"/>
+    </node>
+
+    <node name="agent1" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent1"/>
+        <param name="uuid" value="nk4l23lskd"/>
+    </node>
+
+    <node name="agent2" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent2"/>
+        <param name="uuid" value="zxdl2csdxc"/>
+    </node>
+
+    <node name="agent3" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent3"/>
+        <param name="uuid" value="werl23lsyu"/>
+    </node>
+
+    <node name="agent4" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent4"/>
+        <param name="uuid" value="asnl4lkj2n"/>
+    </node>
+
+    <node name="agent5" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent5"/>
+        <param name="uuid" value="n4352lskd"/>
+    </node>
+
+    <node name="agent6" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent6"/>
+        <param name="uuid" value="opdl2czxd"/>
+    </node>
+
+    <node name="agent7" pkg="sadg_controller"  exec="agent" output="screen">
+        <param name="agent_ns" value="agent7"/>
+        <param name="uuid" value="quah3lsyu"/>
+    </node>
+
+</launch>
