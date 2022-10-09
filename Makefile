@@ -11,8 +11,8 @@ setup:
 	poetry install
 	poetry build
 	poetry run poetry-lock-package --build
-	mkdir third_party/libMultiRobotPlanning/build
-	cd third_party/libMultiRobotPlanning/build
+	mkdir third_party/libmultirobotplanning/build
+	cd third_party/libmultirobotplanning/build
 	cmake ..
 	make
 

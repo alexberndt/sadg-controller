@@ -1,9 +1,0 @@
-<launch>
-
-    <node name="controller" pkg="sadg_controller" type="controller.py" output="screen">
-        <param name="roadmap_name" value="half_maze"/>
-        <param name="agent_count" value="60"/>
-        <param name="ecbs_sub_factor" value="1.8"/>
-    </node>
-
-</launch>
