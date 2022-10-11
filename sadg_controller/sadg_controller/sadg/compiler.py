@@ -1,3 +1,5 @@
+from logging import Logger
+
 from sadg_controller.core.geometry import intersects
 from sadg_controller.mapf.plan import Plan
 from sadg_controller.sadg.dependency import Dependency
@@ -8,7 +10,7 @@ from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex, loc
 
 
-def compile_sadg(P: Plan, logger) -> SADG:  # noqa: C901
+def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
     """Algorithm 2: SADG Compiler.
 
     Compiles a switchable action dependency graph (SADG) from

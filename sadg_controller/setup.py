@@ -1,6 +1,7 @@
-from setuptools import setup, find_packages
-from glob import glob
 import os
+
+from setuptools import find_packages, setup
+
 
 def find_files(directory, target_base_path):
     paths_dict = {}
@@ -19,31 +20,31 @@ def find_files(directory, target_base_path):
 
     return data_files
 
-package_name = 'sadg_controller'
+
+package_name = "sadg_controller"
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version="0.0.0",
     packages=find_packages(),
     data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
-        *find_files('data', os.path.join('share', package_name)),
-        *find_files('launch', os.path.join('share', package_name)),
+        ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
+        ("share/" + package_name, ["package.xml"]),
+        *find_files("data", os.path.join("share", package_name)),
+        *find_files("launch", os.path.join("share", package_name)),
     ],
-    install_requires=['setuptools'],
+    install_requires=["setuptools"],
     zip_safe=True,
-    maintainer='Alex Berndt',
-    maintainer_email='berndtae@gmail.com',
-    description='Implementation of the SADG RHC feedback control scheme to reduce route completion times of delayed agents following MAPF plans.',
-    license='Proprietary',
+    maintainer="Alex Berndt",
+    maintainer_email="berndtae@gmail.com",
+    description="Implementation of the SADG RHC feedback control scheme to reduce route completion times of delayed agents following MAPF plans.",
+    license="Proprietary",
     tests_require=[],
     entry_points={
-        'console_scripts': [
-            'agent = sadg_controller.agent:main',
-            'controller = sadg_controller.controller:main',
-            'simulation = sadg_controller.simulation:main',
+        "console_scripts": [
+            "agent = sadg_controller.agent:main",
+            "controller = sadg_controller.controller:main",
+            "simulation = sadg_controller.simulation:main",
         ],
     },
 )

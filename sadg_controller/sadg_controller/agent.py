@@ -1,41 +1,53 @@
 import math
-import numpy as np
 
+import numpy as np
 import rclpy
-from rclpy.node import Node
-from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy
 from geometry_msgs.msg import Point, Pose, Quaternion
+from rclpy.node import Node
+from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSProfile
 
 from sadg_controller.comms import parse_pose
+
 
 class Agent(Node):
     def __init__(self) -> None:
         """Agent simulation."""
         super().__init__("agent")
 
-        self.ns = self.declare_parameter('agent_ns', 'agent0').value
-        self.uuid = self.declare_parameter('uuid', 'xxxxxxx').value
-        self.time_step = self.declare_parameter('time_step', 0.04).value
+        self.ns = self.declare_parameter("agent_ns", "agent0").value
+        self.uuid = self.declare_parameter("uuid", "xxxxxxx").value
+        self.time_step = self.declare_parameter("time_step", 0.04).value
 
         self.sub_link_goal = f"/{self.ns}/goal"
-        self.subscriber = self.create_subscription(Pose, self.sub_link_goal, self.callback_goal, 10)
+        self.subscriber = self.create_subscription(
+            Pose, self.sub_link_goal, self.callback_goal, 10
+        )
 
         self.pub_link = f"/{self.ns}/current"
-        latching_qos = QoSProfile(depth=1,
+        latching_qos = QoSProfile(
+            depth=1,
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
-            history=QoSHistoryPolicy.KEEP_ALL)
-        self.publisher = self.create_publisher(Pose, self.pub_link, qos_profile=latching_qos)
+            history=QoSHistoryPolicy.KEEP_ALL,
+        )
+        self.publisher = self.create_publisher(
+            Pose, self.pub_link, qos_profile=latching_qos
+        )
 
         self.sub_link_initial = f"/{self.ns}/initial"
-        self.sub_link_initial = self.create_subscription(Pose, self.sub_link_initial, self.callback_initial, 10)
+        self.sub_link_initial = self.create_subscription(
+            Pose, self.sub_link_initial, self.callback_initial, 10
+        )
 
-        self.pose = Pose(position=Point(x=0.0, y=0.0, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
+        self.pose = Pose(
+            position=Point(x=0.0, y=0.0, z=0.0),
+            orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0),
+        )
         self.pose_goal = None
 
     def start(self) -> None:
         """Start agent simulation."""
         self.create_timer(self.time_step, self.agent_task)
-    
+
     def agent_task(self) -> None:
         """Perform agent's task."""
         self.pose = self.move_towards_goal_pose()
@@ -99,7 +111,10 @@ class Agent(Node):
         new_x = self.pose.position.x + sign_x * min(step_x, abs(delta_x))
         new_y = self.pose.position.y + sign_y * min(step_y, abs(delta_y))
 
-        return Pose(position=Point(x=new_x, y=new_y, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
+        return Pose(
+            position=Point(x=new_x, y=new_y, z=0.0),
+            orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0),
+        )
 
     def publish_current_pose(self) -> None:
         """Publish current pose.
@@ -110,6 +125,7 @@ class Agent(Node):
 
         self.publisher.publish(self.pose)
 
+
 def main(args=None):
     rclpy.init(args=args)
     agent = Agent()
@@ -118,6 +134,7 @@ def main(args=None):
     rclpy.spin(agent)
     agent.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()

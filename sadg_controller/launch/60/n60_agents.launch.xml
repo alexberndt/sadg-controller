@@ -163,7 +163,7 @@
     <node name="agent39" pkg="sadg_controller"  exec="agent" output="screen">
         <param name="agent_ns" value="agent39"/>
         <param name="uuid" value="nk4l23lskd"/>
-    </node>    
+    </node>
 
     <node name="agent40" pkg="sadg_controller"  exec="agent" output="screen">
         <param name="agent_ns" value="agent40"/>

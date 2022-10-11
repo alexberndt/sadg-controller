@@ -22,8 +22,8 @@ COPY sadg_controller src/sadg_controller
 # RUN pip install --no-cache-dir dist/*.whl \
 #     && rm -rf dist/*.whl
 
-RUN source /opt/ros/galactic/setup.bash && rosdep init && rosdep update 
-RUN rosdep install --from-paths src --ignore-src -r -y 
+RUN source /opt/ros/galactic/setup.bash && rosdep init && rosdep update
+RUN rosdep install --from-paths src --ignore-src -r -y
 RUN colcon build --symlink-install
 
 

@@ -2,7 +2,6 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-
 import rclpy
 from rclpy.node import Node
 
@@ -12,15 +11,14 @@ from sadg_controller.mapf.roadmap import Roadmap
 
 
 class Simulation(Node):
-
     def __init__(self) -> None:
         super().__init__("simulation")
         self.get_logger().info("Starting up the simulation ...")
 
-        self.time_step = self.declare_parameter('time_step', 0.05).value
+        self.time_step = self.declare_parameter("time_step", 0.05).value
 
-        roadmap_path = self.declare_parameter('roadmap_path', '/tmp').value
-        agent_count = self.declare_parameter('agent_count', 20).value
+        roadmap_path = self.declare_parameter("roadmap_path", "/tmp").value
+        agent_count = self.declare_parameter("agent_count", 20).value
 
         plt.ion()
         self.fig, ax = plt.subplots()
@@ -44,6 +42,7 @@ class Simulation(Node):
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 
+
 def main(args=None):
     rclpy.init(args=args)
     simulation = Simulation()
@@ -52,6 +51,7 @@ def main(args=None):
     rclpy.spin(simulation)
     simulation.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()

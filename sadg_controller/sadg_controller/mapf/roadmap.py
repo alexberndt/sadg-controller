@@ -1,7 +1,6 @@
 import csv
 import random
 from logging import getLogger
-from pathlib import Path
 from typing import Dict, List
 
 import yaml

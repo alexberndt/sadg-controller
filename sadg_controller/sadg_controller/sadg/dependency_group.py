@@ -1,7 +1,5 @@
 from enum import Enum
-from typing import List
 
-from sadg_controller.sadg.dependency import Dependency
 from sadg_controller.sadg.dependency_switch import DependencySwitch
 
 
@@ -75,7 +73,6 @@ class DependencyGroup:
         else:
             print("single")
             return False
-
 
     def switch(self) -> None:
         for dependency in self.dependencies:

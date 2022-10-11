@@ -1,6 +1,6 @@
-from rclpy.node import Node
-from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy
 from geometry_msgs.msg import Point, Pose, Quaternion
+from rclpy.node import Node
+from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSProfile
 
 from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex
@@ -24,11 +24,15 @@ class Comms:
         self.logger = node.get_logger()
 
         self.sub_link = f"/{self.ns}/current"
-        self.subscriber = node.create_subscription(Pose, self.sub_link, self.callback, 10)
+        self.subscriber = node.create_subscription(
+            Pose, self.sub_link, self.callback, 10
+        )
 
-        latching_qos = QoSProfile(depth=1,
+        latching_qos = QoSProfile(
+            depth=1,
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
-            history=QoSHistoryPolicy.KEEP_ALL)
+            history=QoSHistoryPolicy.KEEP_ALL,
+        )
 
         self.pub_link_goal = f"/{self.ns}/goal"
         self.publisher_goal = node.create_publisher(
@@ -122,4 +126,7 @@ def get_start_pose(vertex: Vertex) -> Pose:
             to a pose.
     """
     location = vertex.get_start_loc()
-    return Pose(position=Point(x=location.x, y=location.y, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
+    return Pose(
+        position=Point(x=location.x, y=location.y, z=0.0),
+        orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0),
+    )

@@ -4,8 +4,8 @@ from typing import List
 
 import matplotlib.colors as clr
 import matplotlib.pyplot as plt
-from rclpy.node import Node
 from geometry_msgs.msg import Point, Pose, Quaternion
+from rclpy.node import Node
 
 
 class Agent:
@@ -16,7 +16,10 @@ class Agent:
         self.ax = ax
         self.color = clr.to_hex(color)
 
-        self.pose = Pose(position=Point(x=0.0, y=0.0, z=0.0), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0))
+        self.pose = Pose(
+            position=Point(x=0.0, y=0.0, z=0.0),
+            orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0),
+        )
         (self.position_current,) = self.ax.plot(
             get_x_points(self.pose.position.x),
             get_y_points(self.pose.position.y),
@@ -25,7 +28,9 @@ class Agent:
         # self.position_goal, = self.ax.plot(self.pose.position.x, self.pose.position.y, 'g.-')
 
         self.sub_link = f"/{self.ns}/current"
-        self.subscriber = node.create_subscription(Pose, self.sub_link, self.callback, 10)
+        self.subscriber = node.create_subscription(
+            Pose, self.sub_link, self.callback, 10
+        )
 
         # self.sub_link_goal = f"/{self.ns}/goal"
         # self.subscriber_goal = rospy.Subscriber(self.sub_link_goal, Pose, self.callback_goal)

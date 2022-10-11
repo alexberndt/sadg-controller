@@ -16,7 +16,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/libMultiRobotPlanning/CMakeLists
   set(EXTERNAL_PROJECT_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-unused-parameter")
 
   ExternalProject_Add(libmultirobotplanning
-    CMAKE_ARGS 
+    CMAKE_ARGS
       -DCMAKE_CXX_FLAGS=${EXTERNAL_PROJECT_CMAKE_CXX_FLAGS}
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/libMultiRobotPlanning
     BINARY_DIR ${PROJECT_BINARY_DIR}/install_cache
@@ -33,7 +33,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/libMultiRobotPlanning/CMakeLists
 
   ## install the planners
   install(
-    FILES 
+    FILES
       ${PROJECT_BINARY_DIR}/install_cache/assignment
       ${PROJECT_BINARY_DIR}/install_cache/a_star
       ${PROJECT_BINARY_DIR}/install_cache/a_star

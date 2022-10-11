@@ -1,32 +1,33 @@
-import os
-import pathlib
 import subprocess
+from logging import Logger
 from tempfile import mkdtemp
 from typing import Dict, List
 
-from rclpy.node import Node
 import yaml
 
 from sadg_controller.mapf.plan import Plan
 from sadg_controller.mapf.roadmap import Roadmap
 from sadg_controller.mapf.roadmap_location import RoadmapLocation
-from sadg_controller.utils.constants import RANDOM_SEQUENCE_GENERATOR
+
+# from rclpy.node import Node
+
 
 yaml.Dumper.ignore_aliases = lambda *args: True
+
 
 class MAPFProblem:
     def __init__(
         self,
-        logger,
         roadmap: Roadmap,
         starts: List[RoadmapLocation],
         goals: List[RoadmapLocation],
+        logger: Logger,
     ) -> None:
-        self.logger = logger
         self.roadmap = roadmap
         self.starts = starts
         self.goals = goals
-        self.tmp_dir = mkdtemp(prefix='sadg_controller')
+        self.logger = logger
+        self.tmp_dir = mkdtemp(prefix="sadg_controller")
 
     def solve(self, suboptimality_factor: float = 1.5) -> Plan:
         """Solve the MAPF problem using ECBS algorithm."""
@@ -50,7 +51,7 @@ class MAPFProblem:
         # solve MAPF using the generated yaml file
         solution_file = f"{self.tmp_dir}/solution.yaml"
         cmd = [
-            f"ecbs",
+            "ecbs",
             "-i",
             input_file,
             "-o",
