@@ -30,9 +30,9 @@ We present here the typical ROS2 approach that will also prepare the dependency 
 
 ### Install ROS2
 
-We currently support ROS2 Galactic and ROS2 Humble, the former is advised for Ubuntu 20.04 users and the latter for For Ubuntu 22.04 users:
-- [ROS Galactic](https://docs.ros.org/en/galactic/Installation.html)
-- [ROS Humble](https://docs.ros.org/en/humble/Installation.html)
+We currently support the following version of ROS2:
+- [ROS Galactic](https://docs.ros.org/en/galactic/Installation.html) for Ubuntu 20.04
+- [ROS Humble](https://docs.ros.org/en/humble/Installation.html) for Ubuntu 22.04
 
 Make sure to install `colcon` and `rosdep`:
 ```bash
