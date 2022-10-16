@@ -33,7 +33,7 @@ class Controller(Node):
 
         self.logger.info("Starting up the controller ...")
 
-        self.time_step = self.declare_parameter("time_step", 0.2).value
+        self.time_step = self.declare_parameter("time_step", 2.0).value
         roadmap_path = self.declare_parameter("roadmap_path", "/tmp").value
         agent_count = self.declare_parameter("agent_count", 1).value
         self.visualize_sadg = self.declare_parameter("visualize_sadg", False).value
@@ -47,11 +47,13 @@ class Controller(Node):
         problem = MAPFProblem(roadmap, starts, goals, self.logger)
         plan = problem.solve(suboptimality_factor=ecbs_w)
 
-        sadg = compile_sadg(plan, self.logger)
-        self.sadg_visualizer = Visualizer(sadg) if self.visualize_sadg else None
+        self.sadg = compile_sadg(plan, self.logger)
+        self.sadg_visualizer = Visualizer(self.sadg) if self.visualize_sadg else None
 
         agent_ids = [f"agent{id}" for id in range(agent_count)]
-        self.comms = [Comms(self, id, sadg.get_agent_vertex(id)) for id in agent_ids]
+        self.comms = [
+            Comms(self, id, self.sadg.get_agent_first_vertex(id)) for id in agent_ids
+        ]
 
     def start(self) -> None:
         """Start controller."""
@@ -101,6 +103,12 @@ class Controller(Node):
                 msg = "Blocked by dependencies"
 
             self.logger.warn(f"{comm.get_agent_id()} : {msg}")
+
+        self.logger.info("--------------------------------------------------")
+
+        self.logger.info("Running RHC optimization ...")
+
+        
 
         self.logger.info("--------------------------------------------------")
 
