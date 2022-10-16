@@ -29,9 +29,9 @@ class Controller(Node):
             5. Initialize Comms to the `agent_count` agents
         """
         super().__init__("controller")
-        logger = self.get_logger()
+        self.logger = self.get_logger()
 
-        logger.info("Starting up the controller ...")
+        self.logger.info("Starting up the controller ...")
 
         self.time_step = self.declare_parameter("time_step", 0.2).value
         roadmap_path = self.declare_parameter("roadmap_path", "/tmp").value
@@ -44,10 +44,10 @@ class Controller(Node):
         starts = roadmap.random_locations(agent_count)
         goals = roadmap.random_locations(agent_count)
 
-        problem = MAPFProblem(roadmap, starts, goals, logger)
+        problem = MAPFProblem(roadmap, starts, goals, self.logger)
         plan = problem.solve(suboptimality_factor=ecbs_w)
 
-        sadg = compile_sadg(plan, logger)
+        sadg = compile_sadg(plan, self.logger)
         self.sadg_visualizer = Visualizer(sadg) if self.visualize_sadg else None
 
         agent_ids = [f"agent{id}" for id in range(agent_count)]
@@ -100,9 +100,9 @@ class Controller(Node):
             else:
                 msg = "Blocked by dependencies"
 
-            self.get_logger().warn(f"{comm.get_agent_id()} : {msg}")
+            self.logger.warn(f"{comm.get_agent_id()} : {msg}")
 
-        self.get_logger().info("--------------------------------------------------")
+        self.logger.info("--------------------------------------------------")
 
         if self.visualize_sadg:
             self.sadg_visualizer.refresh()
