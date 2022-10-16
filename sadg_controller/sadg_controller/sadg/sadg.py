@@ -28,11 +28,15 @@ class SADG:
         self.logger = logger
 
     def get_agent_first_vertex(self, agent_id: str) -> Vertex:
-        return self.vertices[agent_id][0]
+        return self.vertices_by_agent[agent_id][0]
 
-    def optimize(self) -> None:  # noqa: C901
+    def optimize(self, horizon: float = 5) -> None:  # noqa: C901
         """
         Run Optimization for the SADG method.
+
+        Args:
+            horizon: Time horizon within which to consider dependency
+                group parameters
         """
 
         # Build the MILP

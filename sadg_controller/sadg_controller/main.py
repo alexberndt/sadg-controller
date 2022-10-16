@@ -25,7 +25,7 @@ def main() -> None:
 
     sadg = compile_sadg(plan, logger)
 
-    sadg.optimize()
+    sadg.optimize(horizon=2)
 
 
 if __name__ == "__main__":
