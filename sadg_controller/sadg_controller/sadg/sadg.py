@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import Dict, List
 
 from sadg_controller.sadg.dependency import Dependency
@@ -11,10 +12,21 @@ class SADG:
         vertices: Dict[str, List[Vertex]],
         regular_deps: Dict[str, List[Dependency]],
         switch_groups: Dict[str, List[DependencyGroup]],
+        logger: Logger,
     ) -> None:
         self.vertices = vertices
         self.regular_deps = regular_deps
         self.switch_groups = switch_groups
+        self.logger = logger
+
+    def optimize(self) -> None:
+        """
+        Run Optimization for the SADG method.
+        """
+
+        # Build the MILP
+        self.logger.info("Optimizing ...")
+        
 
     # def get_active_SE_ADG(self, b_vec: List[bool]) -> SE_ADG:
     #     """Get the SE-ADG for a given boolean vector.

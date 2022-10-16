@@ -132,4 +132,4 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
     logger.info(f"Switches: {switch_cnt}")
     logger.info(f"Groups:   {group_cnt}")
 
-    return SADG(V_sadg, E_regular, E_groups)
+    return SADG(V_sadg, E_regular, E_groups, logger)

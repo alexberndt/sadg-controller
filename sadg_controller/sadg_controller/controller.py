@@ -108,7 +108,7 @@ class Controller(Node):
 
         self.logger.info("Running RHC optimization ...")
 
-        
+        self.sadg.optimize()
 
         self.logger.info("--------------------------------------------------")
 
