@@ -27,6 +27,9 @@ class SADG:
         self.switch_groups = switch_groups
         self.logger = logger
 
+    def get_agent_first_vertex(self, agent_id: str) -> Vertex:
+        return self.vertices[agent_id][0]
+
     def optimize(self) -> None:  # noqa: C901
         """
         Run Optimization for the SADG method.
@@ -169,6 +172,3 @@ class SADG:
                     print(
                         f"Switching dependency group {dep_group_idx}: NOT Switching  ..."
                     )
-
-    def get_agent_first_vertex(self, agent_id: str) -> Vertex:
-        return self.vertices[agent_id][0]
