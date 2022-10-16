@@ -54,9 +54,9 @@ class Visualizer:
                         v_tail = dependency.get_tail().get_shorthand()
                         edges.append((v_tail, v_head, {"color": "#008000"}))
 
-                    if not dependency.is_active():
-                        v_tail = dependency.get_tail().get_shorthand()
-                        edges.append((v_tail, v_head, {"color": "#D3D3D3"}))
+                    # if not dependency.is_active():
+                    #     v_tail = dependency.get_tail().get_shorthand()
+                    #     edges.append((v_tail, v_head, {"color": "#D3D3D3"}))
 
         self.G.add_edges_from(edges)
         self.pos = nx.get_node_attributes(self.G, "pos")

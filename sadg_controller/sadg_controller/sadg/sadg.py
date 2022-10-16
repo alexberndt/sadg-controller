@@ -4,7 +4,6 @@ from typing import Dict, List
 from sadg_controller.sadg.dependency import Dependency
 from sadg_controller.sadg.dependency_group import DependencyGroup
 from sadg_controller.sadg.vertex import Vertex
-from sadg_controller.se_adg.se_adg import SE_ADG
 
 class SADG:
     def __init__(
@@ -27,6 +26,20 @@ class SADG:
         # Build the MILP
         self.logger.info("Optimizing ...")
         
+        for agent_id, switch_groups in self.switch_groups.items():
+
+            self.logger.info(f"agent_id: {agent_id}")
+            self.logger.info(f"switch_groups: {len(switch_groups)}")
+
+            for switch_group in switch_groups:
+                self.logger.info("Switch group: {}")
+                vertex_id, v_agent_id = switch_group.get_head_vertex_params()
+                self.logger.info(f"head -> vertex_id: {vertex_id}")
+                self.logger.info(f"head -> v_agent_id: {v_agent_id}")
+                vertex_id, v_agent_id = switch_group.get_tail_vertex_params()
+                self.logger.info(f"tail -> vertex_id: {vertex_id}")
+                self.logger.info(f"tail -> v_agent_id: {v_agent_id}")
+
 
     # def get_active_SE_ADG(self, b_vec: List[bool]) -> SE_ADG:
     #     """Get the SE-ADG for a given boolean vector.

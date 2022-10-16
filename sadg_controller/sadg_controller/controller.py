@@ -112,8 +112,8 @@ class Controller(Node):
 
         self.logger.info("--------------------------------------------------")
 
-        if self.visualize_sadg:
-            self.sadg_visualizer.refresh()
+        # if self.visualize_sadg:
+        #     self.sadg_visualizer.refresh()
 
 
 def main(args=None):
