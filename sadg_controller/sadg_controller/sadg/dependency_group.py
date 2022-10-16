@@ -1,8 +1,8 @@
 from enum import Enum
+from typing import Tuple
 
-from typing import Tuple 
 from sadg_controller.sadg.dependency_switch import DependencySwitch
-from sadg_controller.sadg.vertex import Vertex
+
 
 class DependencyGroupType(Enum):
     SINGLE = 0
@@ -79,18 +79,17 @@ class DependencyGroup:
         """
         Returns vertex_id, agent_id of head vertex.
         """
-        vertex_id =  self.last_head_vertex_idx
-        agent_id =  self.last_head_agent_id
+        vertex_id = self.last_head_vertex_idx
+        agent_id = self.last_head_agent_id
         return vertex_id, agent_id
 
     def get_tail_vertex_params(self) -> Tuple[str, str]:
         """
         Returns vertex_id, agent_id of head vertex.
         """
-        vertex_id =  self.last_tail_vertex_idx
-        agent_id =  self.last_tail_agent_id
+        vertex_id = self.last_tail_vertex_idx
+        agent_id = self.last_tail_agent_id
         return vertex_id, agent_id
-
 
     def switch(self) -> None:
         for dependency in self.dependencies:
