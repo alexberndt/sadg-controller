@@ -18,17 +18,17 @@ class DependencyGroup:
         self.dependencies: List[DependencySwitch] = [dependency_switch]
         self.type = DependencyGroupType.SINGLE
 
-        self.last_tail: Vertex = dependency_switch.forward.get_tail()
+        self.last_tail: Vertex = dependency_switch.get_active().get_tail()
         self.last_tail_vertex_idx: int = self.last_tail.get_vertex_idx()
         self.last_tail_agent_id: int = self.last_tail.get_agent_id()
 
-        self.last_head: Vertex = dependency_switch.forward.get_head()
+        self.last_head: Vertex = dependency_switch.get_active().get_head()
         self.last_head_vertex_idx: int = self.last_head.get_vertex_idx()
         self.last_head_agent_id: int = self.last_head.get_agent_id()
 
         # Create list of "first" vertex heads for group
-        self.first_head_fwd: Vertex = dependency_switch.forward.get_head()
-        self.first_head_rev: Vertex = dependency_switch.reverse.get_head()
+        self.first_head_active: Vertex = dependency_switch.get_active().get_head()
+        self.first_head_inactive: Vertex = dependency_switch.get_inactive().get_head()
 
     def get_uid(self) -> str:
         """Return the unique identifier for this dependency group."""
@@ -37,6 +37,8 @@ class DependencyGroup:
     def append_switch(self, new_dependency_switch: DependencySwitch) -> bool:
         """Append a dependency switch to the group.
 
+        Used when creating the SADG, not while optimizing.
+
         Args:
             dependency_switch: Dependency switch to add to the group.
 
@@ -44,9 +46,9 @@ class DependencyGroup:
             True if switch is successfully added to group, otherwise False.
         """
 
-        new_forward_dependency = new_dependency_switch.forward
-        tail = new_forward_dependency.get_tail()
-        head = new_forward_dependency.get_head()
+        new_active_dependency = new_dependency_switch.get_active()
+        tail = new_active_dependency.get_tail()
+        head = new_active_dependency.get_head()
 
         # Check for same
         if (
@@ -85,7 +87,7 @@ class DependencyGroup:
             self.last_head_vertex_idx = head.get_vertex_idx()
 
             # Update "first" reverse head arrow
-            self.first_head_rev = new_forward_dependency.get_head()
+            self.first_head_inactive = new_active_dependency.get_head()
 
             return True
 
@@ -110,6 +112,13 @@ class DependencyGroup:
     #     agent_id = self.last_tail_agent_id
     #     return vertex_id, agent_id
 
+    def within_horizon(self, horizon) -> bool:
+        """
+        Check whether the dependencies within the group
+        fall within the provided horizon.
+        """
+        return True  # TODO
+
     def get_dependencies(self) -> List[DependencySwitch]:
         return self.dependencies
 
@@ -127,13 +136,19 @@ class DependencyGroup:
         only track the "first" head dependency status from
         the forward and reverse dependencies.
         """
-        return self.first_head_fwd.get_status() in [
+        return self.first_head_active.get_status() in [
             Status.STAGED
-        ] and self.first_head_rev.get_status() in [Status.STAGED]
+        ] and self.first_head_inactive.get_status() in [Status.STAGED]
 
     def switch(self) -> None:
         for dependency in self.dependencies:
             dependency.switch()
+
+        # Create list of "first" vertex heads for group
+        self.first_head_active: Vertex = self.dependencies[-1].get_active().get_head()
+        self.first_head_inactive: Vertex = (
+            self.dependencies[-1].get_inactive().get_head()
+        )
 
     def __repr__(self) -> str:
         return f"v_{self.last_tail_agent_id}_{self.last_tail_vertex_idx}_to_v_{self.last_head_agent_id}_{self.last_head_vertex_idx}_{self.type}"

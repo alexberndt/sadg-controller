@@ -104,20 +104,24 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
 
     # Group dependencies for switching
     E_groups = {}
-    dg_idx = 0
     for agent_i, switches in E_switchable.items():
         logger.info(f"Agent: {agent_i}")
         E_groups[agent_i] = []
+        dg_idx = 0
         for switch in switches:
             logger.debug(
                 f"{switch.forward.tail.get_agent_id()} {switch.forward.tail.get_vertex_idx()} -> {switch.forward.head.get_agent_id()} {switch.forward.head.get_vertex_idx()}"
             )
 
             if len(E_groups[agent_i]) == 0:
-                E_groups[agent_i].append(DependencyGroup(switch, f"dg_{dg_idx}"))
+                E_groups[agent_i].append(
+                    DependencyGroup(switch, f"dg_{agent_i}_{dg_idx}")
+                )
                 dg_idx += 1
             elif not E_groups[agent_i][-1].append_switch(switch):
-                E_groups[agent_i].append(DependencyGroup(switch, f"dg_{dg_idx}"))
+                E_groups[agent_i].append(
+                    DependencyGroup(switch, f"dg_{agent_i}_{dg_idx}")
+                )
                 dg_idx += 1
             else:
                 continue

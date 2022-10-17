@@ -71,7 +71,7 @@ class SADG:
             for dep_group in dep_groups:
 
                 # Check if dependency group can be switched
-                if dep_group.is_switchable():
+                if dep_group.is_switchable() and dep_group.within_horizon(horizon):
 
                     # Add big-M constraint for each dependency switch in
                     # the dependency group
@@ -169,10 +169,13 @@ class SADG:
             # Find all binary variables corresponding
             # to a dependency group
             if var.name.startswith("dg_"):
-                dep_group_idx = int(var.name.replace("dg_", ""))
+
+                # Parse DG name : "dg_{agent_id}_{dg_index}"
+                dg_without_prefix = var.name.replace("dg_", "")
+                agent_id, dep_group_idx = dg_without_prefix.split("_")
                 if var.x == 1.0:
                     print(f"Dependency group {dep_group_idx}: Switching ...")
+                    # Apply switching to DG
+                    self.switch_groups[agent_id][dep_group_idx].switch()
                 else:
-                    print(
-                        f"Switching dependency group {dep_group_idx}: NOT Switching  ..."
-                    )
+                    print(f"Dependency group {dep_group_idx}: NOT Switching  ...")
