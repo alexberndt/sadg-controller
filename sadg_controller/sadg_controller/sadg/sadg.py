@@ -162,8 +162,10 @@ class SADG:
         m_opt.verbose = 0
         m_opt.objective = minimize(xsum(last_vertex_vars))
 
+        # Run the optimization
         _ = m_opt.optimize(max_seconds=60)
-        print(m_opt.objective_value)
+        self.logger.info(f"{m_opt.objective_value}")
+        print(f"{m_opt.objective_value}")
 
         for var in m_opt.vars:
 
@@ -177,8 +179,14 @@ class SADG:
                 dep_group_idx = int(dep_group_idx)
 
                 if var.x == 1.0:
+                    self.logger.info(
+                        f"Dependency group {dg_without_prefix}: Switching ..."
+                    )
                     print(f"Dependency group {dep_group_idx}: Switching ...")
                     # Apply switching to DG
                     self.switch_groups[agent_id][dep_group_idx].switch()
                 else:
+                    self.logger.info(
+                        f"Dependency group {dg_without_prefix}: NOT Switching  ..."
+                    )
                     print(f"Dependency group {dep_group_idx}: NOT Switching  ...")

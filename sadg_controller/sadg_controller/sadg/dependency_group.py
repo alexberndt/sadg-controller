@@ -141,14 +141,21 @@ class DependencyGroup:
         ] and self.first_head_inactive.get_status() in [Status.STAGED]
 
     def switch(self) -> None:
+
         for dependency in self.dependencies:
             dependency.switch()
 
         # Create list of "first" vertex heads for group
         self.first_head_active: Vertex = self.dependencies[-1].get_active().get_head()
-        self.first_head_inactive: Vertex = (
-            self.dependencies[-1].get_inactive().get_head()
-        )
+
+        if self.type == DependencyGroupType.OPPOSITE:
+            self.first_head_inactive: Vertex = (
+                self.dependencies[-1].get_inactive().get_head()
+            )
+        else:
+            self.first_head_inactive: Vertex = (
+                self.dependencies[0].get_inactive().get_head()
+            )
 
     def __repr__(self) -> str:
         return f"v_{self.last_tail_agent_id}_{self.last_tail_vertex_idx}_to_v_{self.last_head_agent_id}_{self.last_head_vertex_idx}_{self.type}"
