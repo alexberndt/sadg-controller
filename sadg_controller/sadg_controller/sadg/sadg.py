@@ -19,12 +19,12 @@ class SADG:
         self,
         vertices_by_agent: Dict[str, List[Vertex]],
         regular_deps: Dict[str, List[Dependency]],
-        switch_groups: Dict[str, List[DependencyGroup]],
+        switchable_dep_groups: Dict[str, List[DependencyGroup]],
         logger: Logger,
     ) -> None:
         self.vertices_by_agent = vertices_by_agent
         self.regular_deps = regular_deps
-        self.switch_groups = switch_groups
+        self.switchable_dep_groups = switchable_dep_groups
         self.logger = logger
 
     def get_first_agent_vertex(self, agent_id: str) -> Vertex:
@@ -32,6 +32,9 @@ class SADG:
 
     def get_agent_vertices(self, agent_id: str) -> List[Vertex]:
         return self.vertices_by_agent[agent_id]
+
+    def get_switchable_dep_groups(self) -> Dict[str, List[DependencyGroup]]:
+        return self.switchable_dep_groups
 
     def optimize(self, horizon: float = 5) -> None:  # noqa: C901
         """
@@ -70,7 +73,7 @@ class SADG:
                 )
 
         # Add Type-2 Dependencies
-        for _, dep_groups in self.switch_groups.items():
+        for _, dep_groups in self.switchable_dep_groups.items():
             for dep_group in dep_groups:
 
                 # Check if dependency group can be switched
@@ -90,19 +93,21 @@ class SADG:
                         tail_var = m_opt.var_by_name(tail.get_shorthand())
                         head_var = m_opt.var_by_name(head.get_shorthand())
 
+                        # Add big-M constraint:        M
                         m_opt.add_constr(
                             lin_expr=head_var >= tail_var + EPSILON - b * M,
                             name=f"{tail.get_shorthand()}_to_{head.get_shorthand()}",
                         )
 
                         # Add inactive dependency
-                        inactive_dep = dependency_switch.get_active()
+                        inactive_dep = dependency_switch.get_inactive()
                         tail = inactive_dep.get_tail()
                         head = inactive_dep.get_head()
 
                         tail_var = m_opt.var_by_name(tail.get_shorthand())
                         head_var = m_opt.var_by_name(head.get_shorthand())
 
+                        # Add big-M constraint:     (1 - b)*M
                         m_opt.add_constr(
                             lin_expr=head_var >= tail_var + EPSILON - (1 - b) * M,
                             name=f"{tail.get_shorthand()}_to_{head.get_shorthand()}",
@@ -135,7 +140,7 @@ class SADG:
                         >= vertex.get_expected_completion_time(),
                         name=f"boundary_{vertex.get_shorthand()}",
                     )
-                    continue
+                    break
                 elif vertex.get_status() == Status.IN_PROGRESS:
                     progress = vertex.get_progress()
                     m_opt.add_constr(
@@ -143,8 +148,9 @@ class SADG:
                         >= (1 - progress) * vertex.get_expected_completion_time(),
                         name=f"boundary_{vertex.get_shorthand()}",
                     )
-                    continue
+                    break
                 else:
+
                     # Check if vertex has next. If not, we need
                     # to set a dummy boundary condition, since the
                     # entire list of vertices has been completed.
@@ -187,12 +193,12 @@ class SADG:
                     self.logger.info(
                         f"Dependency group {dg_without_prefix}: Switching ..."
                     )
-                    print(f"Dependency group {dg_without_prefix}: Switching ...")
+                    # print(f"Dependency group {dg_without_prefix}: Switching ...")
                     # Apply switching to DG
-                    # self.switch_groups[agent_id][dep_group_idx].switch()
-                    # self.switch_groups[agent_id][dep_group_idx].switch()
+                    self.switchable_dep_groups[agent_id][dep_group_idx].switch()
+
                 else:
                     self.logger.info(
                         f"Dependency group {dg_without_prefix}: NOT Switching ..."
                     )
-                    print(f"Dependency group {dg_without_prefix}: NOT Switching ...")
+                    # print(f"Dependency group {dg_without_prefix}: NOT Switching ...")

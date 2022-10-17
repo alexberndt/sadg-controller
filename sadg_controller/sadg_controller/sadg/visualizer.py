@@ -123,7 +123,7 @@ class Visualizer:
                 statuses.
         """
         edges = self.G.edges(data=True)
-        for _, dep_groups in self.sadg.switch_groups.items():
+        for _, dep_groups in self.sadg.get_switchable_dep_groups().items():
 
             for dep_group in dep_groups:
 

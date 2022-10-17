@@ -59,6 +59,7 @@ def main() -> None:
             elif curr_vertex.get_status() == Status.COMPLETED:
 
                 if curr_vertex.has_next():
+                    print(f"{agent_id}: next vertex STAGED ...")
 
                     # Set current vertex of this agent to the next in the sequence
                     agent_curr_vertex[idx] = curr_vertex.get_next()

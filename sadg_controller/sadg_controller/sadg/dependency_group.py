@@ -158,8 +158,8 @@ class DependencyGroup:
 
     def switch(self) -> None:
 
-        if not self.is_switchable():
-            raise ValueError("Cannot switch unswitchable dependency ...")
+        # if not self.is_switchable():
+        #     raise ValueError("Cannot switch unswitchable dependency ...")
 
         for dependency in self.dependencies:
             dependency.switch()
