@@ -85,7 +85,7 @@ class Vertex:
         """
         for dependency in self.dependencies:
             if dependency.is_active():
-                if dependency.get_tail_status() is not Status.COMPLETED:
+                if dependency.get_tail().get_status() is not Status.COMPLETED:
                     return False
         return True
 
@@ -96,7 +96,7 @@ class Vertex:
         blocking_vertices = []
         for dependency in self.dependencies:
             if dependency.is_active():
-                if dependency.get_tail_status() is not Status.COMPLETED:
+                if dependency.get_tail().get_status() is not Status.COMPLETED:
                     blocking_vertices.append(dependency.get_tail())
         return blocking_vertices
 

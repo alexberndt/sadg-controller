@@ -159,6 +159,7 @@ class SADG:
         ]
 
         # Define objective function
+        m_opt.verbose = 0
         m_opt.objective = minimize(xsum(last_vertex_vars))
 
         _ = m_opt.optimize(max_seconds=60)
@@ -173,6 +174,8 @@ class SADG:
                 # Parse DG name : "dg_{agent_id}_{dg_index}"
                 dg_without_prefix = var.name.replace("dg_", "")
                 agent_id, dep_group_idx = dg_without_prefix.split("_")
+                dep_group_idx = int(dep_group_idx)
+
                 if var.x == 1.0:
                     print(f"Dependency group {dep_group_idx}: Switching ...")
                     # Apply switching to DG

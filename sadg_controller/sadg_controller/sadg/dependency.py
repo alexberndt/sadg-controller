@@ -14,9 +14,6 @@ class Dependency:
         self.active = not self.active
         return self.active
 
-    # def get_tail_status(self) -> Status:
-    #     return self.tail.status
-
     def get_tail(self) -> Vertex:
         return self.tail
 
