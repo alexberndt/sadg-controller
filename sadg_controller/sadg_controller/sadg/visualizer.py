@@ -26,7 +26,7 @@ class Visualizer:
         nodes = []
 
         # Add nodes to graph
-        for agent_id, vertices in self.sadg.vertices.items():
+        for agent_id, vertices in self.sadg.vertices_by_agent.items():
 
             for idx, vertex in enumerate(vertices):
                 v_agent_id = int(agent_id.replace("agent", ""))
@@ -37,7 +37,7 @@ class Visualizer:
 
         # Add edges to graph
         edges = []
-        for agent_id, vertices in self.sadg.vertices.items():
+        for agent_id, vertices in self.sadg.vertices_by_agent.items():
 
             for idx, vertex in enumerate(vertices):
 
@@ -54,9 +54,9 @@ class Visualizer:
                         v_tail = dependency.get_tail().get_shorthand()
                         edges.append((v_tail, v_head, {"color": "#008000"}))
 
-                    # if not dependency.is_active():
-                    #     v_tail = dependency.get_tail().get_shorthand()
-                    #     edges.append((v_tail, v_head, {"color": "#D3D3D3"}))
+                    if not dependency.is_active():
+                        v_tail = dependency.get_tail().get_shorthand()
+                        edges.append((v_tail, v_head, {"color": "#D3D3D3"}))
 
         self.G.add_edges_from(edges)
         self.pos = nx.get_node_attributes(self.G, "pos")
@@ -105,7 +105,7 @@ class Visualizer:
                 statuses.
         """
         nodes = self.G.nodes(data=True)
-        for _, vertices in self.sadg.vertices.items():
+        for _, vertices in self.sadg.vertices_by_agent.items():
             for vertex in vertices:
                 nodes[vertex.get_shorthand()]["color"] = vertex.color
         return nodes

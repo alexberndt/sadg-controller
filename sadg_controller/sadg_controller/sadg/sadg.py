@@ -132,6 +132,7 @@ class SADG:
                         >= vertex.get_expected_completion_time(),
                         name=f"boundary_{vertex.get_shorthand()}",
                     )
+                    continue
                 elif vertex.get_status() == Status.IN_PROGRESS:
                     progress = vertex.get_progress()
                     m_opt.add_constr(
@@ -139,6 +140,7 @@ class SADG:
                         >= (1 - progress) * vertex.get_expected_completion_time(),
                         name=f"boundary_{vertex.get_shorthand()}",
                     )
+                    continue
                 else:
                     # Check if vertex has next. If not, we need
                     # to set a dummy boundary condition, since the
