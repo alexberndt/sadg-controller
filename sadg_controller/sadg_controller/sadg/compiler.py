@@ -29,8 +29,8 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
     # N = len(P.plans.keys())
 
     # Initialize
-    E_regular = {}
-    E_switchable = {}
+    E_intra_agent = {}
+    E_inter_agent = {}
     V_sadg = {}
 
     # Add sequence of vents for each AGV (Alg. 2, lines 1 - 13)
@@ -40,8 +40,8 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
         # N_i = len(P_i)
         P_i = iter(P_i)
         V_sadg[agent_id] = []
-        E_regular[agent_id] = []
-        E_switchable[agent_id] = []
+        E_intra_agent[agent_id] = []
+        E_inter_agent[agent_id] = []
         i = 0
 
         p = next(P_i)
@@ -58,7 +58,7 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
                 V_sadg[agent_id].append(v)
 
                 if v_prev is not None:
-                    E_regular[agent_id].append(Dependency(v_prev, v, active=True))
+                    E_intra_agent[agent_id].append(Dependency(v_prev, v, active=True))
                     v_prev.set_next(v)
 
                 # reset
@@ -86,25 +86,26 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
                         v_j_l.add_dependency(fwd)
 
                         try:
+
                             v_i_k_minus_1 = vertices_i[k - 1]
                             v_j_l_plus_1 = vertices_j[l + 1]
-
                             rev = Dependency(v_j_l_plus_1, v_i_k_minus_1, active=False)
                             v_i_k_minus_1.add_dependency(rev)
-
-                            switch = DependencySwitch(fwd, rev)
-                            E_switchable[agent_i].append(switch)
+                            switch = DependencySwitch(fwd, rev, switchable=True)
 
                         except IndexError:
                             logger.debug(
                                 f"k-1={k - 1}, l+1={l + 1} are not valid indexes."
-                                "Cannot construct dependency switch."
+                                "Creating dependency switch with rev=None."
                             )
-                            E_regular[agent_i].append(fwd)
+                            rev = None
+                            switch = DependencySwitch(fwd, rev, switchable=False)
+
+                        E_inter_agent[agent_i].append(switch)
 
     # Group dependencies for switching
     E_groups = {}
-    for agent_i, switches in E_switchable.items():
+    for agent_i, switches in E_inter_agent.items():
         logger.info(f"Agent: {agent_i}")
         E_groups[agent_i] = []
         dg_idx = 0
@@ -118,6 +119,7 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
                     DependencyGroup(switch, f"dg_{agent_i}_{dg_idx}")
                 )
                 dg_idx += 1
+
             elif not E_groups[agent_i][-1].append_switch(switch):
                 E_groups[agent_i].append(
                     DependencyGroup(switch, f"dg_{agent_i}_{dg_idx}")
@@ -128,7 +130,7 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
 
     # Create summary
     switch_cnt = 0
-    for agent_i, switches in E_switchable.items():
+    for agent_i, switches in E_inter_agent.items():
         for _ in switches:
             switch_cnt += 1
 
@@ -140,4 +142,4 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
     logger.info(f"Switches: {switch_cnt}")
     logger.info(f"Groups:   {group_cnt}")
 
-    return SADG(V_sadg, E_regular, E_groups, logger)
+    return SADG(V_sadg, E_intra_agent, E_groups, logger)

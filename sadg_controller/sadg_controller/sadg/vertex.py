@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Any, List, Union
 
 from sadg_controller.mapf.plan_tuple import PlanTuple
 from sadg_controller.sadg.location import Location
@@ -76,6 +76,9 @@ class Vertex:
 
     def add_dependency(self, dependency) -> None:
         self.dependencies.append(dependency)
+
+    def get_dependencies(self) -> List[Any]:
+        return self.dependencies
 
     def can_execute(self) -> bool:
         """
