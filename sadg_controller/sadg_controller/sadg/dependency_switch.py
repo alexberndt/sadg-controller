@@ -3,7 +3,11 @@ from sadg_controller.sadg.dependency import Dependency
 
 class DependencySwitch:
     def __init__(
-        self, forward: Dependency, reverse: Dependency, b: bool = False
+        self,
+        forward: Dependency,
+        reverse: Dependency,
+        b: bool = False,
+        switchable: bool = True,
     ) -> None:
         """Dependency switch between fwd-rev dependency pair.
 
@@ -16,6 +20,7 @@ class DependencySwitch:
         self.forward = forward
         self.reverse = reverse
         self.b = b
+        self.switchable = switchable
 
     def get_active(self) -> Dependency:
         return self.forward if not self.b else self.reverse
@@ -27,8 +32,11 @@ class DependencySwitch:
         """
         Switch foward / reverse dependencies to (in)active.
         """
-        self.forward.toggle()
-        self.reverse.toggle()
+        if self.switchable:
+            self.forward.toggle()
+            self.reverse.toggle()
+        else:
+            raise RuntimeError("DependencySwitch not switchable ...")
 
     def __repr__(self) -> str:
         return f"DependencySwitch(fwd={self.forward}, rev={self.reverse})"

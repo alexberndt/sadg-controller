@@ -17,6 +17,11 @@ OPTIONS = {
 TITLE = "Switchable Action Dependency Graph"
 
 
+GREEN = "#008000"
+LIGHT_GREY = "#D3D3D3"
+BLACK = "#000000"
+
+
 class Visualizer:
     def __init__(self, sadg: SADG) -> None:
 
@@ -45,15 +50,14 @@ class Visualizer:
                 if vertex.has_next():
                     v_tail = vertex.get_shorthand()
                     v_head = vertex.get_next().get_shorthand()
-                    edges.append((v_tail, v_head, {"color": "#000000"}))
+                    edges.append((v_tail, v_head, {"color": BLACK}))
 
                 v_head = vertex.get_shorthand()
 
-                # Add active amd inactive dependencies
-                for dependency in vertex.dependencies:
+                # Add active and inactive dependencies
+                for dependency in vertex.get_dependencies():
 
-                    color = "#008000" if dependency.is_active() else "#D3D3D3"
-
+                    color = GREEN if dependency.is_active() else LIGHT_GREY
                     v_tail = dependency.get_tail().get_shorthand()
                     edges.append((v_tail, v_head, {"color": color}))
 
@@ -78,11 +82,13 @@ class Visualizer:
     def plot_graph(self) -> None:
         # Update color of each vertex based on status
         nodes = self.update_node_status()
+        edges = self.update_edge_colors()
 
         # Update colors
         node_colors = list(nx.get_node_attributes(self.G, "color").values())
         edge_colors = list(nx.get_edge_attributes(self.G, "color").values())
-        edges = self.G.edges(data=True)
+
+        # edges = self.G.edges(data=True)
         self.G.update(edges, nodes)
 
         # Redraw the figure
@@ -108,3 +114,39 @@ class Visualizer:
             for vertex in vertices:
                 nodes[vertex.get_shorthand()]["color"] = vertex.color
         return nodes
+
+    def update_edge_colors(self) -> List:
+        """Update node colors based on vertex statuses.
+
+        Returns:
+            Updated list of notes with colors based on vertex
+                statuses.
+        """
+        edges = self.G.edges(data=True)
+        for _, dep_groups in self.sadg.switch_groups.items():
+
+            for dep_group in dep_groups:
+
+                for dep_switch in dep_group.get_dependencies():
+
+                    # Color active dependency green
+                    active_dep = dep_switch.get_active()
+                    tail_str = active_dep.get_tail().get_shorthand()
+                    head_str = active_dep.get_head().get_shorthand()
+
+                    # TODO: update edge color
+                    # edges[(tail_str, head_str)]["color"] = GREEN
+
+                    # Color active dependency grey
+                    inactive_dep = dep_switch.get_inactive()
+                    if inactive_dep is not None:
+                        tail_str = inactive_dep.get_tail().get_shorthand()
+                        head_str = inactive_dep.get_head().get_shorthand()
+
+                    del tail_str
+                    del head_str
+
+                    # TODO: update edge color
+                    # edges[(tail_str, head_str)]["color"] = LIGHT_GREY
+
+        return edges

@@ -1,8 +1,10 @@
-from sadg_controller.sadg.vertex import Vertex
+import sadg_controller.sadg.vertex as vertex
 
 
 class Dependency:
-    def __init__(self, tail: Vertex, head: Vertex, active: bool = True) -> None:
+    def __init__(
+        self, tail: vertex.Vertex, head: vertex.Vertex, active: bool = True
+    ) -> None:
         self.tail = tail
         self.head = head
         self.active = active
@@ -14,10 +16,10 @@ class Dependency:
         self.active = not self.active
         return self.active
 
-    def get_tail(self) -> Vertex:
+    def get_tail(self) -> vertex.Vertex:
         return self.tail
 
-    def get_head(self) -> Vertex:
+    def get_head(self) -> vertex.Vertex:
         return self.head
 
     def __repr__(self) -> str:

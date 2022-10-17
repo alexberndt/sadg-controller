@@ -10,13 +10,13 @@ from sadg_controller.sadg.visualizer import Visualizer
 
 def main() -> None:
 
-    agent_count = 3
+    agent_count = 8
     ecbs_w = 1.8
 
     logger = Logger(__name__, level=DEBUG)
 
     roadmap_path = (
-        "home/alex/sadg_ws/src/sadg-controller/sadg_controller/data/roadmaps/small"
+        "home/alex/sadg_ws/src/sadg-controller/sadg_controller/data/roadmaps/test"
     )
     roadmap = Roadmap(roadmap_path)
 

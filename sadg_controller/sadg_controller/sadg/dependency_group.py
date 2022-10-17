@@ -13,10 +13,16 @@ class DependencyGroupType(Enum):
 
 
 class DependencyGroup:
-    def __init__(self, dependency_switch: DependencySwitch, uid: str) -> None:
+    def __init__(
+        self,
+        dependency_switch: DependencySwitch,
+        uid: str,
+        contains_unswitchable_dependency: bool = False,
+    ) -> None:
         self.uid: str = uid
         self.dependencies: List[DependencySwitch] = [dependency_switch]
         self.type = DependencyGroupType.SINGLE
+        self.contains_unswitchable_dependency = contains_unswitchable_dependency
 
         self.last_tail: Vertex = dependency_switch.get_active().get_tail()
         self.last_tail_vertex_idx: int = self.last_tail.get_vertex_idx()
@@ -28,7 +34,13 @@ class DependencyGroup:
 
         # Create list of "first" vertex heads for group
         self.first_head_active: Vertex = dependency_switch.get_active().get_head()
-        self.first_head_inactive: Vertex = dependency_switch.get_inactive().get_head()
+
+        if dependency_switch.get_inactive() is None:
+            self.contains_unswitchable_dependency = True
+        else:
+            self.first_head_inactive: Vertex = (
+                dependency_switch.get_inactive().get_head()
+            )
 
     def get_uid(self) -> str:
         """Return the unique identifier for this dependency group."""
@@ -85,7 +97,8 @@ class DependencyGroup:
             self.last_head_vertex_idx = head.get_vertex_idx()
 
             # Update "first" reverse head arrow
-            self.first_head_inactive = new_active_dependency.get_head()
+            if not self.contains_unswitchable_dependency:
+                self.first_head_inactive = new_active_dependency.get_head()
 
             return True
 
@@ -133,12 +146,20 @@ class DependencyGroup:
         only track the "first" head dependency status from
         the forward and reverse dependencies.
         """
-        return (
-            self.first_head_active.get_status() == Status.STAGED
-            and self.first_head_inactive.get_status() == Status.STAGED
-        )
+
+        if self.contains_unswitchable_dependency:
+            return False
+        else:
+
+            return (
+                self.first_head_active.get_status() == Status.STAGED
+                and self.first_head_inactive.get_status() == Status.STAGED
+            )
 
     def switch(self) -> None:
+
+        if not self.is_switchable():
+            raise ValueError("Cannot switch unswitchable dependency ...")
 
         for dependency in self.dependencies:
             dependency.switch()
