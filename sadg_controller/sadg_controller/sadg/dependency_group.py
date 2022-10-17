@@ -1,8 +1,10 @@
 from enum import Enum
+from typing import List
 
-from typing import Tuple 
 from sadg_controller.sadg.dependency_switch import DependencySwitch
+from sadg_controller.sadg.status import Status
 from sadg_controller.sadg.vertex import Vertex
+
 
 class DependencyGroupType(Enum):
     SINGLE = 0
@@ -11,18 +13,31 @@ class DependencyGroupType(Enum):
 
 
 class DependencyGroup:
-    def __init__(self, dependency_switch: DependencySwitch) -> None:
-        self.dependencies = [dependency_switch]
+    def __init__(self, dependency_switch: DependencySwitch, uid: str) -> None:
+        self.uid: str = uid
+        self.dependencies: List[DependencySwitch] = [dependency_switch]
         self.type = DependencyGroupType.SINGLE
 
-        self.last_tail_vertex_idx = dependency_switch.fwd.tail.get_vertex_idx()
-        self.last_tail_agent_id = dependency_switch.fwd.tail.get_agent_id()
+        self.last_tail: Vertex = dependency_switch.get_active().get_tail()
+        self.last_tail_vertex_idx: int = self.last_tail.get_vertex_idx()
+        self.last_tail_agent_id: int = self.last_tail.get_agent_id()
 
-        self.last_head_vertex_idx = dependency_switch.fwd.head.get_vertex_idx()
-        self.last_head_agent_id = dependency_switch.fwd.head.get_agent_id()
+        self.last_head: Vertex = dependency_switch.get_active().get_head()
+        self.last_head_vertex_idx: int = self.last_head.get_vertex_idx()
+        self.last_head_agent_id: int = self.last_head.get_agent_id()
 
-    def append_switch(self, dependency_switch: DependencySwitch) -> bool:
+        # Create list of "first" vertex heads for group
+        self.first_head_active: Vertex = dependency_switch.get_active().get_head()
+        self.first_head_inactive: Vertex = dependency_switch.get_inactive().get_head()
+
+    def get_uid(self) -> str:
+        """Return the unique identifier for this dependency group."""
+        return self.uid
+
+    def append_switch(self, new_dependency_switch: DependencySwitch) -> bool:
         """Append a dependency switch to the group.
+
+        Used when creating the SADG, not while optimizing.
 
         Args:
             dependency_switch: Dependency switch to add to the group.
@@ -31,42 +46,48 @@ class DependencyGroup:
             True if switch is successfully added to group, otherwise False.
         """
 
-        tail_vertex_idx = dependency_switch.fwd.tail.get_vertex_idx()
-        tail_agent_id = dependency_switch.fwd.tail.get_agent_id()
-        head_vertex_idx = dependency_switch.fwd.head.get_vertex_idx()
-        head_agent_id = dependency_switch.fwd.head.get_agent_id()
+        new_active_dependency = new_dependency_switch.get_active()
+        tail = new_active_dependency.get_tail()
+        head = new_active_dependency.get_head()
 
         # Check for same
         if (
-            tail_agent_id == self.last_tail_agent_id
-            and head_agent_id == self.last_head_agent_id
-            and tail_vertex_idx == self.last_tail_vertex_idx + 1
-            and head_vertex_idx == self.last_head_vertex_idx + 1
+            tail.get_agent_id() == self.last_tail_agent_id
+            and head.get_agent_id() == self.last_head_agent_id
+            and tail.get_vertex_idx() == self.last_tail_vertex_idx + 1
+            and head.get_vertex_idx() == self.last_head_vertex_idx + 1
             and self.type in [DependencyGroupType.SINGLE, DependencyGroupType.SAME]
         ):
 
             print("same")
-            self.dependencies.append(dependency_switch)
+            self.dependencies.append(new_dependency_switch)
             self.type = DependencyGroupType.SAME
-            self.last_tail_vertex_idx = tail_vertex_idx
-            self.last_head_vertex_idx = head_vertex_idx
+
+            # Update last tail and head vertex indexes
+            self.last_tail_vertex_idx = tail.get_vertex_idx()
+            self.last_head_vertex_idx = head.get_vertex_idx()
 
             return True
 
         # Check for opposite
         elif (
-            tail_agent_id == self.last_tail_agent_id
-            and head_agent_id == self.last_head_agent_id
-            and tail_vertex_idx == self.last_tail_vertex_idx + 1
-            and head_vertex_idx == self.last_head_vertex_idx - 1
+            tail.get_agent_id() == self.last_tail_agent_id
+            and head.get_agent_id() == self.last_head_agent_id
+            and tail.get_vertex_idx() == self.last_tail_vertex_idx + 1
+            and head.get_vertex_idx() == self.last_head_vertex_idx - 1
             and self.type in [DependencyGroupType.SINGLE, DependencyGroupType.OPPOSITE]
         ):
 
             print("opposite")
-            self.dependencies.append(dependency_switch)
+            self.dependencies.append(new_dependency_switch)
             self.type = DependencyGroupType.OPPOSITE
-            self.last_tail_vertex_idx = tail_vertex_idx
-            self.last_head_vertex_idx = head_vertex_idx
+
+            # Update last tail and head vertex indexes
+            self.last_tail_vertex_idx = tail.get_vertex_idx()
+            self.last_head_vertex_idx = head.get_vertex_idx()
+
+            # Update "first" reverse head arrow
+            self.first_head_inactive = new_active_dependency.get_head()
 
             return True
 
@@ -75,23 +96,66 @@ class DependencyGroup:
             print("single")
             return False
 
-    def get_head_vertex_params(self) -> Tuple[str, str]:
-        """
-        Returns vertex_id, agent_id of head vertex.
-        """
-        vertex_id =  self.last_head_vertex_idx
-        agent_id =  self.last_head_agent_id
-        return vertex_id, agent_id
+    # def get_head_vertex_params(self) -> Tuple[str, str]:
+    #     """
+    #     Returns vertex_id, agent_id of head vertex.
+    #     """
+    #     vertex_id = self.last_head_vertex_idx
+    #     agent_id = self.last_head_agent_id
+    #     return vertex_id, agent_id
 
-    def get_tail_vertex_params(self) -> Tuple[str, str]:
-        """
-        Returns vertex_id, agent_id of head vertex.
-        """
-        vertex_id =  self.last_tail_vertex_idx
-        agent_id =  self.last_tail_agent_id
-        return vertex_id, agent_id
+    # def get_tail_vertex_params(self) -> Tuple[str, str]:
+    #     """
+    #     Returns vertex_id, agent_id of head vertex.
+    #     """
+    #     vertex_id = self.last_tail_vertex_idx
+    #     agent_id = self.last_tail_agent_id
+    #     return vertex_id, agent_id
 
+    def within_horizon(self, horizon) -> bool:
+        """
+        Check whether the dependencies within the group
+        fall within the provided horizon.
+        """
+        return True  # TODO
+
+    def get_dependencies(self) -> List[DependencySwitch]:
+        return self.dependencies
+
+    def is_switchable(self) -> bool:
+        """
+        Checks if the dependencies in the dependency group
+        can be switched based on each dependency's vertex
+        status.
+
+        A Dependency Group is only switchable iff. both the
+        forward and reverse dependencies' statuses are set
+        to STAGED.
+
+        To avoid keeping track of ALL the dependencies, we
+        only track the "first" head dependency status from
+        the forward and reverse dependencies.
+        """
+        return self.first_head_active.get_status() in [
+            Status.STAGED
+        ] and self.first_head_inactive.get_status() in [Status.STAGED]
 
     def switch(self) -> None:
+
         for dependency in self.dependencies:
             dependency.switch()
+
+        # Create list of "first" vertex heads for group
+        self.first_head_active: Vertex = self.dependencies[-1].get_active().get_head()
+
+        if self.type == DependencyGroupType.OPPOSITE:
+            self.first_head_inactive: Vertex = (
+                self.dependencies[-1].get_inactive().get_head()
+            )
+        else:
+            self.first_head_inactive: Vertex = (
+                self.dependencies[0].get_inactive().get_head()
+            )
+
+    def __repr__(self) -> str:
+        return f"v_{self.last_tail_agent_id}_{self.last_tail_vertex_idx}_to_v_{self.last_head_agent_id}_{self.last_head_vertex_idx}_{self.type}"

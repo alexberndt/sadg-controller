@@ -31,12 +31,15 @@ class Vertex:
         self._update()
 
     def get_shorthand(self) -> str:
+        """Returns the shorthand `v_{agent_id}_{vertex_idx}`."""
         return self.shorthand
 
     def get_vertex_idx(self) -> int:
+        """Returns the vertex index of this vertex."""
         return self.vertex_idx
 
     def get_agent_id(self) -> int:
+        """Returns the agent id this vertex is associated with."""
         return self.agent_id
 
     def append_plan_tuple(self, location: PlanTuple):
@@ -75,29 +78,42 @@ class Vertex:
         self.dependencies.append(dependency)
 
     def can_execute(self) -> bool:
-        """Checks if vertex can be executed or not.
-
-        Checks if _all_ tail vertices of _active_ dependencies pointing to this vertex are completed.
-        If so, this vertex can be executed, otherwise not.
+        """
+        Checks if _all_ tail vertices of _active_ dependencies
+        pointing to this vertex are completed. If so, this ver-
+        tex can be executed, otherwise not.
         """
         for dependency in self.dependencies:
             if dependency.is_active():
-                if dependency.get_tail_status() is not Status.COMPLETED:
+                if dependency.get_tail().get_status() is not Status.COMPLETED:
                     return False
         return True
 
     def get_blocking_vertices(self) -> List:
-        """Get list of vertices blocking this vertex."""
+        """
+        Get list of vertices blocking this vertex.
+        """
         blocking_vertices = []
         for dependency in self.dependencies:
             if dependency.is_active():
-                if dependency.get_tail_status() is not Status.COMPLETED:
+                if dependency.get_tail().get_status() is not Status.COMPLETED:
                     blocking_vertices.append(dependency.get_tail())
         return blocking_vertices
 
     def _update(self) -> None:
+        self.expected_completion_time = len(self.plan_tuples)  # TODO: calculate correct
         self.goal_loc = loc(self.plan_tuples[-1])
         self.goal_time = time(self.plan_tuples[-1])
+
+    def get_expected_completion_time(self) -> float:
+        return self.expected_completion_time
+
+    def get_progress(self) -> float:
+        """
+        Return the fraction of progress this vertex is from completed.
+        # TODO - need to obtain live info from agent here
+        """
+        return 0.5
 
     def __repr__(self):
         # return f"Vertex(agent_id={self.agent_id}, plan_tuples={self.plan_tuples}, status={self.status})"

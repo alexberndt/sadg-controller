@@ -104,16 +104,11 @@ class Controller(Node):
 
             self.logger.warn(f"{comm.get_agent_id()} : {msg}")
 
-        self.logger.info("--------------------------------------------------")
-
         self.logger.info("Running RHC optimization ...")
+        self.sadg.optimize(horizon=5)
 
-        self.sadg.optimize()
-
-        self.logger.info("--------------------------------------------------")
-
-        # if self.visualize_sadg:
-        #     self.sadg_visualizer.refresh()
+        if self.visualize_sadg:
+            self.sadg_visualizer.refresh()
 
 
 def main(args=None):

@@ -4,7 +4,7 @@
         <param name="roadmap_path" value="$(find-pkg-share sadg_controller)/data/roadmaps/test/"/>
         <param name="agent_count" value="4"/>
         <param name="ecbs_sub_factor" value="1.8"/>
-        <param name="visualize_sadg" value="True"/>
+        <param name="visualize_sadg" value="False"/>
     </node>
 
 </launch>
