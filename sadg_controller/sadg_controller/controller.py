@@ -52,7 +52,7 @@ class Controller(Node):
 
         agent_ids = [f"agent{id}" for id in range(agent_count)]
         self.comms = [
-            Comms(self, id, self.sadg.get_agent_first_vertex(id)) for id in agent_ids
+            Comms(self, id, self.sadg.get_first_agent_vertex(id)) for id in agent_ids
         ]
 
     def start(self) -> None:
@@ -78,7 +78,7 @@ class Controller(Node):
 
             # Check if agent can start executing tasks in vertex.
             # If so, publish new goal location to agent.
-            if curr_vertex.can_execute() and curr_vertex.status == Status.STAGED:
+            if curr_vertex.can_execute() and curr_vertex.get_status() == Status.STAGED:
 
                 goal = curr_vertex.get_goal_loc()
                 goal_pose = Pose(
@@ -90,7 +90,7 @@ class Controller(Node):
                 msg = f"Goal = {curr_vertex.get_goal_loc()}"
 
             # If vertex is being executed still
-            elif curr_vertex.status == Status.IN_PROGRESS:
+            elif curr_vertex.get_status() == Status.IN_PROGRESS:
                 msg = "In progress"
 
             # If there is no next vertex, agent has reached end goal

@@ -48,15 +48,14 @@ class Visualizer:
                     edges.append((v_tail, v_head, {"color": "#000000"}))
 
                 v_head = vertex.get_shorthand()
+
                 # Add active amd inactive dependencies
                 for dependency in vertex.dependencies:
-                    if dependency.is_active():
-                        v_tail = dependency.get_tail().get_shorthand()
-                        edges.append((v_tail, v_head, {"color": "#008000"}))
 
-                    if not dependency.is_active():
-                        v_tail = dependency.get_tail().get_shorthand()
-                        edges.append((v_tail, v_head, {"color": "#D3D3D3"}))
+                    color = "#008000" if dependency.is_active() else "#D3D3D3"
+
+                    v_tail = dependency.get_tail().get_shorthand()
+                    edges.append((v_tail, v_head, {"color": color}))
 
         self.G.add_edges_from(edges)
         self.pos = nx.get_node_attributes(self.G, "pos")
@@ -95,7 +94,7 @@ class Visualizer:
             edge_color=edge_colors,
             **OPTIONS
         )
-        # plt.title(TITLE)
+        plt.title(TITLE)
 
     def update_node_status(self) -> List:
         """Update node colors based on vertex statuses.

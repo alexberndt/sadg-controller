@@ -59,7 +59,6 @@ class DependencyGroup:
             and self.type in [DependencyGroupType.SINGLE, DependencyGroupType.SAME]
         ):
 
-            print("same")
             self.dependencies.append(new_dependency_switch)
             self.type = DependencyGroupType.SAME
 
@@ -78,7 +77,6 @@ class DependencyGroup:
             and self.type in [DependencyGroupType.SINGLE, DependencyGroupType.OPPOSITE]
         ):
 
-            print("opposite")
             self.dependencies.append(new_dependency_switch)
             self.type = DependencyGroupType.OPPOSITE
 
@@ -93,7 +91,6 @@ class DependencyGroup:
 
         # Else cannot append dependency switch
         else:
-            print("single")
             return False
 
     # def get_head_vertex_params(self) -> Tuple[str, str]:
@@ -136,9 +133,10 @@ class DependencyGroup:
         only track the "first" head dependency status from
         the forward and reverse dependencies.
         """
-        return self.first_head_active.get_status() in [
-            Status.STAGED
-        ] and self.first_head_inactive.get_status() in [Status.STAGED]
+        return (
+            self.first_head_active.get_status() == Status.STAGED
+            and self.first_head_inactive.get_status() == Status.STAGED
+        )
 
     def switch(self) -> None:
 

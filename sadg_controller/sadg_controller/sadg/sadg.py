@@ -27,8 +27,11 @@ class SADG:
         self.switch_groups = switch_groups
         self.logger = logger
 
-    def get_agent_first_vertex(self, agent_id: str) -> Vertex:
+    def get_first_agent_vertex(self, agent_id: str) -> Vertex:
         return self.vertices_by_agent[agent_id][0]
+
+    def get_agent_vertices(self, agent_id: str) -> List[Vertex]:
+        return self.vertices_by_agent[agent_id]
 
     def optimize(self, horizon: float = 5) -> None:  # noqa: C901
         """
@@ -184,11 +187,11 @@ class SADG:
                     self.logger.info(
                         f"Dependency group {dg_without_prefix}: Switching ..."
                     )
-                    print(f"Dependency group {dep_group_idx}: Switching ...")
+                    print(f"Dependency group {dg_without_prefix}: Switching ...")
                     # Apply switching to DG
                     self.switch_groups[agent_id][dep_group_idx].switch()
                 else:
                     self.logger.info(
                         f"Dependency group {dg_without_prefix}: NOT Switching  ..."
                     )
-                    print(f"Dependency group {dep_group_idx}: NOT Switching  ...")
+                    print(f"Dependency group {dg_without_prefix}: NOT Switching  ...")
