@@ -189,7 +189,8 @@ class SADG:
                     )
                     print(f"Dependency group {dg_without_prefix}: Switching ...")
                     # Apply switching to DG
-                    self.switch_groups[agent_id][dep_group_idx].switch()
+                    # self.switch_groups[agent_id][dep_group_idx].switch()
+                    # self.switch_groups[agent_id][dep_group_idx].switch()
                 else:
                     self.logger.info(
                         f"Dependency group {dg_without_prefix}: NOT Switching ..."

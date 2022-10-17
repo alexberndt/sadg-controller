@@ -52,9 +52,9 @@ def main() -> None:
             elif curr_vertex.get_status() == Status.IN_PROGRESS:
 
                 # Only set agents 0 and 2 to completed
-                if idx != 0:
-                    print(f"{agent_id}: set to COMPLETED ...")
-                    curr_vertex.set_status(Status.COMPLETED)
+                # if idx != 0:
+                print(f"{agent_id}: set to COMPLETED ...")
+                curr_vertex.set_status(Status.COMPLETED)
 
             elif curr_vertex.get_status() == Status.COMPLETED:
 
