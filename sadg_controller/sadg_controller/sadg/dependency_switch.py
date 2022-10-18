@@ -35,6 +35,7 @@ class DependencySwitch:
         if self.switchable:
             self.forward.toggle()
             self.reverse.toggle()
+            self.b = not self.b
         else:
             raise RuntimeError("DependencySwitch not switchable ...")
 

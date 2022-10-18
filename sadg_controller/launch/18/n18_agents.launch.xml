@@ -73,9 +73,5 @@
         <param name="agent_ns" value="agent17"/>
         <param name="uuid" value="quah3lsdfu"/>
     </node>
-    <node name="agent18" pkg="sadg_controller"  exec="agent" output="screen">
-        <param name="agent_ns" value="agent18"/>
-        <param name="uuid" value="cn234lk234"/>
-    </node>
 
 </launch>

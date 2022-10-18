@@ -13,6 +13,9 @@ class Dependency:
         return self.active
 
     def toggle(self) -> bool:
+        """
+        Toggle dependency active/inactive
+        """
         self.active = not self.active
         return self.active
 
