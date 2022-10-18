@@ -1,0 +1,9 @@
+<launch>
+
+    <node name="controller" pkg="sadg_controller"  exec="controller" output="screen">
+        <param name="roadmap_path" value="$(find-pkg-share sadg_controller)/data/roadmaps/test/"/>
+        <param name="agent_count" value="18"/>
+        <param name="ecbs_sub_factor" value="1.8"/>
+    </node>
+
+</launch>
