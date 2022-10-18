@@ -96,7 +96,7 @@ class SADG:
                         # Add big-M constraint:        M
                         m_opt.add_constr(
                             lin_expr=head_var >= tail_var + EPSILON - b * M,
-                            name=f"{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                            name=f"sw_fwd_{tail.get_shorthand()}_to_{head.get_shorthand()}",
                         )
 
                         # Add inactive dependency
@@ -110,7 +110,7 @@ class SADG:
                         # Add big-M constraint:     (1 - b)*M
                         m_opt.add_constr(
                             lin_expr=head_var >= tail_var + EPSILON - (1 - b) * M,
-                            name=f"{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                            name=f"sw_rev_{tail.get_shorthand()}_to_{head.get_shorthand()}",
                         )
 
                 else:
@@ -125,7 +125,7 @@ class SADG:
 
                         m_opt.add_constr(
                             lin_expr=head_var >= tail_var,
-                            name=f"{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                            name=f"sw_nan_{tail.get_shorthand()}_to_{head.get_shorthand()}",
                         )
 
         # Add boundary conditions
@@ -173,6 +173,12 @@ class SADG:
         m_opt.verbose = 0
         m_opt.objective = minimize(xsum(last_vertex_vars))
 
+        # Print optimization problem
+        print(m_opt.objective)
+
+        for constr in m_opt.constrs:
+            print(constr)
+
         # Run the optimization
         _ = m_opt.optimize(max_seconds=60)
         self.logger.info(f"{m_opt.objective_value}")
@@ -195,7 +201,9 @@ class SADG:
                     )
                     # print(f"Dependency group {dg_without_prefix}: Switching ...")
                     # Apply switching to DG
-                    self.switchable_dep_groups[agent_id][dep_group_idx].switch()
+                    dep_group = self.switchable_dep_groups[agent_id][dep_group_idx]
+                    if dep_group.is_switchable():
+                        dep_group.switch()
 
                 else:
                     self.logger.info(
