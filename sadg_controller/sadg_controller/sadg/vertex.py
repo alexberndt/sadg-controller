@@ -106,8 +106,6 @@ class Vertex:
         return blocking_vertices
 
     def _update(self) -> None:
-        # TODO: improve accuracy by inferring completion time based on plan tuple locations
-
         plan_tuples_distance = calculate_plan_tuple_distance(self.plan_tuples)
 
         self.expected_completion_time = plan_tuples_distance / NOMINAL_SPEED_M_PER_S
