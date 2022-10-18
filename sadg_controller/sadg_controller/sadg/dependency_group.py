@@ -127,7 +127,8 @@ class DependencyGroup:
         Check whether the dependencies within the group
         fall within the provided horizon.
         """
-        return True  # TODO
+
+        return True
 
     def get_dependencies(self) -> List[DependencySwitch]:
         return self.dependencies
