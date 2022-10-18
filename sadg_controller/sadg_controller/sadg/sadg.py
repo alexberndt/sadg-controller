@@ -55,7 +55,23 @@ class SADG:
         # Initialize continuous optimization variables
         for _, vertices in self.vertices_by_agent.items():
             for vertex in vertices:
-                m_opt.add_var(name=vertex.get_shorthand(), var_type=CONTINUOUS)
+
+                # Add t_s and t_g dependencies
+                m_opt.add_var(name=f"{vertex.get_shorthand()}_s", var_type=CONTINUOUS)
+                m_opt.add_var(name=f"{vertex.get_shorthand()}_g", var_type=CONTINUOUS)
+
+                # Add dependency: t_g_i >= t_s_i + expected execution time
+                vertex_s_name = vertex.get_shorthand() + "_s"
+                vertex_s = m_opt.var_by_name(vertex_s_name)
+                vertex_g_name = vertex.get_shorthand() + "_g"
+                vertex_g = m_opt.var_by_name(vertex_g_name)
+
+                # Add dependency: t_g_i >= t_s_i + expected execution time
+                m_opt.add_constr(
+                    lin_expr=vertex_g
+                    >= vertex_s + vertex.get_expected_completion_time() + EPSILON,
+                    name=f"{vertex_s_name}_to_{vertex_g_name}",
+                )
 
         # Add Type-1 Dependencies
         for _, deps in self.regular_deps.items():
@@ -63,13 +79,15 @@ class SADG:
                 tail = dep.get_tail()
                 head = dep.get_head()
 
-                tail_var = m_opt.var_by_name(tail.get_shorthand())
-                head_var = m_opt.var_by_name(head.get_shorthand())
+                head_s_name = head.get_shorthand() + "_s"
+                head_s = m_opt.var_by_name(head_s_name)
+                tail_g_name = tail.get_shorthand() + "_g"
+                tail_g = m_opt.var_by_name(tail_g_name)
 
+                # Add dependency: t_s_i >= t_g_{i-1}
                 m_opt.add_constr(
-                    lin_expr=head_var
-                    >= tail_var + tail.get_expected_completion_time() + EPSILON,
-                    name=f"{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                    lin_expr=head_s >= tail_g + EPSILON,
+                    name=f"{tail_g_name}_to_{head_s_name}",
                 )
 
         # Add Type-2 Dependencies
@@ -87,30 +105,35 @@ class SADG:
 
                         # Add active dependency
                         active_dep = dependency_switch.get_active()
-                        tail = active_dep.get_tail()
-                        head = active_dep.get_head()
+                        tail_act = active_dep.get_tail()
+                        head_act = active_dep.get_head()
 
-                        tail_var = m_opt.var_by_name(tail.get_shorthand())
-                        head_var = m_opt.var_by_name(head.get_shorthand())
+                        tail_act_g_name = tail_act.get_shorthand() + "_g"
+                        tail_act_g_var = m_opt.var_by_name(tail_act_g_name)
+                        head_act_s_name = head_act.get_shorthand() + "_s"
+                        head_act_s_var = m_opt.var_by_name(head_act_s_name)
 
                         # Add big-M constraint:        M
                         m_opt.add_constr(
-                            lin_expr=head_var >= tail_var + EPSILON - b * M,
-                            name=f"sw_fwd_{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                            lin_expr=head_act_s_var >= tail_act_g_var + EPSILON - b * M,
+                            name=f"sw_fwd_{tail_act_g_name}_to_{head_act_s_name}",
                         )
 
                         # Add inactive dependency
                         inactive_dep = dependency_switch.get_inactive()
-                        tail = inactive_dep.get_tail()
-                        head = inactive_dep.get_head()
+                        tail_in = inactive_dep.get_tail()
+                        head_in = inactive_dep.get_head()
 
-                        tail_var = m_opt.var_by_name(tail.get_shorthand())
-                        head_var = m_opt.var_by_name(head.get_shorthand())
+                        tail_in_g_name = tail_in.get_shorthand() + "_g"
+                        tail_in_g_var = m_opt.var_by_name(tail_in_g_name)
+                        head_in_s_name = head_in.get_shorthand() + "_s"
+                        head_in_s_var = m_opt.var_by_name(head_in_s_name)
 
                         # Add big-M constraint:     (1 - b)*M
                         m_opt.add_constr(
-                            lin_expr=head_var >= tail_var + EPSILON - (1 - b) * M,
-                            name=f"sw_rev_{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                            lin_expr=head_in_s_var
+                            >= tail_in_g_var + EPSILON - (1 - b) * M,
+                            name=f"sw_rev_{tail_in_g_var}_to_{head_in_s_var}",
                         )
 
                 else:
@@ -120,12 +143,17 @@ class SADG:
                     for dependency_switch in dep_group.get_dependencies():
                         active_dep = dependency_switch.get_active()
 
-                        tail = active_dep.get_tail()
-                        head = active_dep.get_head()
+                        tail_act = active_dep.get_tail()
+                        head_act = active_dep.get_head()
+
+                        tail_act_g_name = tail_act.get_shorthand() + "_g"
+                        tail_act_g_var = m_opt.var_by_name(tail_act_g_name)
+                        head_act_s_name = head_act.get_shorthand() + "_s"
+                        head_act_s_var = m_opt.var_by_name(head_act_s_name)
 
                         m_opt.add_constr(
-                            lin_expr=head_var >= tail_var,
-                            name=f"sw_nan_{tail.get_shorthand()}_to_{head.get_shorthand()}",
+                            lin_expr=head_act_s_var >= tail_act_g_var + EPSILON,
+                            name=f"sw_nan_{tail_act_g_name}_to_{head_act_s_name}",
                         )
 
         # Add boundary conditions
@@ -134,19 +162,25 @@ class SADG:
                 # Looping through vertices to find first
                 # STAGED or IN_PROGRESS vertex and set boundary
                 # condition in MILP problem
+
                 if vertex.get_status() == Status.STAGED:
+
+                    var_name = vertex.get_shorthand() + "_g"
                     m_opt.add_constr(
-                        lin_expr=m_opt.var_by_name(vertex.get_shorthand())
+                        lin_expr=m_opt.var_by_name(var_name)
                         >= vertex.get_expected_completion_time(),
-                        name=f"boundary_{vertex.get_shorthand()}",
+                        name=f"boundary_{var_name}",
                     )
                     break
+
                 elif vertex.get_status() == Status.IN_PROGRESS:
                     progress = vertex.get_progress()
+
+                    var_name = vertex.get_shorthand() + "_g"
                     m_opt.add_constr(
-                        lin_expr=m_opt.var_by_name(vertex.get_shorthand())
+                        lin_expr=m_opt.var_by_name(var_name)
                         >= (1 - progress) * vertex.get_expected_completion_time(),
-                        name=f"boundary_{vertex.get_shorthand()}",
+                        name=f"boundary_{var_name}",
                     )
                     break
                 else:
@@ -155,9 +189,10 @@ class SADG:
                     # to set a dummy boundary condition, since the
                     # entire list of vertices has been completed.
                     if not vertex.has_next():
+                        var_name = vertex.get_shorthand() + "_g"
                         m_opt.add_constr(
-                            lin_expr=m_opt.var_by_name(vertex.get_shorthand()) >= 0,
-                            name=f"boundary_{vertex.get_shorthand()}",
+                            lin_expr=m_opt.var_by_name(var_name) >= 0,
+                            name=f"boundary_{var_name}",
                         )
 
         # Get last vertex for each agent to create objective function
@@ -166,7 +201,7 @@ class SADG:
             last_vertices.append(vertices[-1])
 
         last_vertex_vars = [
-            m_opt.var_by_name(var.get_shorthand()) for var in last_vertices
+            m_opt.var_by_name(var.get_shorthand() + "_g") for var in last_vertices
         ]
 
         # Define objective function
@@ -175,7 +210,6 @@ class SADG:
 
         # Print optimization problem
         print(m_opt.objective)
-
         for constr in m_opt.constrs:
             print(constr)
 
