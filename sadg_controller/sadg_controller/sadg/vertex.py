@@ -1,8 +1,10 @@
 from typing import Any, List, Union
 
 from sadg_controller.mapf.plan_tuple import PlanTuple
-from sadg_controller.sadg.location import Location
+from sadg_controller.sadg.location import Location, calculate_distance
 from sadg_controller.sadg.status import Status
+
+NOMINAL_SPEED_M_PER_S = 2  # meters per second
 
 
 class Vertex:
@@ -104,7 +106,12 @@ class Vertex:
         return blocking_vertices
 
     def _update(self) -> None:
-        self.expected_completion_time = len(self.plan_tuples)  # TODO: calculate correct
+        # TODO: improve accuracy by inferring completion time based on plan tuple locations
+
+        plan_tuples_distance = calculate_plan_tuple_distance(self.plan_tuples)
+
+        self.expected_completion_time = plan_tuples_distance / NOMINAL_SPEED_M_PER_S
+
         self.goal_loc = loc(self.plan_tuples[-1])
         self.goal_time = time(self.plan_tuples[-1])
 
@@ -132,3 +139,20 @@ def loc(p: PlanTuple) -> Location:
 
 def time(p: PlanTuple) -> float:
     return p.time
+
+
+def calculate_plan_tuple_distance(plan_tuples: List[PlanTuple]) -> float:
+    """
+    Calculates the total distance of successive
+    locations in the provided list of plan tuples.
+    """
+    l_prev = None
+    distance = 0
+    for plan_tuple in plan_tuples:
+        if l_prev is None:
+            l_prev = loc(plan_tuple)
+            continue
+        l_curr = loc(plan_tuple)
+        distance += calculate_distance(l_prev, l_curr)
+        l_prev = l_curr
+    return distance
