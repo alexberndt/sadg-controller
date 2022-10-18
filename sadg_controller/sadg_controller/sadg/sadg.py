@@ -2,7 +2,7 @@ from logging import Logger
 from typing import Dict, List
 
 import mip
-from mip import BINARY, CONTINUOUS, MINIMIZE, minimize, xsum
+from mip import BINARY, CONTINUOUS, INF, MINIMIZE, minimize, xsum
 from mip.entities import Var
 
 from sadg_controller.sadg.dependency import Dependency
@@ -57,8 +57,12 @@ class SADG:
             for vertex in vertices:
 
                 # Add t_s and t_g dependencies
-                m_opt.add_var(name=f"{vertex.get_shorthand()}_s", var_type=CONTINUOUS)
-                m_opt.add_var(name=f"{vertex.get_shorthand()}_g", var_type=CONTINUOUS)
+                m_opt.add_var(
+                    name=f"{vertex.get_shorthand()}_s", var_type=CONTINUOUS, lb=-INF
+                )
+                m_opt.add_var(
+                    name=f"{vertex.get_shorthand()}_g", var_type=CONTINUOUS, lb=-INF
+                )
 
                 # Add dependency: t_g_i >= t_s_i + expected execution time
                 vertex_s_name = vertex.get_shorthand() + "_s"
@@ -217,6 +221,12 @@ class SADG:
         _ = m_opt.optimize(max_seconds=60)
         self.logger.info(f"{m_opt.objective_value}")
         print(f"{m_opt.objective_value}")
+
+        print("Values of optimization variables")
+        for var in m_opt.vars:
+            print(f"{var.name}: {var.x}")
+
+        print("--------------------------------")
 
         for var in m_opt.vars:
 
