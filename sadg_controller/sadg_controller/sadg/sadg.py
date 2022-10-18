@@ -2,7 +2,7 @@ from logging import Logger
 from typing import Dict, List
 
 import mip
-from mip import BINARY, CONTINUOUS, MINIMIZE, minimize, xsum
+from mip import BINARY, CONTINUOUS, INF, MINIMIZE, minimize, xsum
 from mip.entities import Var
 
 from sadg_controller.sadg.dependency import Dependency
@@ -58,10 +58,10 @@ class SADG:
 
                 # Add t_s and t_g dependencies
                 m_opt.add_var(
-                    name=f"{vertex.get_shorthand()}_s", var_type=CONTINUOUS, lb=-mip.INF
+                    name=f"{vertex.get_shorthand()}_s", var_type=CONTINUOUS, lb=-INF
                 )
                 m_opt.add_var(
-                    name=f"{vertex.get_shorthand()}_g", var_type=CONTINUOUS, lb=-mip.INF
+                    name=f"{vertex.get_shorthand()}_g", var_type=CONTINUOUS, lb=-INF
                 )
 
                 # Add dependency: t_g_i >= t_s_i + expected execution time
