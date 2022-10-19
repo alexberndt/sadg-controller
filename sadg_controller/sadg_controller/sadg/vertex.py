@@ -30,6 +30,7 @@ class Vertex:
         # List of dependencies pointing TO this vertex
         self.dependencies = []
         self.next_vertex = None
+        self.prev_vertex = None
         self._update()
 
     def get_shorthand(self) -> str:
@@ -63,8 +64,12 @@ class Vertex:
     def get_status(self) -> Status:
         return self.status
 
+    def set_prev(self, vertex) -> None:
+        self.prev_vertex = vertex
+
     def set_next(self, vertex) -> None:
         self.next_vertex = vertex
+        vertex.set_prev(self)
 
     def set_status(self, status: Status) -> None:
         self.status = status
@@ -75,6 +80,12 @@ class Vertex:
 
     def has_next(self) -> bool:
         return self.next_vertex is not None
+
+    def get_prev(self):
+        return self.prev_vertex
+
+    def has_prev(self):
+        return self.prev_vertex is not None
 
     def add_dependency(self, dependency) -> None:
         self.dependencies.append(dependency)
