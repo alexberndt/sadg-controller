@@ -140,6 +140,9 @@ class DependencyGroup:
         # recursively search through current active head vertex of DG
         time_to_vertex = estimate_time_to_vertex(self.first_head_active)
 
+        if time_to_vertex > horizon:
+            print("hello")
+
         return time_to_vertex < horizon        
         
     def get_dependencies(self) -> List[DependencySwitch]:

@@ -10,13 +10,13 @@ from sadg_controller.sadg.visualizer import Visualizer
 
 def main() -> None:
 
-    agent_count = 3
+    agent_count = 4
     ecbs_w = 1.8
 
     logger = Logger(__name__, level=DEBUG)
 
     roadmap_path = (
-        "home/alex/sadg_ws/src/sadg-controller/sadg_controller/data/roadmaps/small"
+        "home/alex/sadg_ws/src/sadg-controller/sadg_controller/data/roadmaps/test"
     )
     roadmap = Roadmap(roadmap_path)
 
@@ -52,7 +52,7 @@ def main() -> None:
             elif curr_vertex.get_status() == Status.IN_PROGRESS:
 
                 # Only set agents 0 and 2 to completed unless 10 time-steps in
-                if idx != 0 or sim_iter > 10:
+                if idx != 0 or sim_iter > 18:
                     print(f"{agent_id}: set to COMPLETED ...")
                     curr_vertex.set_status(Status.COMPLETED)
 
