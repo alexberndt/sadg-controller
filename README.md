@@ -58,6 +58,12 @@ Then, from `~/sadg_ws`, execute:
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
+Install python dependencies
+
+```bash
+/usr/bin/python3 -m pip install -r requirements.txt
+```
+
 ### Build workspace
 From `~/sadg_ws`, execute:
 ```bash
