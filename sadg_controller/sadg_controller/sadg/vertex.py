@@ -84,7 +84,7 @@ class Vertex:
     def get_prev(self):
         return self.prev_vertex
 
-    def has_prev(self):
+    def has_prev(self) -> bool:
         return self.prev_vertex is not None
 
     def add_dependency(self, dependency) -> None:

@@ -34,7 +34,7 @@ def main() -> None:
         sadg.get_first_agent_vertex(agent_id) for agent_id in agent_ids
     ]
 
-    for j in range(50):
+    for sim_iter in range(50):
 
         for idx, curr_vertex in enumerate(agent_curr_vertex):
             agent_id = f"agent{idx}"
@@ -51,8 +51,8 @@ def main() -> None:
             # Agent is at executing current vertex
             elif curr_vertex.get_status() == Status.IN_PROGRESS:
 
-                # Only set agents 0 and 2 to completed
-                if idx != 0 or j > 10:
+                # Only set agents 0 and 2 to completed unless 10 time-steps in
+                if idx != 0 or sim_iter > 10:
                     print(f"{agent_id}: set to COMPLETED ...")
                     curr_vertex.set_status(Status.COMPLETED)
 

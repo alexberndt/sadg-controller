@@ -106,30 +106,42 @@ class DependencyGroup:
         else:
             return False
 
-    # def get_head_vertex_params(self) -> Tuple[str, str]:
-    #     """
-    #     Returns vertex_id, agent_id of head vertex.
-    #     """
-    #     vertex_id = self.last_head_vertex_idx
-    #     agent_id = self.last_head_agent_id
-    #     return vertex_id, agent_id
-
-    # def get_tail_vertex_params(self) -> Tuple[str, str]:
-    #     """
-    #     Returns vertex_id, agent_id of head vertex.
-    #     """
-    #     vertex_id = self.last_tail_vertex_idx
-    #     agent_id = self.last_tail_agent_id
-    #     return vertex_id, agent_id
-
-    def within_horizon(self, horizon) -> bool:
+    def within_horizon(self, horizon: float) -> bool:
         """
         Check whether the dependencies within the group
         fall within the provided horizon.
+
+        This function is used to ensure only switching 
+        of dependency groups within a receding horizon.
+
+        Args:
+            horizon: Time in seconds from current vertices 
+                where switching should be considered.
         """
 
-        return True
+        def estimate_time_to_vertex(vertex: Vertex) -> float:
+            """
+            Determine the time between a STAGED vertex and
+            the closest IN-PROGRESS or COMPLETED vertex 
+            preceding it, thus calculating the expected 
+            remaining time before that vertex is changed
+            to IN-PROGRESS.
 
+            This is used to determine how far ahead in time 
+            a vertex will be "seen".
+            """
+            remaining_time = 0
+            curr_vertex = vertex
+            while curr_vertex.has_prev() and curr_vertex.get_status() == Status.STAGED:
+                curr_vertex = curr_vertex.get_prev()
+                remaining_time += curr_vertex.get_expected_completion_time()
+            return remaining_time
+        
+        # recursively search through current active head vertex of DG
+        time_to_vertex = estimate_time_to_vertex(self.first_head_active)
+
+        return time_to_vertex < horizon        
+        
     def get_dependencies(self) -> List[DependencySwitch]:
         return self.dependencies
 
