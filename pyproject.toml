@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "sadg-controller"
+version = "1.0.0"
+description = "Switchable Action Dependency Graph (SADG) control scheme for MAPF plan re-ordering"
+authors = [
+    "Alex Berndt <berndtae@gmail.com>",
+    "Niels van Duijkeren <niels.vanduijkeren@de.bosch.com>",
+]
+license = "AGPL-3.0-only"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+mip = "^1.14.0"
+PyYAML = "^6.0"
+pandas = "^1.4.3"
+networkx = "^2.8.4"
+scipy = "^1.8.1"
+matplotlib = "^3.5.2"
+numpy = "^1.23.1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+pytest = "^7.1.2"
+pylama = "^8.3.8"
+pre-commit = "^2.19.0"
+isort = "^5.10.1"
+poetry-lock-package = "^0.4.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
