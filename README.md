@@ -107,17 +107,6 @@ Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![Full Maze](.github/animations/full_maze.gif)  |  ![Half Maze](.github/animations/half_maze.gif) | ![Half Maze](.github/animations/warehouse.gif) | ![Half Maze](.github/animations/islands.gif)
 
-## Contribute
-
-First and foremost, see the contribution guidelines in [CONTRIBUTING.md](CONTRIBUTING.md).
-Then, to contribute to this repository, set up your development environment as follows
-
-1. Follow the [installation instructions](#installation-instruction)
-2. Set up pre-commit hooks:
-    ```bash
-    poetry run pre-commit install
-    ```
-
 ## About
 
 ### Maintainers
