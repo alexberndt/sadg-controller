@@ -38,7 +38,7 @@ setup(
     maintainer="Alex Berndt",
     maintainer_email="berndtae@gmail.com",
     description="Implementation of the SADG RHC feedback control scheme to reduce route completion times of delayed agents following MAPF plans.",
-    license="AGPL-3.0-only",
+    license="AGPL-3.0",
     tests_require=[],
     entry_points={
         "console_scripts": [
