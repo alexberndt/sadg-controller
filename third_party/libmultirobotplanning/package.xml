@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>libmultirobotplanning</name>
-  <version>0.0.2</version>
+  <version>0.0.0</version>
   <description>Library with search algorithms for task and path planning for multi robot/agent systems.</description>
   <author>Wolfgang Hoenig</author>
 
