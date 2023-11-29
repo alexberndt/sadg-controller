@@ -1,5 +1,6 @@
-# sadg-controller
-# Copyright (c) 2023 Alexander Berndt, Robert Bosch GmbH
+# sadg-controller - MAPF execution with Switchable Action Dependency Graphs
+# Copyright (c) 2023 Alex Berndt
+# Copyright (c) 2023 Niels van Duijkeren, Robert Bosch GmbH
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published

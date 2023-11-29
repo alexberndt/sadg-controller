@@ -6,7 +6,7 @@ authors = [
     "Alex Berndt <berndtae@gmail.com>",
     "Niels van Duijkeren <niels.vanduijkeren@de.bosch.com>",
 ]
-license = "AGPL-3.0"
+license = "AGPL-3.0-only"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"

@@ -18,6 +18,9 @@ _Our approach significantly reduces the cumulative route completion of agents su
 :-------------------------:|:-------------------------:|
 ![](.github/animations/sadg.gif) | ![](.github/animations/roadmap.gif) |
 
+## Purpose of the Project
+This software is a research prototype, solely developed for and published as part of the publication cited above. It is not foreseen to be either actively maintained or monitored in any way.
+
 ## List of Functionalities
 
 1. Python-based interface for interacting with MAPF planners from [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning)

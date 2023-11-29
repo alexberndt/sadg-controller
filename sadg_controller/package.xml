@@ -7,7 +7,7 @@
 
   <maintainer email="berndtae@gmail.com">Alex Berndt</maintainer>
 
-  <license>AGPL-3.0</license>
+  <license>AGPL-3.0-only</license>
 
   <exec_depend>libmultirobotplanning</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
