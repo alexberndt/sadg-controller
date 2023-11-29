@@ -1,0 +1,24 @@
+<launch>
+
+    <arg name="agent_count" default="8"/>
+    <arg name="roadmap" default="test"/>
+    <arg name="ecbs_sub_factor" default="1.8"/>
+    <arg name="visualize_sadg" default="False"/>
+
+    <include file="$(find-pkg-share sadg_controller)/launch/agents.launch.py">
+        <arg name="agent_count" value="$(var agent_count)"/>
+    </include>
+
+    <include file="$(find-pkg-share sadg_controller)/launch/simulation.launch.xml">
+        <arg name="agent_count" value="$(var agent_count)"/>
+        <arg name="roadmap" value="$(var roadmap)"/>
+    </include>
+
+    <include file="$(find-pkg-share sadg_controller)/launch/controller.launch.xml">
+        <arg name="agent_count" value="$(var agent_count)"/>
+        <arg name="roadmap" value="$(var roadmap)"/>
+        <arg name="ecbs_sub_factor" value="$(var ecbs_sub_factor)"/>
+        <arg name="visualize_sadg" value="$(var visualize_sadg)"/>
+    </include>
+
+</launch>

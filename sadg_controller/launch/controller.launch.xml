@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="agent_count" default="8"/>
+    <arg name="roadmap" default="test"/>
+    <arg name="ecbs_sub_factor" default="1.8"/>
+    <arg name="visualize_sadg" default="False"/>
+
+    <node name="controller" pkg="sadg_controller"  exec="controller" output="screen">
+        <param name="agent_count" value="$(var agent_count)"/>
+        <param name="roadmap_path" value="$(find-pkg-share sadg_controller)/data/roadmaps/$(var roadmap)/"/>
+        <param name="ecbs_sub_factor" value="$(var ecbs_sub_factor)"/>
+        <param name="visualize_sadg" value="$(var visualize_sadg)"/>
+    </node>
+
+</launch>
