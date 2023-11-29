@@ -1,8 +1,0 @@
-<launch>
-
-    <node name="simulation" pkg="sadg_controller"  exec="simulation" output="screen">
-        <param name="agent_count" value="18"/>
-        <param name="roadmap_path" value="$(find-pkg-share sadg_controller)/data/roadmaps/test/"/>
-    </node>
-
-</launch>

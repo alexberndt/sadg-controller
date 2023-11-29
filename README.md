@@ -82,29 +82,35 @@ colcon build --symlink-install  # --symlink-install is optional
 
 To start a simulation, run the following
 
-#### Terminal 1: Initialize the Agents
 ```bash
 source install/setup.bash
-ros2 launch sadg_controller n8_agents.launch.xml
+ros2 launch sadg_controller scenario.launch.xml agent_count:=8 roadmap:=test visualize_sadg:=True
 ```
 
-#### Terminal 2: Visualize the Plan Execution
+More generally, one can start scenarios by
+
 ```bash
 source install/setup.bash
-ros2 launch sadg_controller n8_simulation.launch.xml
+ros2 launch sadg_controller scenario.launch.xml agent_count:=<number of agents> roadmap:={test, cover, full_maze, half_maze, islands, warehouse} ecbs_sub_factor:=<ecbs suboptimality factor> visualize_sadg:={True, False}
 ```
 
-#### Terminal 3: Start the Controller
-```bash
-source install/setup.bash
-ros2 launch sadg_controller n8_controller.launch.xml
-```
+It is also possible to start the agent nodes, simulator and controller separately using the launch files:
+* `ros2 sadg_controller agents.launch.py agent_count:=...`
+* `ros2 sadg_controller simulation.launch.py agent_count:=... roadmap:=...`
+* `ros2 sadg_controller controller.launch.py agent_count:=... roadmap:=... ecbs_sub_factor:=... visualize_sadg:=...`
 
-<!-- #### Terminal 4: Visualize the SADG
-```bash
-source devel/setup.sh
-roslaunch launch/8/sadg.launch
-``` -->
+The controller generates random start and goal points, which may cause issues in certain configurations. Some configurations that we have managed to run relatively reliably can be found in the table below, note that the limitation here is in fact the randomness (which may be fixed). 
+
+| `roadmap`   | `agent_count` |
+|-------------|---------------|
+| `test`      | 2, 4, 8, 10   |
+| `cover`     | 8             |
+| `full_maze` | 60            |
+| `half_maze` | 40            |
+| `islands`   | 40            |
+| `warehouse` | 40, 60        |
+
+#### Example Results
 
 Full Maze             |  Half Maze |  Warehouse |  Islands
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:

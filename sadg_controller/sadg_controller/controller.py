@@ -56,6 +56,8 @@ class Controller(Node):
         self.visualize_sadg = self.declare_parameter("visualize_sadg", False).value
         ecbs_w = self.declare_parameter("ecbs_sub_factor", 1.8).value
 
+        print("agent_count in CONTROLLER: ", agent_count)
+
         roadmap = Roadmap(roadmap_path)
 
         starts = roadmap.random_locations(agent_count)

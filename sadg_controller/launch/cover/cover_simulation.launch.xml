@@ -1,8 +1,0 @@
-<launch>
-
-    <node name="simulation" pkg="sadg_controller"  exec="simulation" output="screen">
-        <param name="agent_count" value="8"/>
-        <param name="roadmap_path" value="cover"/>
-    </node>
-
-</launch>
