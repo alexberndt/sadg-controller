@@ -115,17 +115,11 @@ Full Maze             |  Half Maze |  Warehouse |  Islands
 ### Maintainers
 
 - [Alex Berndt](https://github.com/alexberndt)
-
-### Contributors
-
-... are welcome at any time and will be listed here.
-
 - [Niels van Duijkeren](https://github.com/nielsvd)
 
 ### 3rd Party Licenses
 
-This repository contains a submodule for the library [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning),
-which comes under the MIT license.
+Details about the 3rd party licenses can be found in [3rd-party-licenses.txt](./3rd-party-licenses.txt). In short, this repository contains a submodule for the library [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning), which comes under the MIT license.
 
 ### License
 
