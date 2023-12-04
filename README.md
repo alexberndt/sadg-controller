@@ -19,6 +19,7 @@ _Our approach significantly reduces the cumulative route completion of agents su
 ![](.github/animations/sadg.gif) | ![](.github/animations/roadmap.gif) |
 
 ## Purpose of the Project
+
 This software is a research prototype, solely developed for and published as part of the publication cited above. It is not foreseen to be either actively maintained or monitored in any way.
 
 ## List of Functionalities
@@ -26,10 +27,28 @@ This software is a research prototype, solely developed for and published as par
 1. Python-based interface for interacting with MAPF planners from [libMultiRobotPlanning](https://github.com/whoenig/libMultiRobotPlanning)
 2. SADG Receding Horizon feedback control scheme implementation
 
-## Installation Instructions
+## Install with Docker
 
-This repository supports several workflows to build and execute the software.
-We present here the typical ROS2 approach that will also prepare the dependency [`libMultiRobotPlanning`](https://github.com/whoenig/libMultiRobotPlanning) automatically.
+The most straightforward way to get started is using Docker. This way, you can use the software in Ubuntu, Windows and Mac. To this end first install [Docker](https://docs.docker.com/engine/install/).
+
+Then, build the image:
+```bash
+docker build -t sadg-controller .
+```
+
+Subsequently, you can run the image:
+```bash
+xhost +  # only for system running an X server 
+docker run --rm -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro sadg-controller bash;
+xhost -  # only for system running an X server
+```
+
+From inside the image you can follow the instructions in the [Examples](#examples) section.
+
+## Install without Docker
+
+Before proceeding, consider using the [Docker-based approach](#install-with-docker).
+We present here the typical ROS2-based installation approach that will also prepare the dependency [`libMultiRobotPlanning`](https://github.com/whoenig/libMultiRobotPlanning) automatically.
 
 ### Install ROS2
 
@@ -45,14 +64,6 @@ rosdep update
 ```
 
 ### Prepare workspace
-*FOR TRo REVIEWERS: unzip the attached workspace and navigate to it using `cd`.*
-*Subsequently, initialize the submodules by:*
-```bash
-git submodule update --init --recursive
-```
-
-*FOR TRo REVIEWERS: the remainder of this section is currently not relevant.*
-
 Create a workspace (e.g., in your home folder) and clone `sadg-controller`.
 ```bash
 mkdir -p ~/sadg_ws/src
