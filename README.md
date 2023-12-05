@@ -68,7 +68,7 @@ Create a workspace (e.g., in your home folder) and clone `sadg-controller`.
 ```bash
 mkdir -p ~/sadg_ws/src
 cd ~/sadg_ws/src
-git clone --recurse-submodules git@github.com:<organization>/<repository>.git
+git clone --recurse-submodules https://github.com/alexberndt/sadg-controller.git
 cd ~/sadg_ws
 ```
 
