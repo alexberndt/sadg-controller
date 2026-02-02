@@ -103,6 +103,8 @@ def compile_sadg(P: Plan, logger: Logger) -> SADG:  # noqa: C901
                         v_j_l.add_dependency(fwd)
 
                         try:
+                            if k==0:
+                                raise IndexError("k-1 would wrap to -1 in Python")
 
                             v_i_k_minus_1 = vertices_i[k - 1]
                             v_j_l_plus_1 = vertices_j[l + 1]
